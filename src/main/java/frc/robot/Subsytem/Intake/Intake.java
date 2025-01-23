@@ -7,7 +7,6 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeStates;
-import frc.team5431.titan.core.subsystem.CTREMechanism;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Intake extends REVMechanism {
@@ -38,7 +37,6 @@ public class Intake extends REVMechanism {
         this.config = config;
         this.motor = motor;
         setConfig(config);
-
     }
 
     @Override
