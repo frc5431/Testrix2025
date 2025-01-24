@@ -37,6 +37,7 @@ public class Intake extends REVMechanism {
         this.config = config;
         this.motor = motor;
         setConfig(config);
+
     }
 
     @Override
@@ -52,7 +53,7 @@ public class Intake extends REVMechanism {
     @AutoLogOutput(key = "Intake/Rollers")
     public double getMotorVelocity() {
         if (attached) {
-           return motor.getEncoder().getVelocity();
+            return motor.getEncoder().getVelocity();
         }
 
         return 0;
