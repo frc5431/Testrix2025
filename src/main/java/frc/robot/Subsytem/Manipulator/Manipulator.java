@@ -49,7 +49,7 @@ public class Manipulator extends REVMechanism {
     setVelocity(manipulatorMode.speed);
   }
 
-  @AutoLogOutput(key = "Intake/Rollers")
+  @AutoLogOutput(key = "Manipulator/Rollers")
   public double getMotorVelocity() {
     if (attached) {
       return motor.getEncoder().getVelocity();
@@ -61,7 +61,7 @@ public class Manipulator extends REVMechanism {
   /**
    * @return foward output, reverse output
    */
-  @AutoLogOutput(key = "Intake/Rollers")
+  @AutoLogOutput(key = "Manipulator/Rollers")
   public double getMotorOutput() {
     if (attached) {
       return motor.getAppliedOutput();
@@ -70,7 +70,7 @@ public class Manipulator extends REVMechanism {
     return 0;
   }
 
-  @AutoLogOutput(key = "Intake/Rollers")
+  @AutoLogOutput(key = "Manipulator/Rollers")
   public String getIntakeMode() {
     return this.manipulatorMode.toString();
   }
