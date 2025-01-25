@@ -4,9 +4,9 @@
 
 package frc.robot;
 
-import java.lang.ModuleLayer.Controller;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Subsytems.Intake.Intake;
@@ -29,7 +29,7 @@ public class RobotContainer {
   // Operator Controls
 
   // Intake Controls
-  private Trigger intakeCoral = operator.a();
+  private Trigger intakeCoral = driver.a();
 
   public RobotContainer() {
 
@@ -39,6 +39,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
   }
 

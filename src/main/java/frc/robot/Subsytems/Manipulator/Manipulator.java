@@ -58,9 +58,6 @@ public class Manipulator extends REVMechanism {
     return 0;
   }
 
-  /**
-   * @return foward output, reverse output
-   */
   @AutoLogOutput(key = "Manipulator/Rollers")
   public double getMotorOutput() {
     if (attached) {

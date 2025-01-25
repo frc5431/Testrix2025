@@ -4,8 +4,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeStates;
@@ -16,6 +18,7 @@ public class Intake extends REVMechanism {
     private IntakeConfig config;
     private SparkMax motor;
     public boolean attachted;
+    public SysIdRoutine routine;
 
     private IntakeModes mode;
     private IntakeStates state;
@@ -40,12 +43,12 @@ public class Intake extends REVMechanism {
         this.motor = motor;
         this.mode = IntakeModes.IDLE;
         this.state = IntakeStates.IDLE;
-        setConfig();
+        setConfig();   
     }
 
     @Override
     public void periodic() {
-        
+        SmartDashboard.putString("Intake Mode", this.getMode());
         switch (this.mode) {
             case IDLE:
                 setIntakeState(IntakeStates.IDLE);
@@ -60,7 +63,7 @@ public class Intake extends REVMechanism {
                 setIntakeState(IntakeStates.FEEDING);
                 break;
         }
-
+        
     }
 
     public void setIntakeState(IntakeStates intakeState) {
@@ -73,7 +76,7 @@ public class Intake extends REVMechanism {
     }
 
     public Command runIntakeCommand(IntakeModes intakeModes) {
-        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this);
+        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this).withName("Intake.runEnum");
     }
 
     @AutoLogOutput(key = "Intake/Rollers")

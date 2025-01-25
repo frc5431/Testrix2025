@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -17,10 +18,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
+
   private final RobotContainer m_robotContainer;
 
   public Robot() {
     Logger.recordMetadata("5431Robot", "Titan2025");
+    AutoLogOutputManager.addPackage("frc.robot.Subsystems");
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter());
