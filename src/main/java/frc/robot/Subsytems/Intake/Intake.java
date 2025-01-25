@@ -1,9 +1,11 @@
-package frc.robot.Subsytem.Intake;
+package frc.robot.Subsytems.Intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeStates;
@@ -13,10 +15,10 @@ public class Intake extends REVMechanism {
 
     private IntakeConfig config;
     private SparkMax motor;
-    public Boolean attachted;
+    public boolean attachted;
 
-    private IntakeModes intakeMode;
-    private IntakeStates intakeStates;
+    private IntakeModes mode;
+    private IntakeStates state;
 
     public static class IntakeConfig extends Config {
 
@@ -36,18 +38,42 @@ public class Intake extends REVMechanism {
         super(motor, attachted);
         this.config = config;
         this.motor = motor;
-        setConfig(config);
-
+        this.mode = IntakeModes.IDLE;
+        this.state = IntakeStates.IDLE;
+        setConfig();
     }
 
     @Override
     public void periodic() {
+        
+        switch (this.mode) {
+            case IDLE:
+                setIntakeState(IntakeStates.IDLE);
+                break;
+            case INTAKE:
+                setIntakeState(IntakeStates.INTAKING);
+                break;
+            case OUTTAKE:
+                setIntakeState(IntakeStates.OUTTAKING);
+                break;
+            case FEED:
+                setIntakeState(IntakeStates.FEEDING);
+                break;
+        }
 
     }
 
-    public void runEnum(IntakeModes intakemode) {
-        this.intakeMode = intakemode;
+    public void setIntakeState(IntakeStates intakeState) {
+        this.state = intakeState;
+    }
+
+    protected void runEnum(IntakeModes intakemode) {
+        this.mode = intakemode;
         setVelocity(intakemode.speed);
+    }
+
+    public Command runIntakeCommand(IntakeModes intakeModes) {
+        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this);
     }
 
     @AutoLogOutput(key = "Intake/Rollers")
@@ -59,9 +85,6 @@ public class Intake extends REVMechanism {
         return 0;
     }
 
-    /**
-     * @return foward output, reverse output
-     */
     @AutoLogOutput(key = "Intake/Rollers")
     public double getMotorOutput() {
         if (attached) {
@@ -72,8 +95,13 @@ public class Intake extends REVMechanism {
     }
 
     @AutoLogOutput(key = "Intake/Rollers")
-    public String getIntakeMode() {
-        return this.intakeMode.toString();
+    public String getMode() {
+        return this.mode.toString();
+    }
+
+    @AutoLogOutput(key = "Intake/Rollers")
+    public String getIntakeState() {
+        return this.state.toString();
     }
 
     @Override

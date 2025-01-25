@@ -1,4 +1,4 @@
-package frc.robot.Subsytem.Manipulator;
+package frc.robot.Subsytems.Manipulator;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 

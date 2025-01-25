@@ -1,4 +1,4 @@
-package frc.robot.Subsytem.Limelight;
+package frc.robot.Subsytems.Limelight;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
