@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -28,7 +29,9 @@ public class Intake extends REVMechanism {
         public IntakeConfig() {
             super("Intake", IntakeConstants.id);
             configIdleMode(IntakeConstants.idleMode);
+            configInverted(IntakeConstants.isInverted);
             configGearRatio(IntakeConstants.gearRatio);
+            configMaxIAccum(IntakeConstants.maxIAccum);
             configMaxMotionPositionMode(IntakeConstants.mm_positionMode);
             configPIDGains(IntakeConstants.p, IntakeConstants.i, IntakeConstants.d);
             configSmartCurrentLimit(IntakeConstants.stallLimit, IntakeConstants.supplyLimit);
@@ -43,12 +46,14 @@ public class Intake extends REVMechanism {
         this.motor = motor;
         this.mode = IntakeModes.IDLE;
         this.state = IntakeStates.IDLE;
-        setConfig();   
+        config.applySparkConfig(motor);
+
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putString("Intake Mode", this.getMode());
+        SmartDashboard.putString("getIntakeState()", "getIntakeState");
         switch (this.mode) {
             case IDLE:
                 setIntakeState(IntakeStates.IDLE);
@@ -63,7 +68,7 @@ public class Intake extends REVMechanism {
                 setIntakeState(IntakeStates.FEEDING);
                 break;
         }
-        
+
     }
 
     public void setIntakeState(IntakeStates intakeState) {

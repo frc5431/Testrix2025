@@ -28,14 +28,17 @@ public class Robot extends LoggedRobot {
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
+      Logger.start();
+
     } else {
+    /*
       setUseTiming(false);
       String logPath = LogFileUtil.findReplayLog();
       Logger.setReplaySource(new WPILOGReader(logPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+    */
     }
 
-    Logger.start();
 
     m_robotContainer = new RobotContainer();
   }
@@ -43,6 +46,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    m_robotContainer.periodic();
+
   }
 
   @Override

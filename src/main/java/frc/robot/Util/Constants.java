@@ -38,7 +38,7 @@ public final class Constants {
         public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final int id = 0;
-        public static final double gearRatio = 0 / 0;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
         public static final Angle offset = Units.Rotation.of(0);
@@ -52,6 +52,7 @@ public final class Constants {
         public static final double p = 0;
         public static final double i = 0;
         public static final double d = 0;
+        public static final double maxIAccum = 0;
 
         public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
         public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);

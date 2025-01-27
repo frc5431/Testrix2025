@@ -17,7 +17,7 @@ import frc.team5431.titan.core.joysticks.TitanController;
 public class RobotContainer {
 
   private System systems = new System();
-  private Intake intake;
+  private Intake intake = systems.getIntake();
 
   private TitanController driver = new TitanController(ControllerConstant.driverPort, ControllerConstant.deadzone);
   private TitanController operator = new TitanController(ControllerConstant.operatorPort, ControllerConstant.deadzone);
@@ -33,7 +33,6 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    intake = systems.getIntake();
 
     configureBindings();
   }
