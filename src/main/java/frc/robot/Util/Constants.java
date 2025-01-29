@@ -80,6 +80,56 @@ public final class Constants {
 
     }
 
+    public static class CleanerConstants {
+
+
+        public enum CleanerStates {
+            IDLE,
+            INTAKING,
+            OUTTAKING
+        }
+
+        public static final boolean attached = true;
+        public static final int id = -124542;
+        public static final double gearRatio = 0 / 0;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final boolean isInverted = false;
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+        public static final double maxIAccum = 0;
+
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
+        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
+
+        public enum CleanerModes {
+            IDLE(idleSpeed),
+            INTAKE(intakeSpeed),
+            FEED(feedSpeed),
+            OUTTAKE(outtakeSpeed);
+
+            public AngularVelocity speed;
+
+            CleanerModes(AngularVelocity speed) {
+                this.speed = speed;
+            }
+
+        }
+
+    }
+
     public static class ManipulatorConstants {
 
         public enum ManipulatorStates {
