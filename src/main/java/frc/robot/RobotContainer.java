@@ -16,11 +16,11 @@ import frc.team5431.titan.core.joysticks.TitanController;
 
 public class RobotContainer {
 
-  private System systems = new System();
-  private Intake intake = systems.getIntake();
+  private final Systems systems = new Systems();
+  private final Intake intake = systems.getIntake();
 
-  private TitanController driver = new TitanController(ControllerConstant.driverPort, ControllerConstant.deadzone);
-  private TitanController operator = new TitanController(ControllerConstant.operatorPort, ControllerConstant.deadzone);
+  private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
+  private TitanController operator = new TitanController(ControllerConstants.operatorPort, ControllerConstants.deadzone);
 
   // Controls
 
@@ -33,25 +33,40 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-
     configureBindings();
   }
 
+  public void periodicSubsystems() {
+    intake.periodic();
+
+  }
+
   public void periodic() {
+    periodicSubsystems();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
   }
 
-  private void configureBindings() {
+  private void configureDriverControls() {
 
-    // Operator Controls
+  }
+
+  private void configureOperatorControls() {
 
     // Intake Controls
     intakeCoral.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
 
   }
 
+  private void configureBindings() {
+
+    configureDriverControls();
+    configureOperatorControls();
+
+  }
+
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+  
 }

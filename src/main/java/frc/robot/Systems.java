@@ -4,37 +4,25 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.Intake.Intake;
-import frc.robot.Subsytems.Intake.Intake.IntakeConfig;
 import frc.robot.Util.Constants.*;
 
-public class System {
+public class Systems {
 
     private Intake intake;
 
-    private IntakeConfig intakeConfig = new IntakeConfig();
+    /* Kraken X60s */
 
-    /*
-     * Kraken X60s
-     */
-
-    /*
-     * Neo 1.1s
-     */
+    /* Neo 1.1s */
     private SparkMax intakeMotor;
 
-    /*
-     * Neo 550s
-     */
+    /* Neo 550s */
 
-    public System() {
+    public Systems() {
 
-        /*
-         * Neo 1.1s
-         */
+        /* Neo 1.1s */
         intakeMotor = new SparkMax(IntakeConstants.id, MotorType.kBrushless);
-
         
-        intake = new Intake(intakeMotor, intakeConfig, IntakeConstants.attached);
+        intake = new Intake(intakeMotor, IntakeConstants.attached);
 
     }
 
@@ -43,3 +31,4 @@ public class System {
     }
 
 }
+  

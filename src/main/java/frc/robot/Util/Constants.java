@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Current;
 
 public final class Constants {
 
-    public static class ControllerConstant {
+    public static class ControllerConstants {
 
         public enum ControlStates {
             ALGAE,
@@ -131,4 +131,5 @@ public final class Constants {
         }
 
     }
+
 }

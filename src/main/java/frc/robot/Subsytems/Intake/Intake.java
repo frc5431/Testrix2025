@@ -1,10 +1,7 @@
 package frc.robot.Subsytems.Intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -40,9 +37,10 @@ public class Intake extends REVMechanism {
         }
     }
 
-    public Intake(SparkMax motor, IntakeConfig config, boolean attachted) {
+    public Intake(SparkMax motor, boolean attachted) {
         super(motor, attachted);
-        this.config = config;
+        System.out.println("INTAKE IS ALIVE");
+        IntakeConfig config = new IntakeConfig();
         this.motor = motor;
         this.mode = IntakeModes.IDLE;
         this.state = IntakeStates.IDLE;
@@ -53,7 +51,12 @@ public class Intake extends REVMechanism {
     @Override
     public void periodic() {
         SmartDashboard.putString("Intake Mode", this.getMode());
-        SmartDashboard.putString("getIntakeState()", "getIntakeState");
+        SmartDashboard.putNumber("Intake Output", this.getMotorOutput());
+        SmartDashboard.putNumber("Intake Current", this.getMotorCurrent());
+        SmartDashboard.putNumber("Intake Voltage", this.getMotorVoltage());
+        SmartDashboard.putNumber("Intake Velocity", this.getMotorVelocity());
+
+
         switch (this.mode) {
             case IDLE:
                 setIntakeState(IntakeStates.IDLE);
@@ -81,10 +84,11 @@ public class Intake extends REVMechanism {
     }
 
     public Command runIntakeCommand(IntakeModes intakeModes) {
-        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this).withName("Intake.runEnum");
+        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this)
+                .withName("Intake.runEnum");
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/Velocity")
     public double getMotorVelocity() {
         if (attached) {
             return motor.getEncoder().getVelocity();
@@ -93,7 +97,25 @@ public class Intake extends REVMechanism {
         return 0;
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/Voltage")
+    public double getMotorVoltage() {
+        if (attached) {
+            return motor.getBusVoltage();
+        }
+
+        return 0;
+    }
+
+    @AutoLogOutput(key = "Intake/Rollers/Current")
+    public double getMotorCurrent() {
+        if (attached) {
+            return motor.getOutputCurrent();
+        }
+
+        return 0;
+    }
+
+    @AutoLogOutput(key = "Intake/Rollers/Output")
     public double getMotorOutput() {
         if (attached) {
             return motor.getAppliedOutput();
@@ -102,12 +124,12 @@ public class Intake extends REVMechanism {
         return 0;
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/Mode")
     public String getMode() {
         return this.mode.toString();
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/State")
     public String getIntakeState() {
         return this.state.toString();
     }
