@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Util.Constants.*;
+import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.team5431.titan.core.joysticks.TitanController;
 
@@ -18,6 +20,7 @@ public class RobotContainer {
 
   private System systems = new System();
   private Intake intake = systems.getIntake();
+  private Climber climber = systems.getClimber();
 
   private TitanController driver = new TitanController(ControllerConstant.driverPort, ControllerConstant.deadzone);
   private TitanController operator = new TitanController(ControllerConstant.operatorPort, ControllerConstant.deadzone);
@@ -31,6 +34,9 @@ public class RobotContainer {
   // Intake Controls
   private Trigger intakeCoral = driver.a();
 
+  // Climber Controls
+  private Trigger climberAim = driver.b();
+
   public RobotContainer() {
 
 
@@ -38,6 +44,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    climber.periodic();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
   }
@@ -48,6 +55,9 @@ public class RobotContainer {
 
     // Intake Controls
     intakeCoral.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
+
+    // Climber Controls
+    climberAim.whileTrue(climber.runClimberCommand(ClimberModes.ALIGN));
 
   }
 
