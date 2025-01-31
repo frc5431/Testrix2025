@@ -1,5 +1,6 @@
 package frc.robot.Util;
 
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -117,13 +118,53 @@ public final class Constants {
         public enum CleanerModes {
             IDLE(idleSpeed),
             INTAKE(intakeSpeed),
-            FEED(feedSpeed),
             OUTTAKE(outtakeSpeed);
 
             public AngularVelocity speed;
 
             CleanerModes(AngularVelocity speed) {
                 this.speed = speed;
+            }
+
+        }
+
+    }
+
+    public static class CleanPivotConstants {
+
+        public enum CleanPivotStates {
+            STOW,
+            L2,
+            L3,
+            NET,
+        }
+
+        public static final int id = 32342370;
+        public static final boolean attached = true;
+        public static final Angle softLimitForwardMax = Units.Rotation.of(0);
+        public static final boolean softLimitEnabled = true;
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
+        public static final Angle stowAngle = Units.Rotation.of(0);
+        public static final Angle l2Angle = Units.Rotation.of(0);
+        public static final Angle l3Angle = Units.Rotation.of(0);
+        public static final Angle netAngle = Units.Rotation.of(0);
+        public static final boolean isInverted = false;
+        public static final Angle zeroOffset = Units.Rotation.of(0);
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+
+        public enum CleanPivotModes {
+            STOW(stowAngle),
+            L2(l2Angle),
+            L3(l3Angle),
+            NET(netAngle);
+
+            public Angle angle;
+
+            CleanPivotModes(Angle angle) {
+                this.angle = angle;
             }
 
         }

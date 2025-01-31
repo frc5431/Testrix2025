@@ -15,10 +15,9 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Cleaner extends REVMechanism {
     
-    private CleanerConfig cleanerConfig;
+    private CleanerConfig config;
 
     private SparkMax motor;
-    public boolean attachted;
     public SysIdRoutine routine;
 
     private CleanerModes mode;
@@ -81,7 +80,7 @@ public class Cleaner extends REVMechanism {
     }
 
     public Command runCleanerCommand(CleanerModes cleanerModes) {
-        return new StartEndCommand(() -> this.runEnum(cleanerModes), () -> this.runEnum(cleanerModes.IDLE), this).withName("Cleaner.runEnum");
+        return new StartEndCommand(() -> this.runEnum(cleanerModes), () -> this.runEnum(CleanerModes.IDLE), this).withName("Cleaner.runEnum");
     }
 
     @AutoLogOutput(key = "Cleaner/Rollers")
