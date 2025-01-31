@@ -28,8 +28,8 @@ public class RobotContainer {
 
   // Operator Controls
 
-  // Intake Controls
-  private Trigger intakeCoral = driver.a();
+    // Intake Controls
+    private Trigger intakeCoral = driver.a();
 
   public RobotContainer() {
 
