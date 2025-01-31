@@ -85,15 +85,15 @@ public final class Constants {
         public enum ManipulatorStates {
             IDLE,
             LOCKED,
-            INTAKING,
-            OUTTAKING,
+            FORWARD,
+            REVERSE,
         }
 
         public static final boolean attached = true;
         public static final int id = 1;
         public static final double gearRatio = 0 / 0;
-        public static final Current supplyLimit = Units.Amps.of(0);
-        public static final Current stallLimit = Units.Amps.of(0);
+        public static final Current supplyLimit = Units.Amps.of(30);
+        public static final Current stallLimit = Units.Amps.of(50);
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final boolean isInverted = false;
         public static final Angle offset = Units.Rotation.of(0);
@@ -104,6 +104,7 @@ public final class Constants {
         public static final double p = 0;
         public static final double i = 0;
         public static final double d = 0;
+        public static final double maxIAccum = 0;
 
         public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
         public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
@@ -118,9 +119,9 @@ public final class Constants {
 
         public enum ManipulatorModes {
             IDLE(idleSpeed),
-            INTAKE(intakeSpeed),
+            FORWARD(intakeSpeed),
             FEED(feedSpeed),
-            OUTTAKE(outtakeSpeed);
+            REVERSE(outtakeSpeed);
 
             public AngularVelocity speed;
 
@@ -132,4 +133,55 @@ public final class Constants {
 
     }
 
+    public static class ManipJointConstants {
+
+        public enum ManipJointStates {
+
+        }
+
+        public static final boolean attached = true;
+        public static final int id = 1;
+        public static final double gearRatio = 0 / 0;
+        public static final Current supplyLimit = Units.Amps.of(30);
+        public static final Current stallLimit = Units.Amps.of(50);
+        public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final boolean isInverted = false;
+        public static final Angle offset = Units.Rotation.of(0);
+        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+        public static final double maxIAccum = 0;
+
+        public static final Angle stow = Units.Rotations.of(0);
+        public static final Angle scoreL1 = Units.Rotations.of(0);
+        public static final Angle scoreL2 = Units.Rotations.of(0);
+        public static final Angle scoreL3 = Units.Rotations.of(0);
+        public static final Angle scoreL4 = Units.Rotations.of(0);
+        public static final Angle error = Units.Rotations.of(0);
+
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+
+        public enum ManipJointPositions {
+            STOW(stow),
+            SCOREL1(scoreL1),
+            SCOREL2(scoreL2),
+            SCOREL3(scoreL3),
+            SCOREL4(scoreL4);
+
+            public Angle position;
+
+            ManipJointPositions(Angle position) {
+                this.position = position;
+            }
+
+        }
+
+    }
 }
