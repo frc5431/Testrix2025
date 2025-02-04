@@ -1,7 +1,10 @@
 package frc.robot.Subsytems.Intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -46,16 +49,20 @@ public class Intake extends REVMechanism {
         this.state = IntakeStates.IDLE;
         config.applySparkConfig(motor);
 
+        Logger.recordOutput("Intake/Rollers/Velocity", getMotorVelocity());
+        Logger.recordOutput("Intake/Rollers/Voltage", getMotorVoltage());
+        Logger.recordOutput("Intake/Rollers/Current", getMotorCurrent());
+        Logger.recordOutput("Intake/Rollers/Output", getMotorOutput());
+        Logger.recordOutput("Intake/Rollers/Mode", getMode());
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Intake Mode", this.getMode());
-        SmartDashboard.putNumber("Intake Output", this.getMotorOutput());
-        SmartDashboard.putNumber("Intake Current", this.getMotorCurrent());
-        SmartDashboard.putNumber("Intake Voltage", this.getMotorVoltage());
-        SmartDashboard.putNumber("Intake Velocity", this.getMotorVelocity());
-
+        SmartDashboard.putString("Intake Mode", getMode());
+        SmartDashboard.putNumber("Intake Output", getMotorOutput());
+        SmartDashboard.putNumber("Intake Current", getMotorCurrent());
+        SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
+        SmartDashboard.putNumber("Intake Velocity", getMotorVelocity());
 
         switch (this.mode) {
             case IDLE:
@@ -88,41 +95,6 @@ public class Intake extends REVMechanism {
                 .withName("Intake.runEnum");
     }
 
-    @AutoLogOutput(key = "Intake/Rollers/Velocity")
-    public double getMotorVelocity() {
-        if (attached) {
-            return motor.getEncoder().getVelocity();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Rollers/Voltage")
-    public double getMotorVoltage() {
-        if (attached) {
-            return motor.getBusVoltage();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Rollers/Current")
-    public double getMotorCurrent() {
-        if (attached) {
-            return motor.getOutputCurrent();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Rollers/Output")
-    public double getMotorOutput() {
-        if (attached) {
-            return motor.getAppliedOutput();
-        }
-
-        return 0;
-    }
 
     @AutoLogOutput(key = "Intake/Rollers/Mode")
     public String getMode() {

@@ -203,10 +203,10 @@ public final class Constants {
             CORALL4(coralL4),
             NET(net);
 
-            public Angle position;
+            public Angle rotation;
 
-            ElevatorPositions(Angle position) {
-                this.position = position;
+            ElevatorPositions(Angle rotation) {
+                this.rotation = rotation;
             }
 
         }
