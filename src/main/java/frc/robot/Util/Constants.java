@@ -83,6 +83,96 @@ public final class Constants {
 
     }
 
+    public static class CleanerConstants {
+
+
+        public enum CleanerStates {
+            IDLE,
+            INTAKING,
+            OUTTAKING
+        }
+
+        public static final boolean attached = true;
+        public static final int id = -124542;
+        public static final double gearRatio = 0 / 0;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final boolean isInverted = false;
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+        public static final double maxIAccum = 0;
+
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
+        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
+
+        public enum CleanerModes {
+            IDLE(idleSpeed),
+            INTAKE(intakeSpeed),
+            OUTTAKE(outtakeSpeed);
+
+            public AngularVelocity speed;
+
+            CleanerModes(AngularVelocity speed) {
+                this.speed = speed;
+            }
+
+        }
+
+    }
+
+    public static class CleanPivotConstants {
+
+        public enum CleanPivotStates {
+            STOW,
+            L2,
+            L3,
+            NET,
+        }
+
+        public static final int id = 32342370;
+        public static final boolean attached = true;
+        public static final Angle softLimitForwardMax = Units.Rotation.of(0);
+        public static final boolean softLimitEnabled = true;
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
+        public static final Angle stowAngle = Units.Rotation.of(0);
+        public static final Angle l2Angle = Units.Rotation.of(0);
+        public static final Angle l3Angle = Units.Rotation.of(0);
+        public static final Angle netAngle = Units.Rotation.of(0);
+        public static final boolean isInverted = false;
+        public static final Angle zeroOffset = Units.Rotation.of(0);
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+
+        public enum CleanPivotModes {
+            STOW(stowAngle),
+            L2(l2Angle),
+            L3(l3Angle),
+            NET(netAngle);
+
+            public Angle angle;
+
+            CleanPivotModes(Angle angle) {
+                this.angle = angle;
+            }
+
+        }
+
+    }
+
     public static class ManipulatorConstants {
 
         public enum ManipulatorStates {
