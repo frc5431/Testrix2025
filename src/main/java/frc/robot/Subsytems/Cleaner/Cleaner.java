@@ -48,7 +48,6 @@ public class Cleaner extends REVMechanism {
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
         config.applySparkConfig(motor);
-        config.applySparkConfig(motor);
     }
 
     @Override
