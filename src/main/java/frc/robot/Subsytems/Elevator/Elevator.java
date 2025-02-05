@@ -2,8 +2,12 @@ package frc.robot.Subsytems.Elevator;
 
 import static edu.wpi.first.units.Units.Rotation;
 
+import com.ctre.phoenix6.controls.DifferentialFollower;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -15,7 +19,7 @@ public class Elevator extends CTREMechanism {
     public static class ElevatorConfig extends Config {
 
         public ElevatorConfig() {
-            super("Elevator", ElevatorConstants.id, Constants.canbus);
+            super("Elevator", ElevatorConstants.leftId, Constants.canbus);
             configGravityType(ElevatorConstants.gravityType);
             configFeedForwardGains(ElevatorConstants.s, ElevatorConstants.v, ElevatorConstants.a, ElevatorConstants.g);
             configReverseSoftLimit(ElevatorConstants.maxReverseRotation.in(Rotation), ElevatorConstants.useRMaxRotation);
@@ -40,13 +44,14 @@ public class Elevator extends CTREMechanism {
     private ElevatorStates states;
 
     
-    public Elevator(TalonFX motor, boolean attached) {
-        super(motor, attached);
-        this.motor = motor;
+    public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
+        super(leader, attached);
+        this.motor = leader;
         this.attached = attached;
         ElevatorConfig config = new ElevatorConfig();
         this.config = config;
-        this.config.applyTalonConfig(motor);
+        this.config.applyTalonConfig(leader);
+        follower.setControl(new Follower(ElevatorConstants.leftId, ElevatorConstants.follwerInvert));
     }
 
     public void periodic() {

@@ -143,13 +143,15 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final boolean isInverted = false;
+        public static final boolean leaderInvert = false;
+        public static final boolean follwerInvert = true;
         public static final boolean gravityType = false;
         public static final boolean breakType = true;
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
 
-        public static final int id = 0;
+        public static final int leftId = 3;
+        public static final int rightId = 4;
         public static final double gearRatio = 1 / 1;
         public static final Current forwardCurrentLimit = Units.Amps.of(0);
         public static final Current reverseCurrentLimit = Units.Amps.of(0);
