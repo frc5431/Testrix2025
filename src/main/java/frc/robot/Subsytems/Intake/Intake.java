@@ -1,10 +1,10 @@
 package frc.robot.Subsytems.Intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -40,20 +40,30 @@ public class Intake extends REVMechanism {
         }
     }
 
-    public Intake(SparkMax motor, IntakeConfig config, boolean attachted) {
+    public Intake(SparkMax motor, boolean attachted) {
         super(motor, attachted);
-        this.config = config;
+        System.out.println("INTAKE IS ALIVE");
+        IntakeConfig config = new IntakeConfig();
         this.motor = motor;
         this.mode = IntakeModes.IDLE;
         this.state = IntakeStates.IDLE;
         config.applySparkConfig(motor);
 
+        Logger.recordOutput("Intake/Rollers/Velocity", getMotorVelocity());
+        Logger.recordOutput("Intake/Rollers/Voltage", getMotorVoltage());
+        Logger.recordOutput("Intake/Rollers/Current", getMotorCurrent());
+        Logger.recordOutput("Intake/Rollers/Output", getMotorOutput());
+        Logger.recordOutput("Intake/Rollers/Mode", getMode());
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Intake Mode", this.getMode());
-        SmartDashboard.putString("getIntakeState()", "getIntakeState");
+        SmartDashboard.putString("Intake Mode", getMode());
+        SmartDashboard.putNumber("Intake Output", getMotorOutput());
+        SmartDashboard.putNumber("Intake Current", getMotorCurrent());
+        SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
+        SmartDashboard.putNumber("Intake Velocity", getMotorVelocity());
+
         switch (this.mode) {
             case IDLE:
                 setIntakeState(IntakeStates.IDLE);
@@ -81,33 +91,17 @@ public class Intake extends REVMechanism {
     }
 
     public Command runIntakeCommand(IntakeModes intakeModes) {
-        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this).withName("Intake.runEnum");
+        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this)
+                .withName("Intake.runEnum");
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
-    public double getMotorVelocity() {
-        if (attached) {
-            return motor.getEncoder().getVelocity();
-        }
 
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Rollers")
-    public double getMotorOutput() {
-        if (attached) {
-            return motor.getAppliedOutput();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/Mode")
     public String getMode() {
         return this.mode.toString();
     }
 
-    @AutoLogOutput(key = "Intake/Rollers")
+    @AutoLogOutput(key = "Intake/Rollers/State")
     public String getIntakeState() {
         return this.state.toString();
     }
