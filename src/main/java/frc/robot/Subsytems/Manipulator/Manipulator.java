@@ -1,13 +1,14 @@
 package frc.robot.Subsytems.Manipulator;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
-import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Manipulator extends REVMechanism {
@@ -42,7 +43,13 @@ public class Manipulator extends REVMechanism {
     this.mode = ManipulatorModes.IDLE;
     this.state = ManipulatorStates.IDLE;
     config.applySparkConfig(motor);
-
+    
+    Logger.recordOutput("Manipulator/Rollers/Velocity", getMotorVelocity());
+    Logger.recordOutput("Manipulator/Rollers/Voltage", getMotorVoltage());
+    Logger.recordOutput("Manipulator/Rollers/Current", getMotorCurrent());
+    Logger.recordOutput("Manipulator/Rollers/Output", getMotorOutput());
+    Logger.recordOutput("Manipulator/Rollers/Mode", getMode());
+    Logger.recordOutput("Manipulator/Rollers/State", getManipulatorState());
   }
 
   @Override
@@ -55,11 +62,12 @@ public class Manipulator extends REVMechanism {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString("Mainpulator Mode", this.getMode());
-    SmartDashboard.putNumber("Mainpulator Output", this.getMotorOutput());
-    SmartDashboard.putNumber("Mainpulator Current", this.getMotorCurrent());
-    SmartDashboard.putNumber("Mainpulator Voltage", this.getMotorVoltage());
-    SmartDashboard.putNumber("Mainpulator Velocity", this.getMotorVelocity());
+    SmartDashboard.putString("Mainpulator Mode", getMode());
+    SmartDashboard.putString("Manipulator State", getManipulatorState());
+    SmartDashboard.putNumber("Mainpulator Output", getMotorOutput());
+    SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
+    SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
+    SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
 
     switch (this.mode) {
       case IDLE:
@@ -67,6 +75,7 @@ public class Manipulator extends REVMechanism {
         break;
       case INTAKE:
         setManipulatorState(ManipulatorStates.INTAKING);
+        
         break;
       case OUTTAKE:
         setManipulatorState(ManipulatorStates.OUTTAKING);
@@ -84,42 +93,6 @@ public class Manipulator extends REVMechanism {
   public void runEnum(ManipulatorModes manipulatorMode) {
     this.mode = manipulatorMode;
     setVelocity(manipulatorMode.speed);
-  }
-
-  @AutoLogOutput(key = "Manipulator/Rollers/Velocity")
-  public double getMotorVelocity() {
-    if (attached) {
-      return motor.getEncoder().getVelocity();
-    }
-
-    return 0;
-  }
-
-  @AutoLogOutput(key = "Manipulator/Rollers/Output")
-  public double getMotorOutput() {
-    if (attached) {
-      return motor.getAppliedOutput();
-    }
-
-    return 0;
-  }
-
-  @AutoLogOutput(key = "Manipulator/Rollers/Voltage")
-  public double getMotorVoltage() {
-    if (attached) {
-      return motor.getBusVoltage();
-    }
-
-    return 0;
-  }
-
-  @AutoLogOutput(key = "Manipulator/Rollers/Current")
-  public double getMotorCurrent() {
-    if (attached) {
-      return motor.getOutputCurrent();
-    }
-
-    return 0;
   }
 
   @AutoLogOutput(key = "Manipulator/Rollers/Mode")

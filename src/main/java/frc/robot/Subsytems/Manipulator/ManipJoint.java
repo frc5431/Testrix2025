@@ -1,6 +1,7 @@
 package frc.robot.Subsytems.Manipulator;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -44,11 +45,19 @@ public class ManipJoint extends REVMechanism {
 		// this.state = ManipJointStates;
 		config.applySparkConfig(motor);
 
+		Logger.recordOutput("ManipJoint/Rollers/Velocity", getMotorVelocity());
+        Logger.recordOutput("ManipJoint/Rollers/Voltage", getMotorVoltage());
+        Logger.recordOutput("ManipJoint/Rollers/Current", getMotorCurrent());
+        Logger.recordOutput("ManipJoint/Rollers/Output", getMotorOutput());
+        Logger.recordOutput("ManipJoint/Rollers/Mode", getMode());
+		Logger.recordOutput("ManipJoint/Rollers/State", getManipJointState());
+		Logger.recordOutput("ManipJoint/Rollers/Velocity", getMotorPosition());
 	}
 
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("ManipJoint Mode", this.getMode());
+		SmartDashboard.putString("ManipJoint State", getManipJointState());
 		SmartDashboard.putNumber("ManipJoint Output", this.getMotorOutput());
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
 		SmartDashboard.putNumber("ManipJoint Voltage", this.getMotorVoltage());
@@ -65,15 +74,7 @@ public class ManipJoint extends REVMechanism {
 		setMotorPosition(ManipJointmode.position);
 	}
 
-	// public Command runManipJointCommand(ManipJointPositions manipJointPositions)
-	// {
-	// return new StartEndCommand(() -> this.runEnum(manipJointPositions), () ->
-	// this.runEnum(ManipJointPositions.STOW),
-	// this)
-	// .withName("ManipJoint.runEnum");
-	// }
-
-	@AutoLogOutput(key = "Manipulator/Joint/BeambreakS")
+	@AutoLogOutput(key = "Manipulator/Joint/Beambreak")
 	public boolean getBeambreakStatus() {
 		return beambreak.get();
 	}
@@ -82,33 +83,6 @@ public class ManipJoint extends REVMechanism {
 	public double getMotorPosition() {
 		if (attached) {
 			return motor.getEncoder().getPosition();
-		}
-
-		return 0;
-	}
-
-	@AutoLogOutput(key = "Manipulator/Joint/Voltage")
-	public double getMotorVoltage() {
-		if (attached) {
-			return motor.getBusVoltage();
-		}
-
-		return 0;
-	}
-
-	@AutoLogOutput(key = "Manipulator/Joint/Current")
-	public double getMotorCurrent() {
-		if (attached) {
-			return motor.getOutputCurrent();
-		}
-
-		return 0;
-	}
-
-	@AutoLogOutput(key = "Manipulator/Joint/Output")
-	public double getMotorOutput() {
-		if (attached) {
-			return motor.getAppliedOutput();
 		}
 
 		return 0;
