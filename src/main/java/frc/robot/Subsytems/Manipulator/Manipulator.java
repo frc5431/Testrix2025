@@ -37,7 +37,7 @@ public class Manipulator extends REVMechanism {
 		}
 	}
 
-	public Manipulator(SparkMax motor, boolean attached, Boolean attachted) {
+	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
 		ManipulatorConfig config = new ManipulatorConfig();
 		this.motor = motor;

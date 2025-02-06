@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Intake;
+import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.*;
 
@@ -13,6 +14,8 @@ public class Systems {
 
     private Intake intake;
     private Elevator elevator;
+    private Manipulator manipulator;
+
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
@@ -22,6 +25,7 @@ public class Systems {
     private SparkMax intakeMotor;
 
     /* Neo 550s */
+    private SparkMax manipulatorMotor;
     
 
     public Systems() {
@@ -32,10 +36,14 @@ public class Systems {
 
         /* Neo 1.1s */
         intakeMotor = new SparkMax(IntakeConstants.id, MotorType.kBrushless);
+
+        /* Neo 550s */
+        manipulatorMotor = new SparkMax(ManipulatorConstants.id, MotorType.kBrushless);
         
         /*----------*/
         intake = new Intake(intakeMotor, IntakeConstants.attached);
         elevator = new Elevator(elevatorLeft, elevatorRight, ElevatorConstants.attached);
+        manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);   
 
 
 
@@ -47,6 +55,10 @@ public class Systems {
 
     public Elevator getElevator() {
         return elevator;
+    }
+    
+    public Manipulator getManipulator() {
+        return manipulator;
     }
 
 }
