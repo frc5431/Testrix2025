@@ -1,6 +1,6 @@
 package frc.robot.Subsytems.Intake;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import static edu.wpi.first.units.Units.RPM;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -49,16 +49,19 @@ public class Intake extends REVMechanism {
         this.state = IntakeStates.IDLE;
         config.applySparkConfig(motor);
 
+        Logger.recordOutput("Intake/Rollers/Mode", getMode());
+        Logger.recordOutput("Intake/Rollers/Setpoint", mode.speed.in(RPM));
+        Logger.recordOutput("Intake/Rollers/Velocity", getIntakeState());
         Logger.recordOutput("Intake/Rollers/Velocity", getMotorVelocity());
         Logger.recordOutput("Intake/Rollers/Voltage", getMotorVoltage());
         Logger.recordOutput("Intake/Rollers/Current", getMotorCurrent());
         Logger.recordOutput("Intake/Rollers/Output", getMotorOutput());
-        Logger.recordOutput("Intake/Rollers/Mode", getMode());
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putString("Intake Mode", getMode());
+        SmartDashboard.putNumber("Intake Setpoint", mode.speed.in(RPM));
         SmartDashboard.putNumber("Intake Output", getMotorOutput());
         SmartDashboard.putNumber("Intake Current", getMotorCurrent());
         SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
@@ -96,12 +99,10 @@ public class Intake extends REVMechanism {
     }
 
 
-    @AutoLogOutput(key = "Intake/Rollers/Mode")
     public String getMode() {
         return this.mode.toString();
     }
 
-    @AutoLogOutput(key = "Intake/Rollers/State")
     public String getIntakeState() {
         return this.state.toString();
     }

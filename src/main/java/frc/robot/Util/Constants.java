@@ -329,6 +329,7 @@ public final class Constants {
         public static final double maxIAccum = 0;
 
         public static final Angle stow = Units.Rotations.of(0);
+        public static final Angle feed = Units.Rotations.of(0);
         public static final Angle scoreL1 = Units.Rotations.of(0);
         public static final Angle scoreL2 = Units.Rotations.of(0);
         public static final Angle scoreL3 = Units.Rotations.of(0);
@@ -342,6 +343,7 @@ public final class Constants {
 
         public enum ManipJointPositions {
             STOW(stow),
+            FEED(feed),
             SCOREL1(scoreL1),
             SCOREL2(scoreL2),
             SCOREL3(scoreL3),

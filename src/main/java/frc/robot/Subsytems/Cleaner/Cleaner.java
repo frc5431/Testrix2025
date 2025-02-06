@@ -1,6 +1,8 @@
 package frc.robot.Subsytems.Cleaner;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import static edu.wpi.first.units.Units.RPM;
+
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -14,7 +16,7 @@ import frc.robot.Util.Constants.CleanerConstants.CleanerStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Cleaner extends REVMechanism {
-    
+
     private CleanerConfig config;
 
     private SparkMax motor;
@@ -39,8 +41,7 @@ public class Cleaner extends REVMechanism {
         }
     }
 
-
-    public Cleaner(SparkMax motor, CleanerConfig config, boolean attached){
+    public Cleaner(SparkMax motor, CleanerConfig config, boolean attached) {
         super(motor, attached);
 
         this.config = config;
@@ -48,13 +49,24 @@ public class Cleaner extends REVMechanism {
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
         config.applySparkConfig(motor);
+
+        Logger.recordOutput("Cleaner/Mode", mode.toString());
+        Logger.recordOutput("Cleaner/Setpoint", mode.speed.in(RPM));
+        Logger.recordOutput("Cleaner/Output", getMotorOutput());
+        Logger.recordOutput("Cleaner/Current", getMotorCurrent());
+        Logger.recordOutput("Cleaner/Voltage", getMotorVoltage());
+        Logger.recordOutput("Cleaner/Velocity", getMotorVelocity());
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putString("Cleaner Mode", this.getMode());
-        SmartDashboard.putString("getCleanerState()", "getCleanerState");
-        
+        SmartDashboard.putNumber("Cleaner Setpoint", mode.speed.in(RPM));
+        SmartDashboard.putNumber("Cleaner Output", getMotorOutput());
+        SmartDashboard.putNumber("Cleaner Current", getMotorCurrent());
+        SmartDashboard.putNumber("Cleaner Voltage", getMotorVoltage());
+        SmartDashboard.putNumber("Cleaner Velocity", getMotorVelocity());
+
         switch (this.mode) {
             case IDLE:
                 setCleanerState(CleanerStates.IDLE);
@@ -79,38 +91,19 @@ public class Cleaner extends REVMechanism {
     }
 
     public Command runCleanerCommand(CleanerModes cleanerModes) {
-        return new StartEndCommand(() -> this.runEnum(cleanerModes), () -> this.runEnum(CleanerModes.IDLE), this).withName("Cleaner.runEnum");
+        return new StartEndCommand(() -> this.runEnum(cleanerModes), () -> this.runEnum(CleanerModes.IDLE), this)
+                .withName("Cleaner.runEnum");
     }
 
-    @AutoLogOutput(key = "Cleaner/Rollers")
-    public double getMotorVelocity() {
-        if (attached) {
-            return motor.getEncoder().getVelocity();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Cleaner/Rollers")
-    public double getMotorOutput() {
-        if (attached) {
-            return motor.getAppliedOutput();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Cleaner/Rollers")
     public String getMode() {
         return this.mode.toString();
     }
 
-    @AutoLogOutput(key = "Cleaner/Rollers")
     public String getCleanerState() {
         return this.state.toString();
     }
 
-        @Override
+    @Override
     protected Config setConfig() {
         if (attached) {
             config.applySparkConfig(motor);
@@ -118,7 +111,3 @@ public class Cleaner extends REVMechanism {
         return this.config;
     }
 }
-
-    
-
-

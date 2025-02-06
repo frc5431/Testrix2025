@@ -1,60 +1,55 @@
 package frc.robot.Util;
 
-import java.util.Optional;
-
-import edu.wpi.first.units.measure.Angle;
+import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
+import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 
 public class PresetPosition {
 
-    private Angle cleanerAngle;
-    private Angle manipulatorAngle;
-    private Angle elevatorRot;
-    
-    public Optional<Boolean> useCleaner;
+    private CleanPivotModes pivotMode;
+    private ManipJointPositions jointMode;
+    private ElevatorPositions elevatorMode;
 
-    public PresetPosition(Angle manipulatorAngle, Angle elevatorRot) {
-        this.manipulatorAngle = manipulatorAngle;
-        this.elevatorRot = elevatorRot;
+    public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode, CleanPivotModes pivotMode) {
+        this.elevatorMode = elevatorMode;
+        this.jointMode = jointMode;
+        this.pivotMode = pivotMode;
     }
 
-    public PresetPosition(Angle cleanerAngle, Optional<Boolean> useCleaner) {
-        this.cleanerAngle = cleanerAngle;
-        this.useCleaner = useCleaner;
+    public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode) {
+        this.elevatorMode = elevatorMode;
+        this.jointMode = jointMode;
+        this.pivotMode = CleanPivotModes.STOW;
     }
 
-    public PresetPosition(Angle cleanerAngle, Angle manipulatorAngle, Angle elevatorRot) {
-        this.cleanerAngle = cleanerAngle;
-        this.manipulatorAngle = manipulatorAngle;
-        this.elevatorRot = elevatorRot;
+    public PresetPosition(ElevatorPositions elevatorMode, CleanPivotModes pivotMode) {
+        this.elevatorMode = elevatorMode;
+        this.jointMode = ManipJointPositions.STOW;
+        this.pivotMode = pivotMode;
     }
 
-    public PresetPosition(Angle manipulatorAngle, Angle elevatorRot, Optional<Boolean> useCleaner) {
-        this.manipulatorAngle = manipulatorAngle;
-        this.elevatorRot = elevatorRot;
-        this.useCleaner = useCleaner;
+    public ElevatorPositions getElevatorMode() {
+        return elevatorMode;
     }
 
-    public PresetPosition(Angle cleanerAngle, Angle manipulatorAngle, Angle elevatorRot, Optional<Boolean> useCleaner) {
-        this.cleanerAngle = cleanerAngle;
-        this.manipulatorAngle = manipulatorAngle;
-        this.elevatorRot = elevatorRot;
-        this.useCleaner = useCleaner;
+    public void setElevatorMode(ElevatorPositions elevatorMode) {
+        this.elevatorMode = elevatorMode;
     }
 
-    public Angle getElevAngle() {
-        return elevatorRot;
+    public void setPivotMode(CleanPivotModes pivotMode) {
+        this.pivotMode = pivotMode;
     }
 
-    public Angle getCleanerAngle() {
-        return cleanerAngle;
+    public void setJointMode(ManipJointPositions jointMode) {
+        this.jointMode = jointMode;
     }
 
-    public Angle getManipAngle() {
-        return manipulatorAngle;
+    public CleanPivotModes getPivotMode() {
+        return pivotMode;
     }
 
-    public Optional<Boolean> usesCleaner() {
-        return useCleaner;
+    public ManipJointPositions getJointMode() {
+        return jointMode;
     }
 
 }

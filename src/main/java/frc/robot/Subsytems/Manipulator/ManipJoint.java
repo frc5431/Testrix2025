@@ -1,6 +1,7 @@
 package frc.robot.Subsytems.Manipulator;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -33,7 +34,8 @@ public class ManipJoint extends REVMechanism {
 			configPIDGains(ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);
 			configSmartCurrentLimit(ManipJointConstants.stallLimit, ManipJointConstants.supplyLimit);
 			configPeakOutput(ManipJointConstants.maxForwardOutput, ManipJointConstants.maxReverseOutput);
-			configMaxMotion(ManipJointConstants.mm_velocity, ManipJointConstants.mm_maxAccel, ManipJointConstants.mm_error);
+			configMaxMotion(ManipJointConstants.mm_velocity, ManipJointConstants.mm_maxAccel,
+					ManipJointConstants.mm_error);
 		}
 	}
 
@@ -45,18 +47,20 @@ public class ManipJoint extends REVMechanism {
 		// this.state = ManipJointStates;
 		config.applySparkConfig(motor);
 
-		Logger.recordOutput("ManipJoint/Rollers/Velocity", getMotorVelocity());
-        Logger.recordOutput("ManipJoint/Rollers/Voltage", getMotorVoltage());
-        Logger.recordOutput("ManipJoint/Rollers/Current", getMotorCurrent());
-        Logger.recordOutput("ManipJoint/Rollers/Output", getMotorOutput());
-        Logger.recordOutput("ManipJoint/Rollers/Mode", getMode());
-		Logger.recordOutput("ManipJoint/Rollers/State", getManipJointState());
-		Logger.recordOutput("ManipJoint/Rollers/Velocity", getMotorPosition());
+		Logger.recordOutput("Manipulator/Joint/Mode", getMode());
+		Logger.recordOutput("Manipulator/Joint/Setpoint", this.mode.position.in(Rotation));
+		Logger.recordOutput("Manipulator/Joint/State", getManipJointState());
+		Logger.recordOutput("Manipulator/Joint/Velocity", getMotorVelocity());
+		Logger.recordOutput("Manipulator/Joint/Voltage", getMotorVoltage());
+		Logger.recordOutput("Manipulator/Joint/Current", getMotorCurrent());
+		Logger.recordOutput("Manipulator/Joint/Output", getMotorOutput());
+		Logger.recordOutput("Manipulator/Joint/Velocity", getMotorPosition());
 	}
 
 	@Override
 	public void periodic() {
 		SmartDashboard.putString("ManipJoint Mode", this.getMode());
+		SmartDashboard.putNumber("ManipJoint Setpoint", this.mode.position.in(Rotation));
 		SmartDashboard.putString("ManipJoint State", getManipJointState());
 		SmartDashboard.putNumber("ManipJoint Output", this.getMotorOutput());
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
@@ -74,12 +78,15 @@ public class ManipJoint extends REVMechanism {
 		setMotorPosition(ManipJointmode.position);
 	}
 
-	@AutoLogOutput(key = "Manipulator/Joint/Beambreak")
+	protected void runEnumMM(ManipJointPositions ManipJointmode) {
+		this.mode = ManipJointmode;
+		setMMPosition(ManipJointmode.position);
+	}
+
 	public boolean getBeambreakStatus() {
 		return beambreak.get();
 	}
 
-	@AutoLogOutput(key = "Manipulator/Joint/Position")
 	public double getMotorPosition() {
 		if (attached) {
 			return motor.getEncoder().getPosition();
@@ -88,12 +95,10 @@ public class ManipJoint extends REVMechanism {
 		return 0;
 	}
 
-	@AutoLogOutput(key = "Manipulator/Joint/Mode")
 	public String getMode() {
 		return this.mode.toString();
 	}
 
-	@AutoLogOutput(key = "Manipulator/Joint/State")
 	public String getManipJointState() {
 		return this.state.toString();
 	}

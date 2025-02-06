@@ -20,7 +20,7 @@ public class Robot extends LoggedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    Logger.recordMetadata("5431Robot", "Titan2025");
+    Logger.recordMetadata("Titan2025", "5431Robot");
     AutoLogOutputManager.addPackage("frc.robot.Subsystems");
 
     if (isReal()) {

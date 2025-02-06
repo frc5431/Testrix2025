@@ -14,7 +14,6 @@ public class Systems {
     private Intake intake;
     private Elevator elevator;
 
-
     /* Kraken X60s */
     private TalonFX elevatorLeft;
     private TalonFX elevatorRight;
@@ -23,6 +22,7 @@ public class Systems {
     private SparkMax intakeMotor;
 
     /* Neo 550s */
+    
 
     public Systems() {
 
