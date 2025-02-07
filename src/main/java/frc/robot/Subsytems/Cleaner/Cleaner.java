@@ -41,10 +41,10 @@ public class Cleaner extends REVMechanism {
         }
     }
 
-    public Cleaner(SparkMax motor, CleanerConfig config, boolean attached) {
+
+    public Cleaner(SparkMax motor, boolean attached){
         super(motor, attached);
 
-        this.config = config;
         this.motor = motor;
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
