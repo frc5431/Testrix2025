@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
@@ -16,7 +15,6 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 public class ManipJoint extends REVMechanism {
 	private ManipJointConfig config;
 	private SparkMax motor;
-	private DigitalInput beambreak;
 	public Boolean attachted;
 
 	private ManipJointPositions mode;
@@ -39,7 +37,7 @@ public class ManipJoint extends REVMechanism {
 		}
 	}
 
-	public ManipJoint(SparkMax motor, DigitalInput beambreak, boolean attached) {
+	public ManipJoint(SparkMax motor, boolean attached) {
 		super(motor, attached);
 		ManipJointConfig config = new ManipJointConfig();
 		this.motor = motor;
@@ -66,7 +64,6 @@ public class ManipJoint extends REVMechanism {
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
 		SmartDashboard.putNumber("ManipJoint Voltage", this.getMotorVoltage());
 		SmartDashboard.putNumber("ManipJoint Position", this.getMotorPosition());
-		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
 	}
 
 	public void setManipJointState(ManipJointStates ManipJointState) {
@@ -81,10 +78,6 @@ public class ManipJoint extends REVMechanism {
 	protected void runEnumMM(ManipJointPositions ManipJointmode) {
 		this.mode = ManipJointmode;
 		setMMPosition(ManipJointmode.position);
-	}
-
-	public boolean getBeambreakStatus() {
-		return beambreak.get();
 	}
 
 	public double getMotorPosition() {

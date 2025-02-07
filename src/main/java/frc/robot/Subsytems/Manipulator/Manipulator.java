@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
@@ -15,6 +16,7 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 public class Manipulator extends REVMechanism {
 	private ManipulatorConfig config;
 	private SparkMax motor;
+	private DigitalInput beambreak;
 	public Boolean attachted;
 
 	private ManipulatorModes mode;
@@ -40,6 +42,7 @@ public class Manipulator extends REVMechanism {
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
 		ManipulatorConfig config = new ManipulatorConfig();
+		beambreak = new DigitalInput(ManipulatorConstants.channel);
 		this.motor = motor;
 		this.mode = ManipulatorModes.IDLE;
 		this.state = ManipulatorStates.IDLE;
@@ -72,6 +75,7 @@ public class Manipulator extends REVMechanism {
 		SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
 		SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
+		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
 
 		switch (this.mode) {
 			case IDLE:
@@ -104,6 +108,10 @@ public class Manipulator extends REVMechanism {
 
 	public String getManipulatorState() {
 		return this.state.toString();
+	}
+
+	public boolean getBeambreakStatus() {
+		return beambreak.get();
 	}
 
 }

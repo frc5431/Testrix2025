@@ -38,7 +38,7 @@ public class CleanPivot extends REVMechanism {
 		}
 	}
 
-	public CleanPivot(PivotConfig config, SparkMax motor, boolean attached) {
+	public CleanPivot(SparkMax motor, boolean attached) {
 		super(motor, attached);
 
 		this.config = config;

@@ -183,6 +183,7 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
+        public static final int channel = 3249324;
         public static final int id = 1;
         public static final double gearRatio = 1/1;
         public static final Current supplyLimit = Units.Amps.of(0);
