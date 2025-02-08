@@ -41,11 +41,10 @@ public class CleanPivot extends REVMechanism {
 	public CleanPivot(SparkMax motor, boolean attached) {
 		super(motor, attached);
 
-		this.config = config;
+		PivotConfig config = new PivotConfig();
 		this.motor = motor;
 		this.mode = CleanPivotModes.STOW;
 		this.state = CleanPivotStates.STOW;
-
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Cleaner/Pivot/Mode", mode.toString());

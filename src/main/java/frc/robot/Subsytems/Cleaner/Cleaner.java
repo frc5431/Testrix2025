@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.CleanerConstants;
 import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
 import frc.robot.Util.Constants.CleanerConstants.CleanerStates;
@@ -20,7 +19,6 @@ public class Cleaner extends REVMechanism {
     private CleanerConfig config;
 
     private SparkMax motor;
-    public SysIdRoutine routine;
 
     private CleanerModes mode;
     private CleanerStates state;
@@ -44,7 +42,7 @@ public class Cleaner extends REVMechanism {
 
     public Cleaner(SparkMax motor, boolean attached){
         super(motor, attached);
-
+        CleanerConfig config = new CleanerConfig();
         this.motor = motor;
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
