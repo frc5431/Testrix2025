@@ -26,6 +26,8 @@ public final class Constants {
 
         public static final double deadzone = 0.15;
 
+        
+
     }
 
     public static class IntakeConstants {
@@ -368,8 +370,7 @@ public final class Constants {
         }
 
     }
-
-    
+  
     public static class ClimberConstants {
 
         public enum ClimberStates {

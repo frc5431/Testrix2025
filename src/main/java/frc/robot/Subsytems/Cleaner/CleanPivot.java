@@ -70,7 +70,7 @@ public class CleanPivot extends REVMechanism {
 		this.state = cleanerPivotStates;
 	}
 
-	protected void runEnum(CleanPivotModes cleanPivotModes) {
+	public void runEnum(CleanPivotModes cleanPivotModes) {
 		this.mode = cleanPivotModes;
 		setMotorPosition(cleanPivotModes.angle);
 	}

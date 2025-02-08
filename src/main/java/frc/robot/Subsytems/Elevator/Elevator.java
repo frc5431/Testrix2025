@@ -62,6 +62,7 @@ public class Elevator extends CTREMechanism {
         this.attached = attached;
         ElevatorConfig config = new ElevatorConfig();
         canRange = new CANrange(ElevatorConstants.canRangeId, Constants.canbus);
+        this.position = ElevatorPositions.STOW;
         this.config = config;
         this.position = ElevatorPositions.STOW;
         this.config.applyTalonConfig(leader);
@@ -106,6 +107,7 @@ public class Elevator extends CTREMechanism {
     public void runEnumMM(ElevatorPositions position) {
         this.position = position;
         setMMPosition(position.rotation);
+        this.setDefaultCommand(null);
     }
 
     public void runEnumFOC(ElevatorPositions position) {

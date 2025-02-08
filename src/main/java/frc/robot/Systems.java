@@ -2,9 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.wpilibj.DigitalInput;
-
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.Cleaner.CleanPivot;
@@ -37,7 +34,6 @@ public class Systems {
 
     /* Neo 550s */
     private SparkMax manipulatorMotor;
-    
 
     public Systems() {
 
@@ -53,15 +49,14 @@ public class Systems {
 
         /* Neo 550s */
         manipulatorMotor = new SparkMax(ManipulatorConstants.id, MotorType.kBrushless);
-        
+
         /*----------*/
         intake = new Intake(intakeMotor, IntakeConstants.attached);
         elevator = new Elevator(elevatorLeft, elevatorRight, ElevatorConstants.attached);
         cleaner = new Cleaner(cleanerMotor, CleanerConstants.attached);
         cleanPivot = new CleanPivot(cleanPivotMotor, CleanPivotConstants.attached);
-        manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);   
+        manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
         manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
-
 
     }
 
@@ -72,7 +67,7 @@ public class Systems {
     public Elevator getElevator() {
         return elevator;
     }
-    
+
     public Manipulator getManipulator() {
         return manipulator;
     }
@@ -84,10 +79,10 @@ public class Systems {
     public Cleaner getCleaner() {
         return cleaner;
     }
+    
 
     public CleanPivot getCleanPivot() {
         return cleanPivot;
     }
 
 }
-  

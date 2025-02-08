@@ -97,7 +97,6 @@ public class Intake extends REVMechanism {
                 .withName("Intake.runEnum");
     }
 
-
     public String getMode() {
         return this.mode.toString();
     }

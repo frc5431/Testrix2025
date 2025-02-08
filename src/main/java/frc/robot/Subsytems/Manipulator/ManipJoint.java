@@ -42,7 +42,6 @@ public class ManipJoint extends REVMechanism {
 		ManipJointConfig config = new ManipJointConfig();
 		this.motor = motor;
 		this.mode = ManipJointPositions.STOW;
-		// this.state = ManipJointStates;
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Manipulator/Joint/Mode", getMode());
@@ -70,7 +69,7 @@ public class ManipJoint extends REVMechanism {
 		this.state = ManipJointState;
 	}
 
-	protected void runEnum(ManipJointPositions ManipJointmode) {
+	public void runEnum(ManipJointPositions ManipJointmode) {
 		this.mode = ManipJointmode;
 		setMotorPosition(ManipJointmode.position);
 	}
