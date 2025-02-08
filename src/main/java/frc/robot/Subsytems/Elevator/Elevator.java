@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,6 +43,7 @@ public class Elevator extends CTREMechanism {
     private TalonFX follower;
 
     private ElevatorConfig config;
+    private CANrange canRange;
     private boolean attached;
 
     private ElevatorPositions position;
@@ -59,6 +61,7 @@ public class Elevator extends CTREMechanism {
         this.follower = follower;
         this.attached = attached;
         ElevatorConfig config = new ElevatorConfig();
+        canRange = new CANrange(ElevatorConstants.canRangeId, Constants.canbus);
         this.config = config;
         this.position = ElevatorPositions.STOW;
         this.config.applyTalonConfig(leader);
@@ -73,8 +76,10 @@ public class Elevator extends CTREMechanism {
             Logger.recordOutput("Elevator/Output", leader.getMotorOutputStatus().getValueAsDouble());
             Logger.recordOutput("Elevator/Acceleration", leader.getAcceleration().getValueAsDouble());
             Logger.recordOutput("Elevator/Velocity", leader.getVelocity().getValueAsDouble());
-
+        } else if (attached && ElevatorConstants.canRangeAttached) {
+            Logger.recordOutput("Elevator/CanRange", canRange.getDistance().getValueAsDouble());
         }
+
     }
 
     public void periodic() {
@@ -87,6 +92,9 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Elevator Output", leader.getMotorOutputStatus().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Acceleration", leader.getAcceleration().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Velocity", leader.getVelocity().getValueAsDouble());
+            if (attached && ElevatorConstants.canRangeAttached) {
+                SmartDashboard.putNumber("CanRange Distance", canRange.getDistance().getValueAsDouble());
+            }
         }
     }
 
@@ -113,6 +121,10 @@ public class Elevator extends CTREMechanism {
 
     protected void setZero() {
         resetPosition();
+    }
+
+    protected void setZeroIntellegent() {
+
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {

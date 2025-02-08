@@ -42,7 +42,6 @@ public class Intake extends REVMechanism {
 
     public Intake(SparkMax motor, boolean attachted) {
         super(motor, attachted);
-        System.out.println("INTAKE IS ALIVE");
         IntakeConfig config = new IntakeConfig();
         this.motor = motor;
         this.mode = IntakeModes.IDLE;

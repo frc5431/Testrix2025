@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Util.Constants.*;
-import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.team5431.titan.core.joysticks.TitanController;
 
@@ -59,6 +57,12 @@ public class RobotContainer {
     intakeCoral.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
 
   }
+
+  public void configureBindings() {
+    configureOperatorControls();
+
+  }
+
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
