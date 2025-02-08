@@ -1,5 +1,7 @@
 package frc.robot.Util;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +14,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,12 +26,20 @@ public class Field {
     public static final Distance fieldWidth = Units.Inches.of(317);
     private static final Distance halfWidth = fieldWidth.div(2);
 
+    public static Distance getHalfwidth() {
+        return halfWidth;
+    }
+
+    public static Distance getHalfLength() {
+        return halfLength;
+    }
+
     public static final Distance startingLineX =
             Units.Inch.of(299.438); // Measured from the inside of starting line
 
     public static class Processor {
         public static final Pose2d centerFace =
-                new Pose2d(Units.inchesToMeters(235.726), 0, Rotation2d.fromDegrees(90));
+                new Pose2d(Units.Inches.of(235.726), Units.Inches.of(0), Rotation2d.fromDegrees(90));
     }
 
     public static class Barge {
@@ -41,8 +51,8 @@ public class Field {
                 new Translation2d(Units.Inches.of(345.428), Units.Inches.of(199.947));
 
         // Measured from floor to bottom of cage
-        public static final double deepHeight = Units.Inches.of(3.125);
-        public static final double shallowHeight = Units.Inches.of(30.125);
+        public static final Distance deepHeight = Units.Inches.of(3.125);
+        public static final Distance shallowHeight = Units.Inches.of(30.125);
     }
 
     public static class CoralStation {
@@ -61,7 +71,7 @@ public class Field {
     public static class Reef {
         public static final Translation2d center =
                 new Translation2d(Units.Inches.of(176.746), Units.Inches.of(158.501));
-        public static final double faceToZoneLine =
+        public static final Distance faceToZoneLine =
                 Units.Inches.of(12); // Side of the reef to the inside of the reef zone line
 
         public static final Pose2d[] centerFaces =
@@ -120,22 +130,23 @@ public class Field {
                                             poseDirection
                                                     .transformBy(
                                                             new Transform2d(
-                                                                    adjustX,
-                                                                    adjustY,
+                                                                    adjustX.in(Units.Meters),
+                                                                    adjustY.in(Units.Meters),
                                                                     new Rotation2d()))
                                                     .getX(),
                                             poseDirection
                                                     .transformBy(
                                                             new Transform2d(
-                                                                    adjustX,
-                                                                    adjustY,
+                                                                    adjustX.in(Units.Meters),
+                                                                    adjustY.in(Units.Meters),
                                                                     new Rotation2d()))
                                                     .getY(),
-                                            level.height),
+                                            level.height.in(Inches)),
                                     new Rotation3d(
                                             0,
-                                            Units.degreesToRadians(level.pitch),
+                                            level.pitch.in(Units.Radians),
                                             poseDirection.getRotation().getRadians())));
+                    
                     fillLeft.put(
                             level,
                             new Pose3d(
@@ -154,10 +165,10 @@ public class Field {
                                                                     adjustY.div(-1),
                                                                     new Rotation2d()))
                                                     .getY(),
-                                            level.height),
+                                            level.height.in(Inches)),
                                     new Rotation3d(
                                             0,
-                                            Units.degreesToRadians(level.pitch),
+                                            level.pitch.in(Units.Radians),
                                             poseDirection.getRotation().getRadians())));
                 }
                 branchPositions.add((face * 2) + 1, fillRight);
@@ -177,21 +188,25 @@ public class Field {
     }
 
     public enum ReefHeight {
-        L4(Units.Inches.of(72), Units.Inches.of(-90)),
-        L3(Units.Inches.of(47.625), Units.Inches.of(-35)),
-        L2(Units.Inches.of(31.875), Units.Inches.of(-35)),
-        L1(Units.Inches.of(18), Units.Inches.of(0));
+        L4(Units.Inches.of(72), Units.Degrees.of(-90)),
+        L3(Units.Inches.of(47.625), Units.Degrees.of(-35)),
+        L2(Units.Inches.of(31.875), Units.Degrees.of(-35)),
+        L1(Units.Inches.of(18), Units.Degrees.of(0));
 
-        ReefHeight(Distance height, Distance pitch) {
+        ReefHeight(Distance height, Angle pitch) {
                     this.height = height;
                     this.pitch = pitch; // in degrees
         }
 
         public final Distance height;
-        public final Distance pitch;
+        public final Angle pitch;
     }
 
-    private static final double aprilTagWidth = Units.inchesToMeters(6.50);
+    private static final Distance aprilTagWidth = Units.Inches.of(6.50);
+
+    public static Distance getApriltagwidth() {
+        return aprilTagWidth;
+    }
 
     /** Returns {@code true} if the robot is on the blue alliance. */
     public static boolean isBlue() {
@@ -241,38 +256,37 @@ public class Field {
     }
 
     public static Pose2d flipXifRed(Pose2d blue) {
-        return new Pose2d(
-                flipXifRed(blue.getX()), blue.getTranslation().getY(), blue.getRotation());
+        return flipXifRed(new Pose2d(blue.getX(), blue.getTranslation().getY(), blue.getRotation()));
     }
 
     public static Translation2d flipXifRed(Translation2d blue) {
-        return new Translation2d(flipXifRed(blue.getX()), blue.getY());
+        return flipXifRed(new Translation2d(blue.getX(), blue.getY()));
     }
 
     public static Translation3d flipXifRed(Translation3d blue) {
-        return new Translation3d(flipXifRed(blue.getX()), blue.getY(), blue.getZ());
+        return flipXifRed(new Translation3d(blue.getX(), blue.getY(), blue.getZ()));
     }
 
     // If we are red flip the x pose to the other side of the field
-    public static double flipXifRed(double xCoordinate) {
+    public static Distance flipXifRed(Distance xCoordinate) {
         if (Field.isRed()) {
-            return Field.fieldLength - xCoordinate;
+            return Field.fieldLength.minus(xCoordinate);
         }
         return xCoordinate;
     }
 
     // If we are red flip the y pose to the other side of the field
-    public static double flipYifRed(double yCoordinate) {
+    public static double flipYifRed(Distance yCoordinate) {
         if (Field.isRed()) {
-            return Field.fieldWidth - yCoordinate;
+            return Field.fieldWidth.in(Inches) - yCoordinate.in(Inches);
         }
-        return yCoordinate;
+        return yCoordinate.in(Inches);
     }
 
     public static boolean poseOutOfField(Pose2d pose2D) {
         double x = pose2D.getX();
         double y = pose2D.getY();
-        return (x <= 0 || x >= fieldLength) || (y <= 0 || y >= fieldWidth);
+        return (x <= 0 || x >= fieldLength.in(Inches)) || (y <= 0 || y >= fieldWidth.in(Inches));
     }
 
     public static boolean poseOutOfField(Pose3d pose3D) {
