@@ -42,7 +42,7 @@ public final class Constants {
 
         public static final boolean attached = true;
         public static final boolean isInverted = false;
-        public static final int id = 0;
+        public static final int id = 21;
         public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
@@ -95,7 +95,7 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final int id = -124542;
+        public static final int id = 26;
         public static final double gearRatio = 0 / 0;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
@@ -143,7 +143,7 @@ public final class Constants {
             NET,
         }
 
-        public static final int id = 32342370;
+        public static final int id = 25;
         public static final boolean attached = true;
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
@@ -185,8 +185,8 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final int channel = 3249324;
-        public static final int id = 1;
+        public static final int channel = 0;
+        public static final int id = 24;
         public static final double gearRatio = 1/1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
@@ -252,8 +252,8 @@ public final class Constants {
 
         public static final int leftId = 14;
         public static final int rightId = 15;
-        public static final int canCoderId = 00;
-        public static final int canRangeId = 16;
+        public static final int canCoderId = 16;
+        public static final int canRangeId = 17;
         public static final double gearRatio = 1 / 1;
         public static final Current forwardCurrentLimit = Units.Amps.of(0);
         public static final Current reverseCurrentLimit = Units.Amps.of(0);
@@ -324,7 +324,7 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final int id = 1;
+        public static final int id = 23;
         public static final double gearRatio = 0 / 0;
         public static final Current supplyLimit = Units.Amps.of(30);
         public static final Current stallLimit = Units.Amps.of(50);
@@ -381,7 +381,7 @@ public final class Constants {
 
         public static final boolean attached = true;
         public static final boolean isInverted = false;
-        public static final int id = 2;
+        public static final int id = 27;
         public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);

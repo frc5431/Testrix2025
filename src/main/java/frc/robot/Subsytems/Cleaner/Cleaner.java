@@ -42,7 +42,8 @@ public class Cleaner extends REVMechanism {
 
     public Cleaner(SparkMax motor, boolean attached){
         super(motor, attached);
-        CleanerConfig config = new CleanerConfig();
+        config = new CleanerConfig();
+
         this.motor = motor;
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;

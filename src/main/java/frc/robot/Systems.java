@@ -80,7 +80,6 @@ public class Systems {
         return cleaner;
     }
     
-
     public CleanPivot getCleanPivot() {
         return cleanPivot;
     }
