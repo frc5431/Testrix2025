@@ -80,7 +80,7 @@ public class ManipJoint extends REVMechanism {
 		this.mode = ManipJointmode;
 		setMMPosition(ManipJointmode.position);
 	}
-
+	
 	public double getMotorPosition() {
 		if (attached) {
 			return motor.getEncoder().getPosition();
