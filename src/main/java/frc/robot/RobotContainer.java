@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -16,6 +17,7 @@ import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants.*;
+import frc.robot.Util.Constants.ControllerConstants.*;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.team5431.titan.core.joysticks.TitanController;
 
@@ -40,6 +42,9 @@ public class RobotContainer {
 
 	// Operator Controls
 
+	// Preset Controls
+	private Trigger stowPreset = operator.rightStick();
+
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
 
@@ -47,17 +52,13 @@ public class RobotContainer {
 		configureBindings();
 	}
 
-	public void periodicSubsystems() {
+	public void periodic() {
 		intake.periodic();
 		elevator.periodic();
 		cleaner.periodic();
 		cleanPivot.periodic();
 		manipJoint.periodic();
 		manipulator.periodic();
-	}
-
-	public void periodic() {
-		periodicSubsystems();
 		SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
 	}
@@ -67,6 +68,11 @@ public class RobotContainer {
 	}
 
 	private void configureOperatorControls() {
+
+		// Elevator Controls
+		stowPreset.onTrue(
+				new ElevatorPresetCommand(opConst.StowPosition, elevator, manipJoint, cleanPivot)
+						.withName("Elevator Stow"));
 
 		// Intake Controls
 		intakeCoral.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));

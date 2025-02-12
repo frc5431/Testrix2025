@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
@@ -21,10 +22,13 @@ public class CleanPivot extends REVMechanism {
 	public SparkMax motor;
 	public SparkClosedLoopController controller;
 	public AbsoluteEncoder absoluteEncoder;
+	public RelativeEncoder relativeEncoder;
 	public CleanPivotModes mode;
 	public CleanPivotStates state;
 	public double massKg;
 	public boolean isShooter;
+	public boolean attached;
+
 
 	public static class PivotConfig extends Config {
 
@@ -38,11 +42,14 @@ public class CleanPivot extends REVMechanism {
 		}
 	}
 
+	private PivotConfig config = new PivotConfig();
+
 	public CleanPivot(SparkMax motor, boolean attached) {
 		super(motor, attached);
-
-		PivotConfig config = new PivotConfig();
 		this.motor = motor;
+		this.attached = attached;
+		this.absoluteEncoder = motor.getAbsoluteEncoder();
+		this.relativeEncoder = motor.getEncoder();
 		this.mode = CleanPivotModes.STOW;
 		this.state = CleanPivotStates.STOW;
 		config.applySparkConfig(motor);
@@ -121,7 +128,7 @@ public class CleanPivot extends REVMechanism {
 	@Override
 	protected Config setConfig() {
 		if (attached) {
-			config.applySparkConfig(motor);
+			setConfig(config);
 		}
 		return this.config;
 	}

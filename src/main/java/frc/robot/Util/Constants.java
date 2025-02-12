@@ -9,6 +9,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
+import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
+import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 
 public final class Constants {
 
@@ -26,8 +30,16 @@ public final class Constants {
 
         public static final double deadzone = 0.15;
 
-        
+    }
 
+    public static class opConst {
+
+        public static final PresetPosition StowPosition = new PresetPosition(
+                ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
+
+        public static final PresetPosition FeedCoralPosition = new PresetPosition(
+                ElevatorPositions.FEED, ManipJointPositions.STOW, CleanPivotModes.STOW);
+                
     }
 
     public static class IntakeConstants {
@@ -87,7 +99,6 @@ public final class Constants {
 
     public static class CleanerConstants {
 
-
         public enum CleanerStates {
             IDLE,
             INTAKING,
@@ -96,7 +107,7 @@ public final class Constants {
 
         public static final boolean attached = true;
         public static final int id = 26;
-        public static final double gearRatio = 0 / 0;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -104,7 +115,6 @@ public final class Constants {
         public static final double maxForwardOutput = 0;
         public static final double maxReverseOutput = 0;
         public static final double maxIAccum = 0;
-
 
         public static final double p = 0;
         public static final double i = 0;
@@ -154,7 +164,7 @@ public final class Constants {
         public static final Angle netAngle = Units.Rotation.of(0);
         public static final boolean isInverted = false;
         public static final Angle zeroOffset = Units.Rotation.of(0);
-        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder;
         public static final double p = 0;
         public static final double i = 0;
         public static final double d = 0;
@@ -187,7 +197,7 @@ public final class Constants {
         public static final boolean attached = true;
         public static final int channel = 0;
         public static final int id = 24;
-        public static final double gearRatio = 1/1;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -230,15 +240,21 @@ public final class Constants {
     }
 
     public static class LEDConstants {
-        public static final int candle = 18;     
-
+        public static final int candle = 18;
 
     }
 
     public static class ElevatorConstants {
 
         public enum ElevatorStates {
-
+            STOWED,
+            FEED,
+            PROCESSOR,
+            L1,
+            L2,
+            L3,
+            L4,
+            NET,
         }
 
         public static final boolean attached = true;
@@ -320,12 +336,18 @@ public final class Constants {
     public static class ManipJointConstants {
 
         public enum ManipJointStates {
-
+            STOWED,
+            FEED,
+            HUMAN,
+            L1,
+            L2,
+            L3,
+            L4
         }
 
         public static final boolean attached = true;
         public static final int id = 23;
-        public static final double gearRatio = 0 / 0;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(30);
         public static final Current stallLimit = Units.Amps.of(50);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -370,7 +392,7 @@ public final class Constants {
         }
 
     }
-  
+
     public static class ClimberConstants {
 
         public enum ClimberStates {

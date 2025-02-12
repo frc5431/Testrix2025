@@ -8,16 +8,18 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Util.Constants.ManipJointConstants;
 import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Manipulator extends REVMechanism {
-	private ManipulatorConfig config;
+
+	private ManipulatorConfig config = new ManipulatorConfig();
 	private SparkMax motor;
 	private DigitalInput beambreak;
-	public Boolean attachted;
+	public boolean attached;
 
 	private ManipulatorModes mode;
 	private ManipulatorStates state;
@@ -41,9 +43,9 @@ public class Manipulator extends REVMechanism {
 
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		ManipulatorConfig config = new ManipulatorConfig();
 		beambreak = new DigitalInput(ManipulatorConstants.channel);
 		this.motor = motor;
+		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
 		this.state = ManipulatorStates.IDLE;
 		config.applySparkConfig(motor);
@@ -60,7 +62,7 @@ public class Manipulator extends REVMechanism {
 
 	@Override
 	protected Config setConfig() {
-		if (attachted) {
+		if (attached) {
 			config.applySparkConfig(motor);
 		}
 		return this.config;

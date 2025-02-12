@@ -16,6 +16,12 @@ public class PresetPosition {
         this.pivotMode = pivotMode;
     }
 
+    public PresetPosition(ElevatorPositions elevatorMode, CleanPivotModes pivotMode, ManipJointPositions jointMode) {
+        this.elevatorMode = elevatorMode;
+        this.jointMode = jointMode;
+        this.pivotMode = pivotMode;
+    }
+
     public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode) {
         this.elevatorMode = elevatorMode;
         this.jointMode = jointMode;

@@ -13,9 +13,10 @@ import frc.robot.Util.Constants.ManipJointConstants;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class ManipJoint extends REVMechanism {
-	private ManipJointConfig config;
+	
+	private ManipJointConfig config = new ManipJointConfig();
 	private SparkMax motor;
-	public Boolean attachted;
+	public boolean attached;
 
 	private ManipJointPositions mode;
 	private ManipJointStates state;
@@ -39,9 +40,10 @@ public class ManipJoint extends REVMechanism {
 
 	public ManipJoint(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		ManipJointConfig config = new ManipJointConfig();
 		this.motor = motor;
+		this.attached = attached;
 		this.mode = ManipJointPositions.STOW;
+		this.state = ManipJointStates.STOWED;
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Manipulator/Joint/Mode", getMode());
@@ -97,7 +99,7 @@ public class ManipJoint extends REVMechanism {
 
 	@Override
 	protected Config setConfig() {
-		if (attachted) {
+		if (attached) {
 			config.applySparkConfig(motor);
 		}
 		return this.config;

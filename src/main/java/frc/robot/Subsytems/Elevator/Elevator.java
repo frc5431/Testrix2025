@@ -42,12 +42,11 @@ public class Elevator extends CTREMechanism {
     private TalonFX leader;
     private TalonFX follower;
 
-    private ElevatorConfig config;
+    private ElevatorConfig config = new ElevatorConfig();
     private CANrange canRange;
     private boolean attached;
 
     private ElevatorPositions position;
-    @SuppressWarnings("unused")
     private ElevatorStates states;
 
     /**
@@ -58,12 +57,10 @@ public class Elevator extends CTREMechanism {
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
         this.leader = leader;
+        this.states = ElevatorStates.STOWED;
         this.follower = follower;
         this.attached = attached;
-        ElevatorConfig config = new ElevatorConfig();
         canRange = new CANrange(ElevatorConstants.canRangeId, Constants.canbus);
-        this.position = ElevatorPositions.STOW;
-        this.config = config;
         this.position = ElevatorPositions.STOW;
         this.config.applyTalonConfig(leader);
 
@@ -152,7 +149,7 @@ public class Elevator extends CTREMechanism {
     @Override
     protected Config setConfig() {
         if (attached) {
-            config.applyTalonConfig(leader);
+            setConfig(config);
         }
         return this.config;
     }

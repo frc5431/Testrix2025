@@ -18,8 +18,6 @@ public class ElevatorPresetCommand extends Command {
         this.elevator = elevator;
         this.manipJoint = manipJoint;
         this.cleanPivot = cleanPivot;
-        withName("Elevator Chain Command");
-        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     @Override

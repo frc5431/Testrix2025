@@ -16,17 +16,13 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Cleaner extends REVMechanism {
 
-    private CleanerConfig config;
-
-    private SparkMax motor;
-
     private CleanerModes mode;
     private CleanerStates state;
 
     public static class CleanerConfig extends Config {
 
         public CleanerConfig() {
-            super("Cleaner", CleanerConstants.id);
+            super("Intake", CleanerConstants.id);
             configIdleMode(CleanerConstants.idleMode);
             configInverted(CleanerConstants.isInverted);
             configGearRatio(CleanerConstants.gearRatio);
@@ -39,11 +35,12 @@ public class Cleaner extends REVMechanism {
         }
     }
 
+    private CleanerConfig config = new CleanerConfig();
 
     public Cleaner(SparkMax motor, boolean attached){
         super(motor, attached);
-        config = new CleanerConfig();
-
+        this.setConfig(config);
+        
         this.motor = motor;
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
@@ -105,7 +102,7 @@ public class Cleaner extends REVMechanism {
     @Override
     protected Config setConfig() {
         if (attached) {
-            config.applySparkConfig(motor);
+            setConfig(config);
         }
         return this.config;
     }

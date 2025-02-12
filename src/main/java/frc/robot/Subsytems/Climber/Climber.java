@@ -16,9 +16,7 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Climber extends REVMechanism {
 
-    private ClimberConfig config;
-    private SparkMax motor;
-    public boolean attachted;
+    public boolean attached;
     public SysIdRoutine routine;
 
     private ClimberModes mode;
@@ -40,10 +38,13 @@ public class Climber extends REVMechanism {
         }
     }
 
-    public Climber(SparkMax motor, boolean attachted) {
-        super(motor, attachted);
-        ClimberConfig config = new ClimberConfig();
+    private ClimberConfig config = new ClimberConfig();
+
+
+    public Climber(SparkMax motor, boolean attached) {
+        super(motor, attached);
         this.motor = motor;
+        this.attached = attached;
         this.mode = ClimberModes.STOW;
         this.state = ClimberStates.STOW;
         config.applySparkConfig(motor);
@@ -57,13 +58,6 @@ public class Climber extends REVMechanism {
 		Logger.recordOutput("Climber/Output", getMotorOutput());
     }
 
-    @Override
-    protected Config setConfig() {
-        if (attached) {
-            config.applySparkConfig(motor);
-        }
-        return this.config;
-    }
     @Override
     public void periodic() {
         SmartDashboard.putString("Climber Mode", this.getMode());
@@ -106,8 +100,15 @@ public class Climber extends REVMechanism {
     }
 
     public Command runClimberCommand(ClimberModes climberModes) {
-        // return new StartEndCommand(() -> this.runEnum(ClimberModes), () -> this.runEnum(ClimberModes), this).withName("Climber.runEnum");
         return run(() -> runEnum(climberModes)).withName("Climber.runEnum");
     }
+
+    @Override
+	protected Config setConfig() {
+		if (attached) {
+			setConfig(config);
+		}
+		return this.config;
+	}
 
 }

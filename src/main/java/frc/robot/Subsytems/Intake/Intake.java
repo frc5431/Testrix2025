@@ -16,9 +16,9 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Intake extends REVMechanism {
 
-    private IntakeConfig config;
+    private IntakeConfig config = new IntakeConfig();
     private SparkMax motor;
-    public boolean attachted;
+    public boolean attached;
     public SysIdRoutine routine;
 
     private IntakeModes mode;
@@ -40,9 +40,9 @@ public class Intake extends REVMechanism {
         }
     }
 
-    public Intake(SparkMax motor, boolean attachted) {
-        super(motor, attachted);
-        IntakeConfig config = new IntakeConfig();
+    public Intake(SparkMax motor, boolean attached) {
+        super(motor, attached);
+        this.attached = attached;
         this.motor = motor;
         this.mode = IntakeModes.IDLE;
         this.state = IntakeStates.IDLE;
@@ -107,8 +107,8 @@ public class Intake extends REVMechanism {
 
     @Override
     protected Config setConfig() {
-        if (attachted) {
-            config.applySparkConfig(motor);
+        if (attached) {
+            setConfig(config);
         }
         return this.config;
     }
