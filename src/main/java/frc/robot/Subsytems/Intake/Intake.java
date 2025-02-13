@@ -87,6 +87,16 @@ public class Intake extends REVMechanism {
         this.state = intakeState;
     }
 
+	protected void stop() {
+		if (attached) {
+			motor.stopMotor();
+		}
+	}
+
+	protected void setZero() {
+		resetPosition();
+	}
+    
     protected void runEnum(IntakeModes intakemode) {
         this.mode = intakemode;
         setVelocity(intakemode.speed);

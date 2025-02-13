@@ -7,6 +7,8 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipJointConstants;
@@ -71,6 +73,16 @@ public class ManipJoint extends REVMechanism {
 		this.state = ManipJointState;
 	}
 
+	protected void stop() {
+		if (attached) {
+			motor.stopMotor();
+		}
+	}
+
+	protected void setZero() {
+		resetPosition();
+	}
+
 	public void runEnum(ManipJointPositions ManipJointmode) {
 		this.mode = ManipJointmode;
 		setMotorPosition(ManipJointmode.position);
@@ -80,7 +92,26 @@ public class ManipJoint extends REVMechanism {
 		this.mode = ManipJointmode;
 		setMMPosition(ManipJointmode.position);
 	}
-	
+
+	public Command runCleanerPivotCommand(ManipJointPositions ManipJointmode) {
+		return new RunCommand(() -> this.runEnum(ManipJointmode), this)
+				.withName("CleanPivot.runEnum");
+	}
+
+	public Command runCleanerPivotCommandMM(ManipJointPositions ManipJointmode) {
+		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
+				.withName("CleanPivot.runEnumMM");
+	}
+
+	public Command stopCleanerPivotCommand() {
+		return new RunCommand(() -> this.stop(), this)
+				.withName("CleanPivot.STOP");
+	}
+
+	public Command cleanerPivotResetPositionCommand() {
+		return new RunCommand(() -> this.setZero(), this)
+				.withName("CleanPivot.setZero");
+	}	
 	public double getMotorPosition() {
 		if (attached) {
 			return motor.getEncoder().getPosition();

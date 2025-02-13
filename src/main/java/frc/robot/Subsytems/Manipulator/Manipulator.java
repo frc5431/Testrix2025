@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
 import frc.robot.Util.Constants.ManipJointConstants;
 import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
@@ -100,6 +99,16 @@ public class Manipulator extends REVMechanism {
 
 	public void setManipulatorState(ManipulatorStates manipulatorStates) {
 		this.state = manipulatorStates;
+	}
+
+	protected void stop() {
+		if (attached) {
+			motor.stopMotor();
+		}
+	}
+
+	protected void setZero() {
+		resetPosition();
 	}
 
 	public void runEnum(ManipulatorModes manipulatorMode) {

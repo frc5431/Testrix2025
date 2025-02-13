@@ -67,6 +67,7 @@ public class Elevator extends CTREMechanism {
         if (attached) {
             follower.setControl(new Follower(ElevatorConstants.leftId, ElevatorConstants.follwerInvert));
             Logger.recordOutput("Elevator/Mode", position.toString());
+            Logger.recordOutput("Elevator/States", states.toString());
             Logger.recordOutput("Elevator/Setpoint", position.rotation.in(Rotation));
             Logger.recordOutput("Elevator/Setpoint", position.toString());
             Logger.recordOutput("Elevator/Position", leader.getPosition().getValueAsDouble());

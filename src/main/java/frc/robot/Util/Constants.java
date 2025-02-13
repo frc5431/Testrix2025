@@ -10,7 +10,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
-import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 
