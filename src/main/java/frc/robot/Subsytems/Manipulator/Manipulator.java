@@ -85,10 +85,10 @@ public class Manipulator extends REVMechanism {
 			case IDLE:
 				setManipulatorState(ManipulatorStates.IDLE);
 				break;
-			case INTAKE:
+			case SCORE:
 				setManipulatorState(ManipulatorStates.INTAKING);
 				break;
-			case OUTTAKE:
+			case REVERSE:
 				setManipulatorState(ManipulatorStates.OUTTAKING);
 				break;
 			case FEED:

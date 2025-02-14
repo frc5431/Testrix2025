@@ -38,7 +38,19 @@ public final class Constants {
 
         public static final PresetPosition FeedCoralPosition = new PresetPosition(
                 ElevatorPositions.FEED, ManipJointPositions.STOW, CleanPivotModes.STOW);
-                
+
+        public static final PresetPosition ScoreL1Position = new PresetPosition(ElevatorPositions.CORALL1,
+                ManipJointPositions.SCOREL1);
+
+        public static final PresetPosition ScoreL2Position = new PresetPosition(ElevatorPositions.CORALL2,
+                ManipJointPositions.SCOREL2, CleanPivotModes.L2);
+
+        public static final PresetPosition ScoreL3Position = new PresetPosition(ElevatorPositions.CORALL3,
+                ManipJointPositions.SCOREL3, CleanPivotModes.L3);
+
+        public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
+                ManipJointPositions.SCOREL4, CleanPivotModes.STOW);
+
     }
 
     public static class IntakeConstants {
@@ -156,6 +168,7 @@ public final class Constants {
         public static final boolean attached = true;
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
+        public static final Angle intakeAngle = Units.Rotation.of(0);
         public static final Angle softLimitReverseMax = Units.Rotation.of(0);
         public static final Angle stowAngle = Units.Rotation.of(0);
         public static final Angle l2Angle = Units.Rotation.of(0);
@@ -169,6 +182,7 @@ public final class Constants {
         public static final double d = 0;
 
         public enum CleanPivotModes {
+            INTAKE(intakeAngle),
             STOW(stowAngle),
             L2(l2Angle),
             L3(l3Angle),
@@ -211,8 +225,8 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0;
 
-        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity scoreSpeed = Units.RPM.of(0);
+        public static final AngularVelocity reverseSpeed = Units.RPM.of(0);
         public static final AngularVelocity feedSpeed = Units.RPM.of(0);
         public static final AngularVelocity idleSpeed = Units.RPM.of(0);
         public static final AngularVelocity error = Units.RPM.of(0);
@@ -224,9 +238,9 @@ public final class Constants {
 
         public enum ManipulatorModes {
             IDLE(idleSpeed),
-            INTAKE(intakeSpeed),
+            SCORE(scoreSpeed),
             FEED(feedSpeed),
-            OUTTAKE(outtakeSpeed);
+            REVERSE(reverseSpeed);
 
             public AngularVelocity speed;
 

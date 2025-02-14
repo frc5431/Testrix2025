@@ -97,7 +97,7 @@ public class Intake extends REVMechanism {
 		resetPosition();
 	}
     
-    protected void runEnum(IntakeModes intakemode) {
+    public void runEnum(IntakeModes intakemode) {
         this.mode = intakemode;
         setVelocity(intakemode.speed);
     }
