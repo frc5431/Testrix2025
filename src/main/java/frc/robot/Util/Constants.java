@@ -1,5 +1,6 @@
 package frc.robot.Util;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
@@ -9,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -252,13 +254,8 @@ public final class Constants {
 
     }
 
-    public static class LEDConstants {
-        public static final int candle = 18;
-
-    }
-
     public static class ElevatorConstants {
-
+        
         public enum ElevatorStates {
             STOWED,
             FEED,
@@ -457,4 +454,36 @@ public final class Constants {
 
     }
 
+    public static class CANdleConstants {
+        public static final int id = 0;
+
+        // Team Colors
+        public static final Color darkBlue = new Color(0, 0, 139);
+        public static final Color cyanish = new Color(13, 228, 252);
+        public static final Color purple = new Color(160, 0, 217);
+
+        // Game Piece Colors
+        public static final Color algaeGreen = new Color(69, 206, 162);
+        public static final Color coralWhite = new Color(255, 230, 220);
+
+        // Indicator Colors
+        public static final Color green = new Color(56, 209, 0);
+        public static final Color blue = new Color(8, 32, 255);
+        public static final Color red = new Color(255, 0, 0);
+
+        // Misc
+        public static final Color black = new Color(0, 0, 0);
+        public static final Color orange = new Color(255, 25, 0);
+
+        // Animations
+        public enum AnimationTypes {
+            CORAL,
+            ALGAE,
+            BOTH,
+            SLOW_WHITE,
+            FLASHING_ORANGE,
+            BLINK_RED,
+            OFF;
+        }
+    }
 }
