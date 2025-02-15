@@ -55,7 +55,7 @@ public class CleanPivot extends REVMechanism {
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Cleaner/Pivot/Mode", mode.toString());
-		Logger.recordOutput("Cleaner/Pivot/Mode", mode.angle.in(Rotation));
+		Logger.recordOutput("Cleaner/Pivot/Setpoint", mode.angle.in(Rotation));
 		Logger.recordOutput("Cleaner/Pivot/Output", getMotorOutput());
 		Logger.recordOutput("Cleaner/Pivot/Position", absoluteEncoder.getPosition());
 		Logger.recordOutput("Cleaner/Pivot/Current", getMotorCurrent());
@@ -65,7 +65,7 @@ public class CleanPivot extends REVMechanism {
 
 	public void periodic() {
 		SmartDashboard.putString("Cleaner Pivot Mode", mode.toString());
-		SmartDashboard.putNumber("Cleaner Pivot Mode", mode.angle.in(Rotation));
+		SmartDashboard.putNumber("Cleaner Pivot Setpoint", mode.angle.in(Rotation));
 		SmartDashboard.putNumber("Cleaner Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Cleaner Pivot Position", absoluteEncoder.getPosition());
 		SmartDashboard.putNumber("Cleaner Pivot Current", getMotorCurrent());
