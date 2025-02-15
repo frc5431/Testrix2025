@@ -29,7 +29,6 @@ public class CleanPivot extends REVMechanism {
 	public boolean isShooter;
 	public boolean attached;
 
-
 	public static class PivotConfig extends Config {
 
 		public PivotConfig() {
