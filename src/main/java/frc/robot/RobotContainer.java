@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -22,6 +24,7 @@ import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
+import frc.robot.Util.Constants.GamePieceConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -29,7 +32,7 @@ import frc.team5431.titan.core.joysticks.TitanController;
 public class RobotContainer {
 
 	private final Systems systems = new Systems();
-
+	
 	private final Intake intake = systems.getIntake();
 	private final Cleaner cleaner = systems.getCleaner();
 	private final Elevator elevator = systems.getElevator();
@@ -42,7 +45,15 @@ public class RobotContainer {
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
 			ControllerConstants.deadzone);
 
-	// Controls
+	private final GamePieceStates gamePieceStatus = GamePieceStates.NONE;
+
+	// Triggers
+
+	// Gamepiece Status
+	private Trigger hasAlgae = new Trigger(() -> gamePieceStatus == GamePieceStates.ALGAE);
+	private Trigger hasCoral = new Trigger(() -> gamePieceStatus == GamePieceStates.CORAL);
+	
+	// LED Triggers
 
 	// Driver Controls
 
@@ -63,7 +74,7 @@ public class RobotContainer {
 	private Trigger intakeCoral = operator.a();
 	private Trigger scoreCoral = operator.y();
 	private Trigger reverseFeed = operator.rightStick();
-
+	
 	public RobotContainer() {
 		configureBindings();
 	}
@@ -118,9 +129,15 @@ public class RobotContainer {
 	}
 
 	public void configureBindings() {
+		// CANdle Statuses
+		candle.setDefaultCommand(candle.titanCommand());
+
+		// Gamepiece LED Status
+		hasCoral.onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.CORAL));
+		hasAlgae.onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.ALGAE));
+		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.BOTH));
 
 		configureOperatorControls();
-		candle.setDefaultCommand(candle.titanCommand());
 	}
 
 	public Command getAutonomousCommand() {

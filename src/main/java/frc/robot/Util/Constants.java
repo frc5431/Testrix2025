@@ -19,6 +19,15 @@ public final class Constants {
 
     public static final String canbus = "Omnivore";
 
+    public static class GamePieceConstants {
+        public enum GamePieceStates {
+            CORAL,
+            ALGAE,
+            NONE,
+            BOTH
+        }
+    }
+
     public static class ControllerConstants {
 
         public enum ControlStates {
@@ -530,14 +539,20 @@ public final class Constants {
 
         // Animations
         public enum AnimationTypes {
-            CORAL,
-            ALGAE,
-            BOTH,
-            SLOW_WHITE,
-            FLASHING_ORANGE,
-            BLINK_RED,
-            FLASHING_GREEN,
-            OFF;
+            CORAL(coralWhite, .5),
+            ALGAE(algaeGreen, .5),
+            BOTH(cyanish, .5),
+            SLOW_WHITE(coralWhite, .2),
+            FLASHING_ORANGE(orange, .8),
+            BLINK_RED(red, .5),
+            FLASHING_GREEN(green, .8);
+
+            public Color color;
+            public double speed;
+            AnimationTypes(Color color, double speed) {
+                this.color = color;
+                this.speed = speed;
+            }
         }
     }
 }

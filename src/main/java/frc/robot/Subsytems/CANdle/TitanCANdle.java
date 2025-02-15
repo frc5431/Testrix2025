@@ -86,24 +86,12 @@ public class TitanCANdle extends SubsystemBase {
         return new RunCommand(() -> titanPride(), this);
     }
 
+    public Command changeAnimationCommand(AnimationTypes type) {
+        return new RunCommand(() -> changeAnimation(type), this);
+    }
+
     public void changeAnimation(AnimationTypes type) {
-        switch (type) {
-            case ALGAE:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.algaeGreen, 0.5);        
-            case CORAL:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.coralWhite, 0.5);
-            case BOTH:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.cyanish, 0.5);
-            case BLINK_RED:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.red, 0.5);
-            case SLOW_WHITE:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.coralWhite, 0.2);
-            case FLASHING_ORANGE:
-                LEDSegment.MainStrip.setStrobeAnimation(CANdleConstants.orange, 0.2);
-            case OFF:
-                LEDSegment.MainStrip.disableLEDs();
-        }
-        
+        LEDSegment.MainStrip.setStrobeAnimation(type.color, type.speed);
     }
     public static enum LEDSegment {
         BatteryIndicator(0, 2, 0),
