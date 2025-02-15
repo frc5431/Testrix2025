@@ -1,5 +1,6 @@
 package frc.robot.Util;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
@@ -9,6 +10,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
+import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 
 public final class Constants {
 
@@ -28,6 +33,28 @@ public final class Constants {
 
     }
 
+    public static class opConst {
+
+        public static final PresetPosition StowPosition = new PresetPosition(
+                ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
+
+        public static final PresetPosition FeedCoralPosition = new PresetPosition(
+                ElevatorPositions.FEED, ManipJointPositions.STOW, CleanPivotModes.STOW);
+
+        public static final PresetPosition ScoreL1Position = new PresetPosition(ElevatorPositions.CORALL1,
+                ManipJointPositions.SCOREL1);
+
+        public static final PresetPosition ScoreL2Position = new PresetPosition(ElevatorPositions.CORALL2,
+                ManipJointPositions.SCOREL2, CleanPivotModes.L2);
+
+        public static final PresetPosition ScoreL3Position = new PresetPosition(ElevatorPositions.CORALL3,
+                ManipJointPositions.SCOREL3, CleanPivotModes.L3);
+
+        public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
+                ManipJointPositions.SCOREL4, CleanPivotModes.STOW);
+
+    }
+
     public static class IntakeConstants {
 
         public enum IntakeStates {
@@ -40,7 +67,7 @@ public final class Constants {
 
         public static final boolean attached = true;
         public static final boolean isInverted = false;
-        public static final int id = 0;
+        public static final int id = 21;
         public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
@@ -83,8 +110,60 @@ public final class Constants {
 
     }
 
-    public static class CleanerConstants {
+    public static class FeederConstants {
 
+        public enum FeederStates {
+            IDLE,
+            FEEDING,
+            FEEDSPIT,
+            STUCK,
+        }
+
+        public static final boolean attached = true;
+        public static final boolean isInverted = false;
+        public static final int id = 21;
+        public static final double gearRatio = 1 / 1;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final Angle offset = Units.Rotation.of(0);
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+        public static final double maxIAccum = 0;
+
+        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
+        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
+        public static final AngularVelocity error = Units.RPM.of(0);
+
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+
+        public enum FeederModes {
+            IDLE(idleSpeed),
+            FEEDING(intakeSpeed),
+            FEEDSPIT(feedSpeed);
+
+            public AngularVelocity speed;
+
+            FeederModes(AngularVelocity speed) {
+                this.speed = speed;
+            }
+
+        }
+
+    }
+
+    public static class CleanerConstants {
 
         public enum CleanerStates {
             IDLE,
@@ -93,8 +172,8 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final int id = -124542;
-        public static final double gearRatio = 0 / 0;
+        public static final int id = 26;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -102,7 +181,6 @@ public final class Constants {
         public static final double maxForwardOutput = 0;
         public static final double maxReverseOutput = 0;
         public static final double maxIAccum = 0;
-
 
         public static final double p = 0;
         public static final double i = 0;
@@ -141,10 +219,11 @@ public final class Constants {
             NET,
         }
 
-        public static final int id = 32342370;
+        public static final int id = 25;
         public static final boolean attached = true;
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
+        public static final Angle intakeAngle = Units.Rotation.of(0);
         public static final Angle softLimitReverseMax = Units.Rotation.of(0);
         public static final Angle stowAngle = Units.Rotation.of(0);
         public static final Angle l2Angle = Units.Rotation.of(0);
@@ -152,12 +231,13 @@ public final class Constants {
         public static final Angle netAngle = Units.Rotation.of(0);
         public static final boolean isInverted = false;
         public static final Angle zeroOffset = Units.Rotation.of(0);
-        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder;
         public static final double p = 0;
         public static final double i = 0;
         public static final double d = 0;
 
         public enum CleanPivotModes {
+            INTAKE(intakeAngle),
             STOW(stowAngle),
             L2(l2Angle),
             L3(l3Angle),
@@ -183,8 +263,9 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final int id = 1;
-        public static final double gearRatio = 1/1;
+        public static final int channel = 0;
+        public static final int id = 24;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -199,8 +280,8 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0;
 
-        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity scoreSpeed = Units.RPM.of(0);
+        public static final AngularVelocity reverseSpeed = Units.RPM.of(0);
         public static final AngularVelocity feedSpeed = Units.RPM.of(0);
         public static final AngularVelocity idleSpeed = Units.RPM.of(0);
         public static final AngularVelocity error = Units.RPM.of(0);
@@ -212,9 +293,9 @@ public final class Constants {
 
         public enum ManipulatorModes {
             IDLE(idleSpeed),
-            INTAKE(intakeSpeed),
+            SCORE(scoreSpeed),
             FEED(feedSpeed),
-            OUTTAKE(outtakeSpeed);
+            REVERSE(reverseSpeed);
 
             public AngularVelocity speed;
 
@@ -229,7 +310,14 @@ public final class Constants {
     public static class ElevatorConstants {
 
         public enum ElevatorStates {
-
+            STOWED,
+            FEED,
+            PROCESSOR,
+            L1,
+            L2,
+            L3,
+            L4,
+            NET,
         }
 
         public static final boolean attached = true;
@@ -239,9 +327,12 @@ public final class Constants {
         public static final boolean breakType = true;
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
+        public static final boolean canRangeAttached = true;
 
-        public static final int leftId = 3;
-        public static final int rightId = 4;
+        public static final int leftId = 14;
+        public static final int rightId = 15;
+        public static final int canCoderId = 16;
+        public static final int canRangeId = 17;
         public static final double gearRatio = 1 / 1;
         public static final Current forwardCurrentLimit = Units.Amps.of(0);
         public static final Current reverseCurrentLimit = Units.Amps.of(0);
@@ -308,12 +399,18 @@ public final class Constants {
     public static class ManipJointConstants {
 
         public enum ManipJointStates {
-
+            STOWED,
+            FEED,
+            HUMAN,
+            L1,
+            L2,
+            L3,
+            L4
         }
 
         public static final boolean attached = true;
-        public static final int id = 1;
-        public static final double gearRatio = 0 / 0;
+        public static final int id = 23;
+        public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(30);
         public static final Current stallLimit = Units.Amps.of(50);
         public static final IdleMode idleMode = IdleMode.kBrake;
@@ -358,7 +455,7 @@ public final class Constants {
         }
 
     }
-    public static class FeederConstants {
+     public static class FeederConstants {
 
         public enum FeederStates {
             IDLE,
@@ -407,8 +504,59 @@ public final class Constants {
             }
 
         }
+     }
+
+    public static class ClimberConstants {
+
+        public enum ClimberStates {
+            STOW,
+            ALIGN,
+            CLIMB
+        }
+
+        public static final boolean attached = true;
+        public static final boolean isInverted = false;
+        public static final int id = 27;
+        public static final double gearRatio = 1 / 1;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final Angle offset = Units.Rotation.of(0);
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+        public static final double maxIAccum = 0;
+
+        public static final Angle stow_angle = Units.Rotation.of(0);
+        public static final Angle align_angle = Units.Rotation.of(0);
+        public static final Angle climb_angle = Units.Rotation.of(0);
+        public static final Angle error = Units.Rotation.of(0);
+
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+
+        public enum ClimberModes {
+            STOW(stow_angle),
+            ALIGN(align_angle),
+            CLIMB(climb_angle);
+
+            public Angle angle;
+
+            ClimberModes(Angle angle) {
+                this.angle = angle;
+            }
+
+        }
 
     }
+
     public static class IntakePivotConstants {
 
         public enum IntakePivotStates {
@@ -442,5 +590,39 @@ public final class Constants {
 
         }
 
+    }
+
+    public static class CANdleConstants {
+        public static final int id = 0;
+
+        // Team Colors
+        public static final Color darkBlue = new Color(0, 0, 139);
+        public static final Color cyanish = new Color(13, 228, 252);
+        public static final Color purple = new Color(160, 0, 217);
+
+        // Game Piece Colors
+        public static final Color algaeGreen = new Color(69, 206, 162);
+        public static final Color coralWhite = new Color(255, 230, 220);
+
+        // Indicator Colors
+        public static final Color green = new Color(56, 209, 0);
+        public static final Color blue = new Color(8, 32, 255);
+        public static final Color red = new Color(255, 0, 0);
+
+        // Misc
+        public static final Color black = new Color(0, 0, 0);
+        public static final Color orange = new Color(255, 25, 0);
+
+        // Animations
+        public enum AnimationTypes {
+            CORAL,
+            ALGAE,
+            BOTH,
+            SLOW_WHITE,
+            FLASHING_ORANGE,
+            BLINK_RED,
+            FLASHING_GREEN,
+            OFF;
+        }
     }
 }

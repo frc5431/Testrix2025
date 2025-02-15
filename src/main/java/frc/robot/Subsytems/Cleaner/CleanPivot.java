@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
@@ -21,10 +22,13 @@ public class CleanPivot extends REVMechanism {
 	public SparkMax motor;
 	public SparkClosedLoopController controller;
 	public AbsoluteEncoder absoluteEncoder;
+	public RelativeEncoder relativeEncoder;
 	public CleanPivotModes mode;
 	public CleanPivotStates state;
 	public double massKg;
 	public boolean isShooter;
+	public boolean attached;
+
 
 	public static class PivotConfig extends Config {
 
@@ -38,18 +42,20 @@ public class CleanPivot extends REVMechanism {
 		}
 	}
 
-	public CleanPivot(PivotConfig config, SparkMax motor, boolean attached) {
-		super(motor, attached);
+	private PivotConfig config = new PivotConfig();
 
-		this.config = config;
+	public CleanPivot(SparkMax motor, boolean attached) {
+		super(motor, attached);
 		this.motor = motor;
+		this.attached = attached;
+		this.absoluteEncoder = motor.getAbsoluteEncoder();
+		this.relativeEncoder = motor.getEncoder();
 		this.mode = CleanPivotModes.STOW;
 		this.state = CleanPivotStates.STOW;
-
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Cleaner/Pivot/Mode", mode.toString());
-		Logger.recordOutput("Cleaner/Pivot/Mode", mode.angle.in(Rotation));
+		Logger.recordOutput("Cleaner/Pivot/Setpoint", mode.angle.in(Rotation));
 		Logger.recordOutput("Cleaner/Pivot/Output", getMotorOutput());
 		Logger.recordOutput("Cleaner/Pivot/Position", absoluteEncoder.getPosition());
 		Logger.recordOutput("Cleaner/Pivot/Current", getMotorCurrent());
@@ -59,7 +65,7 @@ public class CleanPivot extends REVMechanism {
 
 	public void periodic() {
 		SmartDashboard.putString("Cleaner Pivot Mode", mode.toString());
-		SmartDashboard.putNumber("Cleaner Pivot Mode", mode.angle.in(Rotation));
+		SmartDashboard.putNumber("Cleaner Pivot Setpoint", mode.angle.in(Rotation));
 		SmartDashboard.putNumber("Cleaner Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Cleaner Pivot Position", absoluteEncoder.getPosition());
 		SmartDashboard.putNumber("Cleaner Pivot Current", getMotorCurrent());
@@ -71,7 +77,7 @@ public class CleanPivot extends REVMechanism {
 		this.state = cleanerPivotStates;
 	}
 
-	protected void runEnum(CleanPivotModes cleanPivotModes) {
+	public void runEnum(CleanPivotModes cleanPivotModes) {
 		this.mode = cleanPivotModes;
 		setMotorPosition(cleanPivotModes.angle);
 	}
@@ -122,7 +128,7 @@ public class CleanPivot extends REVMechanism {
 	@Override
 	protected Config setConfig() {
 		if (attached) {
-			config.applySparkConfig(motor);
+			setConfig(config);
 		}
 		return this.config;
 	}

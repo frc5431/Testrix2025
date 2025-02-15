@@ -6,18 +6,19 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipJointConstants;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class ManipJoint extends REVMechanism {
-	private ManipJointConfig config;
+	
+	private ManipJointConfig config = new ManipJointConfig();
 	private SparkMax motor;
-	private DigitalInput beambreak;
-	public Boolean attachted;
+	public boolean attached;
 
 	private ManipJointPositions mode;
 	private ManipJointStates state;
@@ -39,12 +40,12 @@ public class ManipJoint extends REVMechanism {
 		}
 	}
 
-	public ManipJoint(SparkMax motor, DigitalInput beambreak, boolean attached) {
+	public ManipJoint(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		ManipJointConfig config = new ManipJointConfig();
 		this.motor = motor;
+		this.attached = attached;
 		this.mode = ManipJointPositions.STOW;
-		// this.state = ManipJointStates;
+		this.state = ManipJointStates.STOWED;
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Manipulator/Joint/Mode", getMode());
@@ -66,14 +67,23 @@ public class ManipJoint extends REVMechanism {
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
 		SmartDashboard.putNumber("ManipJoint Voltage", this.getMotorVoltage());
 		SmartDashboard.putNumber("ManipJoint Position", this.getMotorPosition());
-		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
 	}
 
 	public void setManipJointState(ManipJointStates ManipJointState) {
 		this.state = ManipJointState;
 	}
 
-	protected void runEnum(ManipJointPositions ManipJointmode) {
+	protected void stop() {
+		if (attached) {
+			motor.stopMotor();
+		}
+	}
+
+	protected void setZero() {
+		resetPosition();
+	}
+
+	public void runEnum(ManipJointPositions ManipJointmode) {
 		this.mode = ManipJointmode;
 		setMotorPosition(ManipJointmode.position);
 	}
@@ -83,10 +93,25 @@ public class ManipJoint extends REVMechanism {
 		setMMPosition(ManipJointmode.position);
 	}
 
-	public boolean getBeambreakStatus() {
-		return beambreak.get();
+	public Command runCleanerPivotCommand(ManipJointPositions ManipJointmode) {
+		return new RunCommand(() -> this.runEnum(ManipJointmode), this)
+				.withName("CleanPivot.runEnum");
 	}
 
+	public Command runCleanerPivotCommandMM(ManipJointPositions ManipJointmode) {
+		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
+				.withName("CleanPivot.runEnumMM");
+	}
+
+	public Command stopCleanerPivotCommand() {
+		return new RunCommand(() -> this.stop(), this)
+				.withName("CleanPivot.STOP");
+	}
+
+	public Command cleanerPivotResetPositionCommand() {
+		return new RunCommand(() -> this.setZero(), this)
+				.withName("CleanPivot.setZero");
+	}	
 	public double getMotorPosition() {
 		if (attached) {
 			return motor.getEncoder().getPosition();
@@ -105,7 +130,7 @@ public class ManipJoint extends REVMechanism {
 
 	@Override
 	protected Config setConfig() {
-		if (attachted) {
+		if (attached) {
 			config.applySparkConfig(motor);
 		}
 		return this.config;

@@ -6,16 +6,22 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Util.Constants.ManipJointConstants;
 import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Manipulator extends REVMechanism {
-	private ManipulatorConfig config;
+
+	private ManipulatorConfig config = new ManipulatorConfig();
 	private SparkMax motor;
-	public Boolean attachted;
+	private DigitalInput beambreak;
+	public boolean attached;
 
 	private ManipulatorModes mode;
 	private ManipulatorStates state;
@@ -37,10 +43,11 @@ public class Manipulator extends REVMechanism {
 		}
 	}
 
-	public Manipulator(SparkMax motor, boolean attached, Boolean attachted) {
+	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		ManipulatorConfig config = new ManipulatorConfig();
+		beambreak = new DigitalInput(ManipulatorConstants.channel);
 		this.motor = motor;
+		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
 		this.state = ManipulatorStates.IDLE;
 		config.applySparkConfig(motor);
@@ -57,7 +64,7 @@ public class Manipulator extends REVMechanism {
 
 	@Override
 	protected Config setConfig() {
-		if (attachted) {
+		if (attached) {
 			config.applySparkConfig(motor);
 		}
 		return this.config;
@@ -72,15 +79,16 @@ public class Manipulator extends REVMechanism {
 		SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
 		SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
+		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
 
 		switch (this.mode) {
 			case IDLE:
 				setManipulatorState(ManipulatorStates.IDLE);
 				break;
-			case INTAKE:
+			case SCORE:
 				setManipulatorState(ManipulatorStates.INTAKING);
 				break;
-			case OUTTAKE:
+			case REVERSE:
 				setManipulatorState(ManipulatorStates.OUTTAKING);
 				break;
 			case FEED:
@@ -93,10 +101,25 @@ public class Manipulator extends REVMechanism {
 		this.state = manipulatorStates;
 	}
 
+	protected void stop() {
+		if (attached) {
+			motor.stopMotor();
+		}
+	}
+
+	protected void setZero() {
+		resetPosition();
+	}
+
 	public void runEnum(ManipulatorModes manipulatorMode) {
 		this.mode = manipulatorMode;
 		setVelocity(manipulatorMode.speed);
 	}
+
+	   public Command runManipulatorCommand(ManipulatorModes modes) {
+        return new StartEndCommand(() -> this.runEnum(modes), () -> this.runEnum(ManipulatorModes.IDLE), this)
+                .withName("Cleaner.runEnum");
+    }
 
 	public String getMode() {
 		return this.mode.toString();
@@ -104,6 +127,10 @@ public class Manipulator extends REVMechanism {
 
 	public String getManipulatorState() {
 		return this.state.toString();
+	}
+
+	public boolean getBeambreakStatus() {
+		return beambreak.get();
 	}
 
 }

@@ -1,6 +1,7 @@
 package frc.robot.Subsytems.Intake;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import static edu.wpi.first.units.Units.RPM;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -15,6 +16,7 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Feeder extends REVMechanism {
 
+    private FeederConfig config;
     private SparkMax motor;
     public boolean attachted;
     public SysIdRoutine routine;
@@ -39,20 +41,35 @@ public class Feeder extends REVMechanism {
     }
     private FeederConfig config = new FeederConfig();
 
-    public Feeder(SparkMax motor, FeederConfig config, boolean attachted) {
+
+    public Feeder(SparkMax motor, boolean attachted) {
         super(motor, attachted);
-        this.config = config;
+        System.out.println("Feeder IS ALIVE");
+        FeederConfig config = new FeederConfig();
         this.motor = motor;
         this.mode = FeederModes.IDLE;
         this.state = FeederStates.IDLE;
         config.applySparkConfig(motor);
 
+        Logger.recordOutput("Feeder/Rollers/Mode", getMode());
+        Logger.recordOutput("Feeder/Rollers/Setpoint", mode.speed.in(RPM));
+        Logger.recordOutput("Feeder/Rollers/Velocity", getFeederState());
+        Logger.recordOutput("Feeder/Rollers/Velocity", getMotorVelocity());
+        Logger.recordOutput("Feeder/Rollers/Voltage", getMotorVoltage());
+        Logger.recordOutput("Feeder/Rollers/Current", getMotorCurrent());
+        Logger.recordOutput("Feeder/Rollers/Output", getMotorOutput());
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Feeder Mode", this.getMode());
         SmartDashboard.putString("getFeederState()", "getFeederState");
+        SmartDashboard.putString("Feeder Mode", this.getMode());
+        SmartDashboard.putNumber("Feeder Setpoint", mode.speed.in(RPM));
+        SmartDashboard.putNumber("Feeder Output", getMotorOutput());
+        SmartDashboard.putNumber("Feeder Current", getMotorCurrent());
+        SmartDashboard.putNumber("Feeder Voltage", getMotorVoltage());
+        SmartDashboard.putNumber("Feeder Velocity", getMotorVelocity());
+
         switch (this.mode) {
             case IDLE:
                 setFeederState(FeederStates.IDLE);
@@ -101,6 +118,31 @@ public class Feeder extends REVMechanism {
     }
 
     @AutoLogOutput(key = "Intake/Feeder")
+            case FEEDING:
+                setFeederState(FeederStates.FEEDING);
+                break;
+            case FEEDSPIT:
+                setFeederState(FeederStates.FEEDSPIT);
+                break;
+        }
+
+    }
+
+    public void setFeederState(FeederStates FeederState) {
+        this.state = FeederState;
+    }
+
+    protected void runEnum(FeederModes Feedermode) {
+        this.mode = Feedermode;
+        setVelocity(Feedermode.speed);
+    }
+
+    public Command runFeederCommand(FeederModes FeederModes) {
+        return new StartEndCommand(() -> this.runEnum(FeederModes), () -> this.runEnum(FeederModes.IDLE), this)
+                .withName("Feeder.runEnum");
+    }
+
+
     public String getMode() {
         return this.mode.toString();
     }
@@ -113,7 +155,7 @@ public class Feeder extends REVMechanism {
     @Override
     protected Config setConfig() {
         if (attachted) {
-            setConfig(config);        }
+            setConfig(config);        
         return this.config;
     }
 

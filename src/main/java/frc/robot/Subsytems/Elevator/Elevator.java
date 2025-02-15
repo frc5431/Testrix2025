@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,11 +42,11 @@ public class Elevator extends CTREMechanism {
     private TalonFX leader;
     private TalonFX follower;
 
-    private ElevatorConfig config;
+    private ElevatorConfig config = new ElevatorConfig();
+    private CANrange canRange;
     private boolean attached;
 
     private ElevatorPositions position;
-    @SuppressWarnings("unused")
     private ElevatorStates states;
 
     /**
@@ -56,16 +57,17 @@ public class Elevator extends CTREMechanism {
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
         this.leader = leader;
+        this.states = ElevatorStates.STOWED;
         this.follower = follower;
         this.attached = attached;
-        ElevatorConfig config = new ElevatorConfig();
-        this.config = config;
+        canRange = new CANrange(ElevatorConstants.canRangeId, Constants.canbus);
         this.position = ElevatorPositions.STOW;
         this.config.applyTalonConfig(leader);
 
         if (attached) {
             follower.setControl(new Follower(ElevatorConstants.leftId, ElevatorConstants.follwerInvert));
             Logger.recordOutput("Elevator/Mode", position.toString());
+            Logger.recordOutput("Elevator/States", states.toString());
             Logger.recordOutput("Elevator/Setpoint", position.rotation.in(Rotation));
             Logger.recordOutput("Elevator/Setpoint", position.toString());
             Logger.recordOutput("Elevator/Position", leader.getPosition().getValueAsDouble());
@@ -73,8 +75,10 @@ public class Elevator extends CTREMechanism {
             Logger.recordOutput("Elevator/Output", leader.getMotorOutputStatus().getValueAsDouble());
             Logger.recordOutput("Elevator/Acceleration", leader.getAcceleration().getValueAsDouble());
             Logger.recordOutput("Elevator/Velocity", leader.getVelocity().getValueAsDouble());
-
+        } else if (attached && ElevatorConstants.canRangeAttached) {
+            Logger.recordOutput("Elevator/CanRange", canRange.getDistance().getValueAsDouble());
         }
+
     }
 
     public void periodic() {
@@ -87,6 +91,9 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Elevator Output", leader.getMotorOutputStatus().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Acceleration", leader.getAcceleration().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Velocity", leader.getVelocity().getValueAsDouble());
+            if (attached && ElevatorConstants.canRangeAttached) {
+                SmartDashboard.putNumber("CanRange Distance", canRange.getDistance().getValueAsDouble());
+            }
         }
     }
 
@@ -98,6 +105,7 @@ public class Elevator extends CTREMechanism {
     public void runEnumMM(ElevatorPositions position) {
         this.position = position;
         setMMPosition(position.rotation);
+        this.setDefaultCommand(null);
     }
 
     public void runEnumFOC(ElevatorPositions position) {
@@ -113,6 +121,10 @@ public class Elevator extends CTREMechanism {
 
     protected void setZero() {
         resetPosition();
+    }
+
+    protected void setZeroIntellegent() {
+
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {
@@ -138,7 +150,7 @@ public class Elevator extends CTREMechanism {
     @Override
     protected Config setConfig() {
         if (attached) {
-            config.applyTalonConfig(leader);
+            setConfig(config);
         }
         return this.config;
     }

@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.CleanerConstants;
 import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
 import frc.robot.Util.Constants.CleanerConstants.CleanerStates;
@@ -17,18 +16,13 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Cleaner extends REVMechanism {
 
-    private CleanerConfig config;
-
-    private SparkMax motor;
-    public SysIdRoutine routine;
-
     private CleanerModes mode;
     private CleanerStates state;
 
     public static class CleanerConfig extends Config {
 
         public CleanerConfig() {
-            super("Cleaner", CleanerConstants.id);
+            super("Intake", CleanerConstants.id);
             configIdleMode(CleanerConstants.idleMode);
             configInverted(CleanerConstants.isInverted);
             configGearRatio(CleanerConstants.gearRatio);
@@ -41,10 +35,12 @@ public class Cleaner extends REVMechanism {
         }
     }
 
-    public Cleaner(SparkMax motor, CleanerConfig config, boolean attached) {
-        super(motor, attached);
+    private CleanerConfig config = new CleanerConfig();
 
-        this.config = config;
+    public Cleaner(SparkMax motor, boolean attached){
+        super(motor, attached);
+        this.setConfig(config);
+        
         this.motor = motor;
         this.mode = CleanerModes.IDLE;
         this.state = CleanerStates.IDLE;
@@ -106,7 +102,7 @@ public class Cleaner extends REVMechanism {
     @Override
     protected Config setConfig() {
         if (attached) {
-            config.applySparkConfig(motor);
+            setConfig(config);
         }
         return this.config;
     }
