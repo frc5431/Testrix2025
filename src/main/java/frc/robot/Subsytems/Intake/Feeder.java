@@ -1,6 +1,8 @@
 package frc.robot.Subsytems.Intake;
 
 import static edu.wpi.first.units.Units.RPM;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -16,7 +18,6 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Feeder extends REVMechanism {
 
-    private FeederConfig config;
     private SparkMax motor;
     public boolean attachted;
     public SysIdRoutine routine;
@@ -39,6 +40,8 @@ public class Feeder extends REVMechanism {
             configMaxMotion(FeederConstants.mm_velocity, FeederConstants.mm_maxAccel, FeederConstants.mm_error);
         }
     }
+    private FeederConfig config = new FeederConfig();
+
 
     public Feeder(SparkMax motor, boolean attachted) {
         super(motor, attachted);
@@ -60,7 +63,8 @@ public class Feeder extends REVMechanism {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Feeder Mode", getMode());
+        SmartDashboard.putString("getFeederState()", "getFeederState");
+        SmartDashboard.putString("Feeder Mode", this.getMode());
         SmartDashboard.putNumber("Feeder Setpoint", mode.speed.in(RPM));
         SmartDashboard.putNumber("Feeder Output", getMotorOutput());
         SmartDashboard.putNumber("Feeder Current", getMotorCurrent());
@@ -71,15 +75,16 @@ public class Feeder extends REVMechanism {
             case IDLE:
                 setFeederState(FeederStates.IDLE);
                 break;
-            case FEEDING:
-                setFeederState(FeederStates.FEEDING);
+            case REVERSE:
+                setFeederState(FeederStates.REVERSE);
                 break;
-            case FEEDSPIT:
-                setFeederState(FeederStates.FEEDSPIT);
+            case FEED:
+                setFeederState(FeederStates.FEEDING);
                 break;
         }
 
     }
+
 
     public void setFeederState(FeederStates FeederState) {
         this.state = FeederState;
@@ -100,6 +105,7 @@ public class Feeder extends REVMechanism {
         return this.mode.toString();
     }
 
+    @AutoLogOutput(key = "Intake/Feeder")
     public String getFeederState() {
         return this.state.toString();
     }
@@ -107,8 +113,7 @@ public class Feeder extends REVMechanism {
     @Override
     protected Config setConfig() {
         if (attachted) {
-            config.applySparkConfig(motor);
-        }
+            setConfig(config);   }     
         return this.config;
     }
 
