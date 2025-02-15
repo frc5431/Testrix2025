@@ -1,16 +1,11 @@
 package frc.robot.Util;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -39,16 +34,12 @@ public final class Constants {
             ALGAE,
             CORAL,
         }
-
+        
         public static final int driverPort = 0;
         public static final int operatorPort = 1;
 
         public static final double deadzone = 0.15;
-
-    }
-
-    public static class opConst {
-
+        
         public static final PresetPosition StowPosition = new PresetPosition(
                 ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
 
@@ -594,6 +585,7 @@ public final class Constants {
 
             public Color color;
             public double speed;
+
             AnimationTypes(Color color, double speed) {
                 this.color = color;
                 this.speed = speed;

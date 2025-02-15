@@ -44,6 +44,7 @@ public class Manipulator extends REVMechanism {
 
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
+		motor.getForwardLimitSwitch().isPressed();
 		this.motor = motor;
 		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
