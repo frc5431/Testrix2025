@@ -1,5 +1,6 @@
 package frc.robot.Subsytems.Limelight;
 
+
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.Matrix;
@@ -10,11 +11,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.Robot;
-import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper.PhysicalConfig;
 import frc.robot.Util.Constants.VisionConstants;
 import frc.team5431.titan.core.vision.Limelight;
+import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 
 public class VisionUtil {
 
@@ -29,6 +29,8 @@ public class VisionUtil {
 
         public Distance v_distanceSetpoint;
         public Distance h_distanceSetpoint;
+
+        
 
         public void setLimeLight(Limelight limelight, int pipeline) {
             this.limelight = limelight;
@@ -93,58 +95,43 @@ public class VisionUtil {
 
     }
 
-    /* Limelights */
-    public final VisionHelper leftLL = new VisionHelper(
-            VisionConfig.LEFT_LL,
-             VisionConfig.leftTagPipeline,
-              VisionConfig.LEFT_CONFIG);
-    public final VisionHelper rightLL = new VisionHelper(
-            VisionConfig.RIGHT_LL,
-            VisionConfig.rightTagPipeline,
-            VisionConfig.RIGHT_CONFIG);
-    
-    public final VisionHelper[] allLimelights = {leftLL, rightLL};
-    public final VisionHelper[] poseLimelights = {
-            leftLL, rightLL
-    };
-
-    public static class LimelightLogger {                                           
-        private final Limelight limelight;
+    public static class LimelightLogger {
         private String name;
+        public VisionHelper visionHelper;
 
-        public LimelightLogger(String name, Limelight limelight) {
-            this.limelight = limelight;
+        public LimelightLogger(String name, VisionHelper visionHelper) {
+            this.visionHelper = visionHelper;
             this.name = name;
         }
 
         @AutoLogOutput(key = "Vision/{name}/ConnectionStatus")
         public boolean getCameraConnection() {
-            return limelight.isCameraConnected();
+            return visionHelper.isCameraConnected();
         }
 
         @AutoLogOutput(key = "Vision/{name}/Integrating")
         public boolean getIntegratingStatus() {
-            return limelight.isIntegrating;
+            return visionHelper.isIntegrating;
         }
 
         @AutoLogOutput(key = "Vision/{name}/LogStatus")
         public String getLogStatus() {
-            return limelight.logStatus;
+            return visionHelper.logStatus;
         }
 
         @AutoLogOutput(key = "Vision/{name}/TagStatus")
         public String getTagStatus() {
-            return limelight.tagStatus;
+            return visionHelper.tagStatus;
         }
 
         @AutoLogOutput(key = "Vision/{name}/Pose")
         public Pose2d getPose() {
-            return limelight.getRawPose3d().toPose2d();
+            return visionHelper.getRawPose3d().toPose2d();
         }
 
         @AutoLogOutput(key = "Vision/{name}/MegaPose")
         public Pose2d getMegaPose() {
-            return limelight.getMegaPose2d();
+            return visionHelper.getMegaPose2d();
         }
 
         @AutoLogOutput(key = "Vision/{name}/PoseX")
@@ -159,12 +146,12 @@ public class VisionUtil {
 
         @AutoLogOutput(key = "Vision/{name}/TagCount")
         public double getTagCount() {
-            return limelight.getTagCountInView();
+            return visionHelper.getTagCountInView();
         }
 
         @AutoLogOutput(key = "Vision/{name}/TargetSize")
         public double getTargetSize() {
-            return limelight.getTargetSize();
+            return visionHelper.getTargetSize();
         }
     }
 
