@@ -46,6 +46,7 @@ public class Manipulator extends REVMechanism {
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
 		beambreak = new DigitalInput(ManipulatorConstants.channel);
+		motor.getForwardLimitSwitch().isPressed();
 		this.motor = motor;
 		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;

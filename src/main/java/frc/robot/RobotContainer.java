@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,6 +17,7 @@ import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
+import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
@@ -32,6 +34,7 @@ public class RobotContainer {
 	private final Systems systems = new Systems();
 	
 	private final Intake intake = systems.getIntake();
+	private final Feeder feeder = systems.getFeeder();
 	private final Cleaner cleaner = systems.getCleaner();
 	private final Elevator elevator = systems.getElevator();
 	private final CleanPivot cleanPivot = systems.getCleanPivot();
@@ -54,6 +57,7 @@ public class RobotContainer {
 	// LED Triggers
 
 	// Driver Controls
+	private Trigger climberOut = driver.rightBumper();
 
 	// Operator Controls
 
@@ -104,21 +108,21 @@ public class RobotContainer {
 						.withName("Elevator Stow"));
 
 		scoreL2Preset.onTrue(
-				new ElevatorPresetCommand(opConst.ScoreL2Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint, cleanPivot)
 						.withName("Elevator L2"));
 
 		scoreL3Preset.onTrue(
-				new ElevatorPresetCommand(opConst.ScoreL3Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL3Position, elevator, manipJoint, cleanPivot)
 						.withName("Elevator L3"));
 
 		scoreL4Preset.onTrue(
-				new ElevatorPresetCommand(opConst.ScoreL4Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint, cleanPivot)
 						.withName("Elevator L4"));
 
 		// Intake Controls
 		intakeCoral.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.REVERSE).withName("Score Coral"));
-		reverseFeed.whileTrue(new EjectCoralCommand(intake, manipulator).withName("Coral Outake"));
+		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
 
 		// Cleaner Controls
 		intakeAlgea.whileTrue(cleaner.runCleanerCommand(CleanerModes.INTAKE).withName("Intake Algea"));
@@ -136,6 +140,7 @@ public class RobotContainer {
 		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.BOTH));
 
 		configureOperatorControls();
+		configureDriverControls();
 	}
 
 	public Command getAutonomousCommand() {

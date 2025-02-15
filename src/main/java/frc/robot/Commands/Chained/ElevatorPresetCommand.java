@@ -13,6 +13,12 @@ public class ElevatorPresetCommand extends Command {
     private ManipJoint manipJoint;
     private CleanPivot cleanPivot;
 
+    /**
+     * @param position
+     * @param elevator
+     * @param manipJoint
+     * @param cleanPivot
+     */
     public ElevatorPresetCommand(PresetPosition position, Elevator elevator, ManipJoint manipJoint, CleanPivot cleanPivot) {
         this.position = position;
         this.elevator = elevator;

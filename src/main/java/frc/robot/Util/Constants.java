@@ -34,16 +34,12 @@ public final class Constants {
             ALGAE,
             CORAL,
         }
-
+        
         public static final int driverPort = 0;
         public static final int operatorPort = 1;
 
         public static final double deadzone = 0.15;
-
-    }
-
-    public static class opConst {
-
+        
         public static final PresetPosition StowPosition = new PresetPosition(
                 ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
 
