@@ -110,59 +110,6 @@ public final class Constants {
 
     }
 
-    public static class FeederConstants {
-
-        public enum FeederStates {
-            IDLE,
-            FEEDING,
-            FEEDSPIT,
-            STUCK,
-        }
-
-        public static final boolean attached = true;
-        public static final boolean isInverted = false;
-        public static final int id = 21;
-        public static final double gearRatio = 1 / 1;
-        public static final Current supplyLimit = Units.Amps.of(0);
-        public static final Current stallLimit = Units.Amps.of(0);
-        public static final Angle offset = Units.Rotation.of(0);
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = 0;
-
-        public static final IdleMode idleMode = IdleMode.kCoast;
-        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
-        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
-
-        public static final double p = 0;
-        public static final double i = 0;
-        public static final double d = 0;
-        public static final double maxIAccum = 0;
-
-        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
-        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
-        public static final AngularVelocity error = Units.RPM.of(0);
-
-        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
-        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
-        public static final AngularVelocity mm_error = Units.RPM.of(0);
-
-        public enum FeederModes {
-            IDLE(idleSpeed),
-            FEEDING(intakeSpeed),
-            FEEDSPIT(feedSpeed);
-
-            public AngularVelocity speed;
-
-            FeederModes(AngularVelocity speed) {
-                this.speed = speed;
-            }
-
-        }
-
-    }
-
     public static class CleanerConstants {
 
         public enum CleanerStates {
@@ -455,6 +402,56 @@ public final class Constants {
         }
 
     }
+     public static class FeederConstants {
+
+        public enum FeederStates {
+            IDLE,
+            STUCK,
+            REVERSE,
+            FEEDING,
+        }
+
+        public static final boolean attached = true;
+        public static final boolean isInverted = false;
+        public static final int id = 18;
+        public static final double gearRatio = 1 / 1;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final Angle offset = Units.Rotation.of(0);
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+        public static final double maxIAccum = 0;
+
+        public static final AngularVelocity reverseSpeed = Units.RPM.of(0);
+        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
+        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
+        public static final AngularVelocity error = Units.RPM.of(0);
+
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+
+        public enum FeederModes {
+            IDLE(idleSpeed),
+            REVERSE(reverseSpeed),
+            FEED(feedSpeed);
+
+            public AngularVelocity speed;
+
+            FeederModes(AngularVelocity speed) {
+                this.speed = speed;
+            }
+
+        }
+     }
 
     public static class ClimberConstants {
 
@@ -500,6 +497,41 @@ public final class Constants {
             public Angle angle;
 
             ClimberModes(Angle angle) {
+                this.angle = angle;
+            }
+
+        }
+
+    }
+
+    public static class IntakePivotConstants {
+
+        public enum IntakePivotStates {
+            STOW,
+            INTAKING,
+        }
+
+        public static final int id = 5555555;
+        public static final boolean attached = true;
+        public static final Angle softLimitForwardMax = Units.Rotation.of(0);
+        public static final boolean softLimitEnabled = true;
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
+        public static final Angle stowAngle = Units.Rotation.of(0);
+        public static final Angle intakeAngle = Units.Rotation.of(0);
+        public static final boolean isInverted = false;
+        public static final Angle zeroOffset = Units.Rotation.of(0);
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+
+        public enum IntakePivotModes {
+            STOW(stowAngle),
+            INTAKE(intakeAngle);
+
+            public Angle angle;
+
+            IntakePivotModes(Angle angle) {
                 this.angle = angle;
             }
 
