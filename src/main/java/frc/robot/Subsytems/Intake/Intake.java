@@ -48,7 +48,7 @@ public class Intake extends REVMechanism {
         this.state = IntakeStates.IDLE;
         config.applySparkConfig(motor);
 
-        Logger.recordOutput("Intake/Rollers/Mode", getMode());
+        Logger.recordOutput("Intake/Rollers/Mode", getModeString());
         Logger.recordOutput("Intake/Rollers/Setpoint", mode.speed.in(RPM));
         Logger.recordOutput("Intake/Rollers/Velocity", getIntakeState());
         Logger.recordOutput("Intake/Rollers/Velocity", getMotorVelocity());
@@ -59,7 +59,7 @@ public class Intake extends REVMechanism {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Intake Mode", getMode());
+        SmartDashboard.putString("Intake Mode", getModeString());
         SmartDashboard.putNumber("Intake Setpoint", mode.speed.in(RPM));
         SmartDashboard.putNumber("Intake Output", getMotorOutput());
         SmartDashboard.putNumber("Intake Current", getMotorCurrent());
@@ -107,8 +107,12 @@ public class Intake extends REVMechanism {
                 .withName("Intake.runEnum");
     }
 
-    public String getMode() {
+    public String getModeString() {
         return this.mode.toString();
+    }
+
+    public IntakeModes getMode() {
+        return this.mode;
     }
 
     public String getIntakeState() {

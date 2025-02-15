@@ -16,11 +16,12 @@ public class EjectCoralCommand extends ParallelCommandGroup {
      * @param manipulator
      */
     public EjectCoralCommand(Intake intake, Feeder feeder, Manipulator manipulator) {
-        addRequirements(intake, feeder, manipulator);
         addCommands(
                 intake.runIntakeCommand(IntakeModes.OUTTAKE),
                 feeder.runFeederCommand(FeederModes.REVERSE),
                 manipulator.runManipulatorCommand(ManipulatorModes.REVERSE));
+        addRequirements(intake, feeder, manipulator);
+
     }
 
 }

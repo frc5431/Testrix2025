@@ -585,6 +585,7 @@ public final class Constants {
 
             public Color color;
             public double speed;
+
             AnimationTypes(Color color, double speed) {
                 this.color = color;
                 this.speed = speed;

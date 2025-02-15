@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -22,8 +21,10 @@ import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants.*;
+import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
+import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GamePieceConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
@@ -32,7 +33,7 @@ import frc.team5431.titan.core.joysticks.TitanController;
 public class RobotContainer {
 
 	private final Systems systems = new Systems();
-	
+
 	private final Intake intake = systems.getIntake();
 	private final Feeder feeder = systems.getFeeder();
 	private final Cleaner cleaner = systems.getCleaner();
@@ -50,10 +51,16 @@ public class RobotContainer {
 
 	// Triggers
 
+	// Automated Triggers
+
 	// Gamepiece Status
 	private Trigger hasAlgae = new Trigger(() -> gamePieceStatus == GamePieceStates.ALGAE);
 	private Trigger hasCoral = new Trigger(() -> gamePieceStatus == GamePieceStates.CORAL);
-	
+
+	// Subsystem Triggers
+	private Trigger isIntaking = new Trigger(
+			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
+
 	// LED Triggers
 
 	// Driver Controls
@@ -76,13 +83,14 @@ public class RobotContainer {
 	private Trigger intakeCoral = operator.a();
 	private Trigger scoreCoral = operator.y();
 	private Trigger reverseFeed = operator.rightStick();
-	
+
 	public RobotContainer() {
 		configureBindings();
 	}
 
 	public void periodic() {
 		intake.periodic();
+		feeder.periodic();
 		cleaner.periodic();
 		elevator.periodic();
 		cleanPivot.periodic();
@@ -99,7 +107,7 @@ public class RobotContainer {
 	private void configureOperatorControls() {
 
 		// Elevator Controls
-		processorPreset.onTrue(  
+		processorPreset.onTrue(
 				new ElevatorStowCommand(CleanPivotModes.INTAKE, elevator, manipJoint, cleanPivot)
 						.withName("Elevator Algea Intake"));
 
@@ -134,10 +142,13 @@ public class RobotContainer {
 		// CANdle Statuses
 		candle.setDefaultCommand(candle.titanCommand());
 
+		// Subsystem Status
+		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED));
+
 		// Gamepiece LED Status
-		hasCoral.onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.CORAL));
-		hasAlgae.onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.ALGAE));
-		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(CANdleConstants.AnimationTypes.BOTH));
+		hasCoral.onTrue(candle.changeAnimationCommand(AnimationTypes.CORAL));
+		hasAlgae.onTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
+		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
 
 		configureOperatorControls();
 		configureDriverControls();
