@@ -86,7 +86,7 @@ public class RobotContainer {
 	private void configureOperatorControls() {
 
 		// Elevator Controls
-		stowPreset.onTrue(
+		processorPreset.onTrue(  
 				new ElevatorStowCommand(CleanPivotModes.INTAKE, elevator, manipJoint, cleanPivot)
 						.withName("Elevator Algea Intake"));
 
