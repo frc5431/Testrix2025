@@ -1,6 +1,8 @@
 package frc.robot.Subsytems.Intake;
 
 import static edu.wpi.first.units.Units.RPM;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -16,7 +18,6 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 
 public class Feeder extends REVMechanism {
 
-    private FeederConfig config;
     private SparkMax motor;
     public boolean attachted;
     public SysIdRoutine routine;
@@ -85,49 +86,6 @@ public class Feeder extends REVMechanism {
     }
 
 
-    public void setFeederState(FeederStates feederState) {
-        this.state = feederState;
-    }   
-
-    protected void runEnum(FeederModes feedermode) {
-        this.mode = feedermode;
-        setVelocity(feedermode.speed);
-    }
-
-    public Command runFeederCommand(FeederModes feederModes) {
-        return new StartEndCommand(() -> this.runEnum(feederModes), () -> this.runEnum(FeederModes.IDLE), this)
-                .withName("Feeder.runEnum");
-    }
-
-    @AutoLogOutput(key = "Intake/Feeder")
-    public double getMotorVelocity() {
-        if (attached) {
-            return motor.getEncoder().getVelocity();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Feeder")
-    public double getMotorOutput() {
-        if (attached) {
-            return motor.getAppliedOutput();
-        }
-
-        return 0;
-    }
-
-    @AutoLogOutput(key = "Intake/Feeder")
-            case FEEDING:
-                setFeederState(FeederStates.FEEDING);
-                break;
-            case FEEDSPIT:
-                setFeederState(FeederStates.FEEDSPIT);
-                break;
-        }
-
-    }
-
     public void setFeederState(FeederStates FeederState) {
         this.state = FeederState;
     }
@@ -155,7 +113,7 @@ public class Feeder extends REVMechanism {
     @Override
     protected Config setConfig() {
         if (attachted) {
-            setConfig(config);        
+            setConfig(config);   }     
         return this.config;
     }
 

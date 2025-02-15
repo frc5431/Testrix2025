@@ -110,59 +110,6 @@ public final class Constants {
 
     }
 
-    public static class FeederConstants {
-
-        public enum FeederStates {
-            IDLE,
-            FEEDING,
-            FEEDSPIT,
-            STUCK,
-        }
-
-        public static final boolean attached = true;
-        public static final boolean isInverted = false;
-        public static final int id = 21;
-        public static final double gearRatio = 1 / 1;
-        public static final Current supplyLimit = Units.Amps.of(0);
-        public static final Current stallLimit = Units.Amps.of(0);
-        public static final Angle offset = Units.Rotation.of(0);
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = 0;
-
-        public static final IdleMode idleMode = IdleMode.kCoast;
-        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
-        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
-
-        public static final double p = 0;
-        public static final double i = 0;
-        public static final double d = 0;
-        public static final double maxIAccum = 0;
-
-        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
-        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
-        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
-        public static final AngularVelocity error = Units.RPM.of(0);
-
-        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
-        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
-        public static final AngularVelocity mm_error = Units.RPM.of(0);
-
-        public enum FeederModes {
-            IDLE(idleSpeed),
-            FEEDING(intakeSpeed),
-            FEEDSPIT(feedSpeed);
-
-            public AngularVelocity speed;
-
-            FeederModes(AngularVelocity speed) {
-                this.speed = speed;
-            }
-
-        }
-
-    }
-
     public static class CleanerConstants {
 
         public enum CleanerStates {
