@@ -95,8 +95,8 @@ public class Feeder extends REVMechanism {
         setVelocity(Feedermode.speed);
     }
 
-    public Command runFeederCommand(FeederModes FeederModes) {
-        return new StartEndCommand(() -> this.runEnum(FeederModes), () -> this.runEnum(FeederModes.IDLE), this)
+    public Command runFeederCommand(FeederModes modes) {
+        return new StartEndCommand(() -> this.runEnum(modes), () -> this.runEnum(FeederModes.IDLE), this)
                 .withName("Feeder.runEnum");
     }
 
