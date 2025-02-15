@@ -9,6 +9,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -344,6 +345,26 @@ public final class Constants {
 
         }
 
+    }
+
+    public static class VisionConstants {
+
+        public static final String cameraName = "Vision";
+        public static final Distance leftLLForwardOffset = Units.Inches.of(0);
+        public static final Distance leftLLRightOffset = Units.Inches.of(0);
+        public static final Distance leftLLUpOffset = Units.Inches.of(0);
+        public static final Angle leftLLRollOffset = Units.Degrees.of(0);
+        public static final Angle leftLLPitchOffset = Units.Degrees.of(0);
+        public static final Angle leftLLYawOffset = Units.Degrees.of(0);
+
+        public static final Distance rightLLForwardOffset = Units.Inches.of(0);
+        public static final Distance rightLLRightOffset = Units.Inches.of(0);
+        public static final Distance rightLLUpOffset = Units.Inches.of(0);
+        public static final Angle rightLLRollOffset = Units.Degrees.of(0);
+        public static final Angle rightLLPitchOffset = Units.Degrees.of(0);
+        public static final Angle rightLLYawOffset = Units.Degrees.of(0);
+        
+        
     }
 
     public static class ManipJointConstants {

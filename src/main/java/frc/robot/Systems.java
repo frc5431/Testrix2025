@@ -8,6 +8,7 @@ import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Intake;
+import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
@@ -21,6 +22,7 @@ public class Systems {
     private ManipJoint manipJoint;
     private Cleaner cleaner;
     private CleanPivot cleanPivot;
+    private Vision vision;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
