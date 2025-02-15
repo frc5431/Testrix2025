@@ -3,12 +3,13 @@ package frc.robot.Util;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
-
+import lombok.Setter;
+import lombok.Getter;
 public class PresetPosition {
 
-    private CleanPivotModes pivotMode;
-    private ManipJointPositions jointMode;
-    private ElevatorPositions elevatorMode;
+    @Getter @Setter private CleanPivotModes pivotMode;
+    @Getter @Setter private ManipJointPositions jointMode;
+    @Getter @Setter private ElevatorPositions elevatorMode;
 
     public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode, CleanPivotModes pivotMode) {
         this.elevatorMode = elevatorMode;
@@ -33,29 +34,4 @@ public class PresetPosition {
         this.jointMode = ManipJointPositions.STOW;
         this.pivotMode = pivotMode;
     }
-
-    public ElevatorPositions getElevatorMode() {
-        return elevatorMode;
-    }
-
-    public void setElevatorMode(ElevatorPositions elevatorMode) {
-        this.elevatorMode = elevatorMode;
-    }
-
-    public void setPivotMode(CleanPivotModes pivotMode) {
-        this.pivotMode = pivotMode;
-    }
-
-    public void setJointMode(ManipJointPositions jointMode) {
-        this.jointMode = jointMode;
-    }
-
-    public CleanPivotModes getPivotMode() {
-        return pivotMode;
-    }
-
-    public ManipJointPositions getJointMode() {
-        return jointMode;
-    }
-
 }

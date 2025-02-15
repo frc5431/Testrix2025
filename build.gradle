@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.3.1"
+    id("io.freefair.lombok") version "8.12.1"
 }
 
 java {
@@ -51,6 +52,12 @@ def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
+
+repositories {
+	mavenCentral()
+    maven { url 'https://plugins.gradle.org/m2/' }
+}
+
 dependencies {
 
     implementation 'com.github.frc5431:TitanUtil:2025.3'
@@ -79,6 +86,12 @@ dependencies {
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.36'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 
 task(replayWatch, type: JavaExec) {

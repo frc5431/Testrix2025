@@ -13,16 +13,17 @@ import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.*;
+import lombok.Getter;
 
 public class Systems {
 
-    private Intake intake;
-    private Elevator elevator;
-    private Manipulator manipulator;
-    private ManipJoint manipJoint;
-    private Cleaner cleaner;
-    private CleanPivot cleanPivot;
-    private TitanCANdle candle;
+    @Getter private Intake intake;
+    @Getter private Elevator elevator;
+    @Getter private Manipulator manipulator;
+    @Getter private ManipJoint manipJoint;
+    @Getter private Cleaner cleaner;
+    @Getter private CleanPivot cleanPivot;
+    @Getter  private TitanCANdle candle;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
@@ -60,34 +61,6 @@ public class Systems {
         manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
         manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
         candle = new TitanCANdle();
-    }
-
-    public Intake getIntake() {
-        return intake;
-    }
-
-    public Elevator getElevator() {
-        return elevator;
-    }
-
-    public Manipulator getManipulator() {
-        return manipulator;
-    }
-
-    public ManipJoint getManipJoint() {
-        return manipJoint;
-    }
-
-    public Cleaner getCleaner() {
-        return cleaner;
-    }
-    
-    public CleanPivot getCleanPivot() {
-        return cleanPivot;
-    }
-
-    public TitanCANdle getCandle() {
-        return candle;
     }
 
 }

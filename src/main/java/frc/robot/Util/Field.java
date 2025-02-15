@@ -19,20 +19,14 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import lombok.Getter;
 
 public class Field {
     public static final Distance fieldLength = Units.Inches.of(690.876);
-    private static final Distance halfLength = fieldLength.div(2);
+    @Getter private static final Distance halfLength = fieldLength.div(2);
     public static final Distance fieldWidth = Units.Inches.of(317);
-    private static final Distance halfWidth = fieldWidth.div(2);
+    @Getter private static final Distance halfWidth = fieldWidth.div(2);
 
-    public static Distance getHalfwidth() {
-        return halfWidth;
-    }
-
-    public static Distance getHalfLength() {
-        return halfLength;
-    }
 
     public static final Distance startingLineX =
             Units.Inch.of(299.438); // Measured from the inside of starting line
@@ -202,11 +196,7 @@ public class Field {
         public final Angle pitch;
     }
 
-    private static final Distance aprilTagWidth = Units.Inches.of(6.50);
-
-    public static Distance getApriltagwidth() {
-        return aprilTagWidth;
-    }
+    @Getter private static final Distance aprilTagWidth = Units.Inches.of(6.50);
 
     /** Returns {@code true} if the robot is on the blue alliance. */
     public static boolean isBlue() {

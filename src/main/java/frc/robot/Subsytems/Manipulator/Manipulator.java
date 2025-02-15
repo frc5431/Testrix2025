@@ -20,7 +20,6 @@ public class Manipulator extends REVMechanism {
 
 	private ManipulatorConfig config = new ManipulatorConfig();
 	private SparkMax motor;
-	private DigitalInput beambreak;
 	public boolean attached;
 
 	private ManipulatorModes mode;
@@ -45,7 +44,6 @@ public class Manipulator extends REVMechanism {
 
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		beambreak = new DigitalInput(ManipulatorConstants.channel);
 		this.motor = motor;
 		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
@@ -79,7 +77,7 @@ public class Manipulator extends REVMechanism {
 		SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
 		SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
-		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
+		SmartDashboard.putBoolean("ManipJoint Beambreak Status", getBeambreakStatus());
 
 		switch (this.mode) {
 			case IDLE:
@@ -130,7 +128,7 @@ public class Manipulator extends REVMechanism {
 	}
 
 	public boolean getBeambreakStatus() {
-		return beambreak.get();
+		return motor.getForwardLimitSwitch().isPressed();
 	}
 
 }
