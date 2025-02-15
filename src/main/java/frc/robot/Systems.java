@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -22,6 +23,7 @@ public class Systems {
     private ManipJoint manipJoint;
     private Cleaner cleaner;
     private CleanPivot cleanPivot;
+    private TitanCANdle candle;
     private Vision vision;
 
     /* Kraken X60s */
@@ -59,7 +61,7 @@ public class Systems {
         cleanPivot = new CleanPivot(cleanPivotMotor, CleanPivotConstants.attached);
         manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
         manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
-
+        candle = new TitanCANdle();
     }
 
     public Intake getIntake() {
@@ -84,6 +86,10 @@ public class Systems {
     
     public CleanPivot getCleanPivot() {
         return cleanPivot;
+    }
+
+    public TitanCANdle getCandle() {
+        return candle;
     }
 
 }

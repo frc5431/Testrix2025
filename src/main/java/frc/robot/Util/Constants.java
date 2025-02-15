@@ -1,5 +1,6 @@
 package frc.robot.Util;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
@@ -9,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -102,6 +104,59 @@ public final class Constants {
             public AngularVelocity speed;
 
             IntakeModes(AngularVelocity speed) {
+                this.speed = speed;
+            }
+
+        }
+
+    }
+
+    public static class FeederConstants {
+
+        public enum FeederStates {
+            IDLE,
+            FEEDING,
+            FEEDSPIT,
+            STUCK,
+        }
+
+        public static final boolean attached = true;
+        public static final boolean isInverted = false;
+        public static final int id = 21;
+        public static final double gearRatio = 1 / 1;
+        public static final Current supplyLimit = Units.Amps.of(0);
+        public static final Current stallLimit = Units.Amps.of(0);
+        public static final Angle offset = Units.Rotation.of(0);
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = 0;
+
+        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
+        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
+
+        public static final double p = 0;
+        public static final double i = 0;
+        public static final double d = 0;
+        public static final double maxIAccum = 0;
+
+        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity feedSpeed = Units.RPM.of(0);
+        public static final AngularVelocity idleSpeed = Units.RPM.of(0);
+        public static final AngularVelocity error = Units.RPM.of(0);
+
+        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
+        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
+        public static final AngularVelocity mm_error = Units.RPM.of(0);
+
+        public enum FeederModes {
+            IDLE(idleSpeed),
+            FEEDING(intakeSpeed),
+            FEEDSPIT(feedSpeed);
+
+            public AngularVelocity speed;
+
+            FeederModes(AngularVelocity speed) {
                 this.speed = speed;
             }
 
@@ -250,11 +305,6 @@ public final class Constants {
             }
 
         }
-
-    }
-
-    public static class LEDConstants {
-        public static final int candle = 18;
 
     }
 
@@ -478,4 +528,37 @@ public final class Constants {
 
     }
 
+    public static class CANdleConstants {
+        public static final int id = 0;
+
+        // Team Colors
+        public static final Color darkBlue = new Color(0, 0, 139);
+        public static final Color cyanish = new Color(13, 228, 252);
+        public static final Color purple = new Color(160, 0, 217);
+
+        // Game Piece Colors
+        public static final Color algaeGreen = new Color(69, 206, 162);
+        public static final Color coralWhite = new Color(255, 230, 220);
+
+        // Indicator Colors
+        public static final Color green = new Color(56, 209, 0);
+        public static final Color blue = new Color(8, 32, 255);
+        public static final Color red = new Color(255, 0, 0);
+
+        // Misc
+        public static final Color black = new Color(0, 0, 0);
+        public static final Color orange = new Color(255, 25, 0);
+
+        // Animations
+        public enum AnimationTypes {
+            CORAL,
+            ALGAE,
+            BOTH,
+            SLOW_WHITE,
+            FLASHING_ORANGE,
+            BLINK_RED,
+            FLASHING_GREEN,
+            OFF;
+        }
+    }
 }

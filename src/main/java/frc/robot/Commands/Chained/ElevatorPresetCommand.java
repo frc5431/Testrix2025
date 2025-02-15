@@ -18,6 +18,7 @@ public class ElevatorPresetCommand extends Command {
         this.elevator = elevator;
         this.manipJoint = manipJoint;
         this.cleanPivot = cleanPivot;
+        this.addRequirements(elevator, manipJoint, cleanPivot);
     }
 
     @Override
