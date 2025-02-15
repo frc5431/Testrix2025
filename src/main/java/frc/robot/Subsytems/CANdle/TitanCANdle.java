@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.CANdleConstants;
@@ -37,6 +38,8 @@ public class TitanCANdle extends SubsystemBase {
 
     TitanPrideColor currentPRIDE = TitanPrideColor.BLUE;
 
+    private boolean hasRunThisSecond = false;
+
     public TitanCANdle() {
         CANdleConfiguration config = new CANdleConfiguration();
         config.statusLedOffWhenActive = true;
@@ -46,7 +49,7 @@ public class TitanCANdle extends SubsystemBase {
         config.vBatOutputMode = VBatOutputMode.Modulated;
         candle.configAllSettings(config, 100);
 
-        this.setDefaultCommand(() -> titanPride());
+        
     }
 
     public void setBrightness(double percent) {
@@ -55,8 +58,9 @@ public class TitanCANdle extends SubsystemBase {
 
     public void titanPride() {
         int timeSec = LocalTime.now().getSecond();
-
-        if (timeSec % 2 == 0) {
+        
+        if (timeSec % 2 == 0 && !hasRunThisSecond) {
+            hasRunThisSecond = true;
             switch(currentPRIDE) {
                 case BLUE:
                     LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.purple, 1);
@@ -66,6 +70,8 @@ public class TitanCANdle extends SubsystemBase {
                 LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.darkBlue, 1);
             }
                 
+        }else {
+            hasRunThisSecond = false;
         }
     }
 
@@ -76,6 +82,9 @@ public class TitanCANdle extends SubsystemBase {
         });
     }
 
+    public Command titanCommand() {
+        return new RunCommand(() -> titanPride(), this);
+    }
 
     public void changeAnimation(AnimationTypes type) {
         switch (type) {

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Chained.EjectCoralCommand;
 import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
+import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -35,6 +36,7 @@ public class RobotContainer {
 	private final CleanPivot cleanPivot = systems.getCleanPivot();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
+	private final TitanCANdle candle = systems.getCandle();
 
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
@@ -116,8 +118,9 @@ public class RobotContainer {
 	}
 
 	public void configureBindings() {
-		configureOperatorControls();
 
+		configureOperatorControls();
+		candle.setDefaultCommand(candle.titanCommand());
 	}
 
 	public Command getAutonomousCommand() {

@@ -33,6 +33,7 @@ public final class Constants {
 
     }
 
+
     public static class opConst {
 
         public static final PresetPosition StowPosition = new PresetPosition(
@@ -483,6 +484,7 @@ public final class Constants {
             SLOW_WHITE,
             FLASHING_ORANGE,
             BLINK_RED,
+            FLASHING_GREEN,
             OFF;
         }
     }
