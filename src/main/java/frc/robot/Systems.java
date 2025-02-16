@@ -10,6 +10,7 @@ import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
+import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
@@ -18,16 +19,17 @@ import lombok.Getter;
 
 public class Systems {
 
-    private MotorType kBrushless = MotorType.kBrushless;
+    private MotorType brushless = MotorType.kBrushless;
 
     @Getter private Intake intake;
+    @Getter private IntakePivot intakePivot;
     @Getter private Feeder feeder;
     @Getter private Elevator elevator;
     @Getter private Manipulator manipulator;
     @Getter private ManipJoint manipJoint;
     @Getter private Cleaner cleaner;
     @Getter private CleanPivot cleanPivot;
-    @Getter  private TitanCANdle candle;
+    @Getter private TitanCANdle candle;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
@@ -39,6 +41,7 @@ public class Systems {
     private SparkMax cleanPivotMotor;
     private SparkMax manipJointMotor;
     private SparkMax feederMotor;
+    private SparkMax intakePivotMotor;
 
     /* Neo 550s */
     private SparkMax manipulatorMotor;
@@ -50,18 +53,20 @@ public class Systems {
         elevatorRight = new TalonFX(ElevatorConstants.rightId, Constants.canbus);
 
         /* Neo 1.1s */
-        intakeMotor = new SparkMax(IntakeConstants.id, kBrushless);
-        cleanerMotor = new SparkMax(CleanerConstants.id, kBrushless);
-        cleanPivotMotor = new SparkMax(CleanPivotConstants.id, kBrushless);
-        manipJointMotor = new SparkMax(ManipJointConstants.id, kBrushless);
-        feederMotor = new SparkMax(FeederConstants.id, kBrushless);
+        intakeMotor = new SparkMax(IntakeConstants.id, brushless);
+        intakePivotMotor = new SparkMax(IntakePivotConstants.id, brushless);
+        cleanerMotor = new SparkMax(CleanerConstants.id, brushless);
+        cleanPivotMotor = new SparkMax(CleanPivotConstants.id, brushless);
+        manipJointMotor = new SparkMax(ManipJointConstants.id, brushless);
+        feederMotor = new SparkMax(FeederConstants.id, brushless);
 
         /* Neo 550s */
-        manipulatorMotor = new SparkMax(ManipulatorConstants.id, kBrushless);
+        manipulatorMotor = new SparkMax(ManipulatorConstants.id, brushless);
 
         /*----------*/
         feeder = new Feeder(feederMotor, FeederConstants.attached);
         intake = new Intake(intakeMotor, IntakeConstants.attached);
+        intakePivot = new IntakePivot(intakePivotMotor, IntakePivotConstants.attached);
         elevator = new Elevator(elevatorLeft, elevatorRight, ElevatorConstants.attached);
         cleaner = new Cleaner(cleanerMotor, CleanerConstants.attached);
         cleanPivot = new CleanPivot(cleanPivotMotor, CleanPivotConstants.attached);

@@ -18,7 +18,7 @@ import lombok.Setter;
 
 public class Cleaner extends REVMechanism {
 
-    @Getter @Setter private CleanerModes mode;
+    @Getter private CleanerModes mode;
     @Getter @Setter private CleanerStates state;
 
     public static class CleanerConfig extends Config {
@@ -27,7 +27,7 @@ public class Cleaner extends REVMechanism {
             super("Intake", CleanerConstants.id);
             configIdleMode(CleanerConstants.idleMode);
             configInverted(CleanerConstants.isInverted);
-            configGearRatio(CleanerConstants.gearRatio);
+            configEncoderPosRatio(CleanerConstants.gearRatio);
             configMaxIAccum(CleanerConstants.maxIAccum);
             configMaxMotionPositionMode(CleanerConstants.mm_positionMode);
             configPIDGains(CleanerConstants.p, CleanerConstants.i, CleanerConstants.d);

@@ -359,13 +359,13 @@ public final class Constants {
             INTAKING,
         }
 
-        public static final int id = 5555555;
+        public static final int id = 20;
         public static final boolean attached = true;
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
         public static final Angle softLimitReverseMax = Units.Rotation.of(0);
         public static final Angle stowAngle = Units.Rotation.of(0);
-        public static final Angle intakeAngle = Units.Rotation.of(0);
+        public static final Angle deployAngle = Units.Rotation.of(0);
         public static final boolean isInverted = false;
         public static final Angle zeroOffset = Units.Rotation.of(0);
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
@@ -375,7 +375,7 @@ public final class Constants {
 
         public enum IntakePivotModes {
             STOW(stowAngle),
-            INTAKE(intakeAngle);
+            DEPLOY(deployAngle);
 
             public Angle angle;
 
@@ -461,7 +461,7 @@ public final class Constants {
 
         public static final boolean attached = true;
         public static final boolean isInverted = false;
-        public static final int id = 18;
+        public static final int id = 22;
         public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
         public static final Current stallLimit = Units.Amps.of(0);

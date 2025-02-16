@@ -21,7 +21,7 @@ public class Climber extends REVMechanism {
     public boolean attached;
     public SysIdRoutine routine;
 
-    @Getter @Setter private ClimberModes mode;
+    @Getter private ClimberModes mode;
     @Getter @Setter private ClimberStates state;
 
     public static class ClimberConfig extends Config {
@@ -30,7 +30,7 @@ public class Climber extends REVMechanism {
             super("Climber", ClimberConstants.id);
             configIdleMode(ClimberConstants.idleMode);
             configInverted(ClimberConstants.isInverted);
-            configGearRatio(ClimberConstants.gearRatio);
+            configEncoderPosRatio(ClimberConstants.gearRatio);
             configMaxIAccum(ClimberConstants.maxIAccum);
             configMaxMotionPositionMode(ClimberConstants.mm_positionMode);
             configPIDGains(ClimberConstants.p, ClimberConstants.i, ClimberConstants.d);

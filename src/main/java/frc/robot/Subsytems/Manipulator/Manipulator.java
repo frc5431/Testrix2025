@@ -23,7 +23,7 @@ public class Manipulator extends REVMechanism {
 	private SparkMax motor;
 	public boolean attached;
 
-	@Getter @Setter private ManipulatorModes mode;
+	@Getter private ManipulatorModes mode;
 	@Getter @Setter private ManipulatorStates state;
 
 	public static class ManipulatorConfig extends Config {
@@ -32,7 +32,7 @@ public class Manipulator extends REVMechanism {
 			super("Manipulator", ManipulatorConstants.id);
 			configIdleMode(ManipulatorConstants.idleMode);
 			configInverted(ManipulatorConstants.isInverted);
-			configGearRatio(ManipulatorConstants.gearRatio);
+			configEncoderPosRatio(ManipulatorConstants.gearRatio);
 			configMaxIAccum(ManipulatorConstants.maxIAccum);
 			configMaxMotionPositionMode(ManipulatorConstants.mm_positionMode);
 			configPIDGains(ManipulatorConstants.p, ManipulatorConstants.i, ManipulatorConstants.d);

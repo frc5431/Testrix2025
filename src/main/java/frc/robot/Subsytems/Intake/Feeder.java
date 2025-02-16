@@ -23,7 +23,7 @@ public class Feeder extends REVMechanism {
     public boolean attachted;
     public SysIdRoutine routine;
 
-    @Getter @Setter private FeederModes mode;
+    @Getter private FeederModes mode;
     @Getter @Setter private FeederStates state;
 
     public static class FeederConfig extends Config {
@@ -32,7 +32,7 @@ public class Feeder extends REVMechanism {
             super("Feeder", FeederConstants.id);
             configIdleMode(FeederConstants.idleMode);
             configInverted(FeederConstants.isInverted);
-            configGearRatio(FeederConstants.gearRatio);
+            configEncoderPosRatio(FeederConstants.gearRatio);
             configMaxIAccum(FeederConstants.maxIAccum);
             configMaxMotionPositionMode(FeederConstants.mm_positionMode);
             configPIDGains(FeederConstants.p, FeederConstants.i, FeederConstants.d);

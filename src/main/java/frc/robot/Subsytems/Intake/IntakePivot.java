@@ -26,7 +26,7 @@ public class IntakePivot extends REVMechanism {
 	public double massKg;
 	public boolean isShooter;
 
-	@Getter @Setter public IntakePivotModes mode;
+	@Getter public IntakePivotModes mode;
 	@Getter @Setter public IntakePivotStates state;
 
 	public static class PivotConfig extends Config {
@@ -42,7 +42,7 @@ public class IntakePivot extends REVMechanism {
 	}
 	private PivotConfig config = new PivotConfig();
 
-	public IntakePivot(PivotConfig config, SparkMax motor, boolean attached) {
+	public IntakePivot(SparkMax motor, boolean attached) {
 		super(motor, attached);
 
 		this.config = config;

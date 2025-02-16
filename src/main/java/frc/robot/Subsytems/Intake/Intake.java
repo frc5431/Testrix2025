@@ -23,7 +23,7 @@ public class Intake extends REVMechanism {
     public boolean attached;
     public SysIdRoutine routine;
 
-    @Getter @Setter private IntakeModes mode;
+    @Getter private IntakeModes mode;
     @Getter @Setter private IntakeStates state;
 
     public static class IntakeConfig extends Config {
@@ -32,7 +32,7 @@ public class Intake extends REVMechanism {
             super("Intake", IntakeConstants.id);
             configIdleMode(IntakeConstants.idleMode);
             configInverted(IntakeConstants.isInverted);
-            configGearRatio(IntakeConstants.gearRatio);
+            configEncoderPosRatio(IntakeConstants.gearRatio);
             configMaxIAccum(IntakeConstants.maxIAccum);
             configMaxMotionPositionMode(IntakeConstants.mm_positionMode);
             configPIDGains(IntakeConstants.p, IntakeConstants.i, IntakeConstants.d);

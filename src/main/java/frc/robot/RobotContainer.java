@@ -29,6 +29,7 @@ import frc.robot.Util.Constants.GamePieceConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.team5431.titan.core.joysticks.TitanController;
+import lombok.Getter;
 
 public class RobotContainer {
 
@@ -41,7 +42,7 @@ public class RobotContainer {
 	private final CleanPivot cleanPivot = systems.getCleanPivot();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
-	private final TitanCANdle candle = systems.getCandle();
+	@Getter private final TitanCANdle candle = systems.getCandle();
 
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
@@ -76,8 +77,8 @@ public class RobotContainer {
 	private Trigger scoreL4Preset = operator.upDpad();
 
 	// Cleaner Controls
-	private Trigger intakeAlgea = operator.b();
-	private Trigger outtakeAlgea = operator.x();
+	private Trigger intakeAlgae = operator.b();
+	private Trigger outtakeAlgae = operator.x();
 
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
@@ -109,7 +110,7 @@ public class RobotContainer {
 		// Elevator Controls
 		processorPreset.onTrue(
 				new ElevatorStowCommand(CleanPivotModes.INTAKE, elevator, manipJoint, cleanPivot)
-						.withName("Elevator Algea Intake"));
+						.withName("Elevator Algae Intake"));
 
 		stowPreset.onTrue(
 				new ElevatorStowCommand(CleanPivotModes.STOW, elevator, manipJoint, cleanPivot)
@@ -133,8 +134,8 @@ public class RobotContainer {
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
 
 		// Cleaner Controls
-		intakeAlgea.whileTrue(cleaner.runCleanerCommand(CleanerModes.INTAKE).withName("Intake Algea"));
-		outtakeAlgea.whileTrue(cleaner.runCleanerCommand(CleanerModes.OUTTAKE).withName("Outtake Algea"));
+		intakeAlgae.whileTrue(cleaner.runCleanerCommand(CleanerModes.INTAKE).withName("Intake Algae"));
+		outtakeAlgae.whileTrue(cleaner.runCleanerCommand(CleanerModes.OUTTAKE).withName("Outtake Algae"));
 
 	}
 

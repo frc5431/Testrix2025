@@ -22,12 +22,8 @@ public class ManipJoint extends REVMechanism {
 	private SparkMax motor;
 	public boolean attached;
 
-	@Getter
-	@Setter
-	private ManipJointPositions mode;
-	@Getter
-	@Setter
-	private ManipJointStates state;
+	@Getter private ManipJointPositions mode;
+	@Getter @Setter private ManipJointStates state;
 
 	public static class ManipJointConfig extends Config {
 
@@ -35,7 +31,7 @@ public class ManipJoint extends REVMechanism {
 			super("ManipJoint", ManipJointConstants.id);
 			configIdleMode(ManipJointConstants.idleMode);
 			configInverted(ManipJointConstants.isInverted);
-			configGearRatio(ManipJointConstants.gearRatio);
+			configEncoderPosRatio(ManipJointConstants.gearRatio);
 			configMaxIAccum(ManipJointConstants.maxIAccum);
 			configMaxMotionPositionMode(ManipJointConstants.mm_positionMode);
 			configPIDGains(ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);

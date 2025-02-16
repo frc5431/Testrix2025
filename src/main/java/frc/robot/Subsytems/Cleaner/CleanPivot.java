@@ -29,7 +29,7 @@ public class CleanPivot extends REVMechanism {
 	public boolean isShooter;
 	public boolean attached;
 
-	@Getter @Setter public CleanPivotModes mode;
+	@Getter public CleanPivotModes mode;
 	@Getter @Setter public CleanPivotStates state;
 	public static class PivotConfig extends Config {
 

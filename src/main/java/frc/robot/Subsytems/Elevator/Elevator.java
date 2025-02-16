@@ -54,7 +54,7 @@ public class Elevator extends CTREMechanism {
     private CANrange canRange;
     private boolean attached;
 
-    @Getter @Setter private ElevatorPositions position;
+    @Getter private ElevatorPositions position;
     @Getter @Setter private ElevatorStates states;
 
     /**
