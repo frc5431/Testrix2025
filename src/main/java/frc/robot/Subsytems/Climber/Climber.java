@@ -13,14 +13,16 @@ import frc.robot.Util.Constants.ClimberConstants;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
 import frc.robot.Util.Constants.ClimberConstants.ClimberStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Climber extends REVMechanism {
 
     public boolean attached;
     public SysIdRoutine routine;
 
-    private ClimberModes mode;
-    private ClimberStates state;
+    @Getter @Setter private ClimberModes mode;
+    @Getter @Setter private ClimberStates state;
 
     public static class ClimberConfig extends Config {
 
@@ -50,7 +52,7 @@ public class Climber extends REVMechanism {
         config.applySparkConfig(motor);
 
         Logger.recordOutput("Climber/Mode", getMode());
-		Logger.recordOutput("Climber/State", getClimberState());
+		Logger.recordOutput("Climber/State", getState());
 		Logger.recordOutput("Climber/Setpoint", mode.angle.in(Rotations));
 		Logger.recordOutput("Climber/Velocity", getMotorVelocity());
 		Logger.recordOutput("Climber/Voltage", getMotorVoltage());
@@ -60,38 +62,26 @@ public class Climber extends REVMechanism {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Climber Mode", this.getMode());
-        SmartDashboard.putString("Climber State", getClimberState());
-		SmartDashboard.putNumber("Climber Setpoint", mode.angle.in(Rotations));
+        SmartDashboard.putString("Climber Mode", getMode().toString());
+        SmartDashboard.putString("Climber State", getState().toString());
+		SmartDashboard.putNumber("Climber Setpoint", getMode().angle.in(Rotations));
 		SmartDashboard.putNumber("Climber Velocity", getMotorVelocity());
 		SmartDashboard.putNumber("Climber Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Climber Current", getMotorCurrent());
 		SmartDashboard.putNumber("Climber Output", getMotorOutput());
 
-        switch (this.mode) {
+        switch (getMode()) {
             case STOW:
-                setClimberState(ClimberStates.STOW);
+                setState(ClimberStates.STOW);
                 break;
             case ALIGN:
-                setClimberState(ClimberStates.ALIGN);
+                setState(ClimberStates.ALIGN);
                 break;
             case CLIMB:
-                setClimberState(ClimberStates.CLIMB);
+                setState(ClimberStates.CLIMB);
                 break;
         }
 
-    }
-
-    public void setClimberState(ClimberStates ClimberState) {
-        this.state = ClimberState;
-    }
-
-    public String getClimberState() {
-        return this.state.toString();
-    }
-
-    public String getMode() {
-        return this.mode.toString();
     }
 
     protected void runEnum(ClimberModes Climbermode) {

@@ -15,16 +15,19 @@ import frc.robot.Util.Constants.IntakePivotConstants;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class IntakePivot extends REVMechanism {
 
 	public SparkMax motor;
 	public SparkClosedLoopController controller;
 	public AbsoluteEncoder absoluteEncoder;
-	public IntakePivotModes mode;
-	public IntakePivotStates state;
 	public double massKg;
 	public boolean isShooter;
+
+	@Getter @Setter public IntakePivotModes mode;
+	@Getter @Setter public IntakePivotStates state;
 
 	public static class PivotConfig extends Config {
 
@@ -49,8 +52,9 @@ public class IntakePivot extends REVMechanism {
 
 		config.applySparkConfig(motor);
 
-		Logger.recordOutput("Intake/Pivot/Mode", mode.toString());
-		Logger.recordOutput("Intake/Pivot/SetPoint", mode.angle.in(Rotation));
+		Logger.recordOutput("Intake/Pivot/Mode", getMode());
+		Logger.recordOutput("Intake/Pivot/State", getState());
+		Logger.recordOutput("Intake/Pivot/SetPoint", getMode().angle.in(Rotation));
 		Logger.recordOutput("Intake/Pivot/Output", getMotorOutput());
 		Logger.recordOutput("Intake/Pivot/Position", absoluteEncoder.getPosition());
 		Logger.recordOutput("Intake/Pivot/Current", getMotorCurrent());
@@ -59,17 +63,14 @@ public class IntakePivot extends REVMechanism {
 	}
 
 	public void periodic() {
-		SmartDashboard.putString("Intake Pivot Mode", mode.toString());
-		SmartDashboard.putNumber("Intake Pivot SetPoint", mode.angle.in(Rotation));
+		SmartDashboard.putString("Intake Pivot Mode", getMode().toString());
+		SmartDashboard.putString("Intake Pivot State", getState().toString());
+		SmartDashboard.putNumber("Intake Pivot SetPoint", getMode().angle.in(Rotation));
 		SmartDashboard.putNumber("Intake Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Intake Pivot Position", absoluteEncoder.getPosition());
 		SmartDashboard.putNumber("Intake Pivot Current", getMotorCurrent());
 		SmartDashboard.putNumber("Intake Pivot Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Intake Pivot Velocity", getMotorVelocity());
-	}
-
-	public void setManipJointState(IntakePivotStates IntakePivotStates) {
-		this.state = IntakePivotStates;
 	}
 
 	protected void runEnum(IntakePivotModes IntakePivotModes) {
@@ -110,14 +111,6 @@ public class IntakePivot extends REVMechanism {
 	public Command IntakePivotResetPositionCommand() {
 		return new RunCommand(() -> this.setZero(), this)
 				.withName("IntakePivot.setZero");
-	}
-
-	public String getMode() {
-		return this.mode.toString();
-	}
-
-	public String getManipJointState() {
-		return this.state.toString();
 	}
 
 	@Override

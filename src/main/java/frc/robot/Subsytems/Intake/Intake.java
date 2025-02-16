@@ -13,6 +13,8 @@ import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakeConstants.IntakeStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Intake extends REVMechanism {
 
@@ -21,8 +23,8 @@ public class Intake extends REVMechanism {
     public boolean attached;
     public SysIdRoutine routine;
 
-    private IntakeModes mode;
-    private IntakeStates state;
+    @Getter @Setter private IntakeModes mode;
+    @Getter @Setter private IntakeStates state;
 
     public static class IntakeConfig extends Config {
 
@@ -48,9 +50,10 @@ public class Intake extends REVMechanism {
         this.state = IntakeStates.IDLE;
         config.applySparkConfig(motor);
 
-        Logger.recordOutput("Intake/Rollers/Mode", getModeString());
-        Logger.recordOutput("Intake/Rollers/Setpoint", mode.speed.in(RPM));
-        Logger.recordOutput("Intake/Rollers/Velocity", getIntakeState());
+        Logger.recordOutput("Intake/Rollers/Mode", getMode());
+        Logger.recordOutput("Intake/Rollers/State", getState());
+        Logger.recordOutput("Intake/Rollers/Setpoint", getMode().speed.in(RPM));
+        Logger.recordOutput("Intake/Rollers/Velocity", getState());
         Logger.recordOutput("Intake/Rollers/Velocity", getMotorVelocity());
         Logger.recordOutput("Intake/Rollers/Voltage", getMotorVoltage());
         Logger.recordOutput("Intake/Rollers/Current", getMotorCurrent());
@@ -59,8 +62,9 @@ public class Intake extends REVMechanism {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Intake Mode", getModeString());
-        SmartDashboard.putNumber("Intake Setpoint", mode.speed.in(RPM));
+        SmartDashboard.putString("Intake Mode", getMode().toString());
+        SmartDashboard.putString("Intake State", getState().toString());
+        SmartDashboard.putNumber("Intake Setpoint", getMode().speed.in(RPM));
         SmartDashboard.putNumber("Intake Output", getMotorOutput());
         SmartDashboard.putNumber("Intake Current", getMotorCurrent());
         SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
@@ -68,23 +72,19 @@ public class Intake extends REVMechanism {
 
         switch (this.mode) {
             case IDLE:
-                setIntakeState(IntakeStates.IDLE);
+                setState(IntakeStates.IDLE);
                 break;
             case INTAKE:
-                setIntakeState(IntakeStates.INTAKING);
+                setState(IntakeStates.INTAKING);
                 break;
             case OUTTAKE:
-                setIntakeState(IntakeStates.OUTTAKING);
+                setState(IntakeStates.OUTTAKING);
                 break;
             case FEED:
-                setIntakeState(IntakeStates.FEEDING);
+                setState(IntakeStates.FEEDING);
                 break;
         }
 
-    }
-
-    public void setIntakeState(IntakeStates intakeState) {
-        this.state = intakeState;
     }
 
 	protected void stop() {
@@ -105,18 +105,6 @@ public class Intake extends REVMechanism {
     public Command runIntakeCommand(IntakeModes intakeModes) {
         return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this)
                 .withName("Intake.runEnum");
-    }
-
-    public String getModeString() {
-        return this.mode.toString();
-    }
-
-    public IntakeModes getMode() {
-        return this.mode;
-    }
-
-    public String getIntakeState() {
-        return this.state.toString();
     }
 
     @Override

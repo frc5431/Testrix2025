@@ -17,6 +17,8 @@ import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorStates;
 import frc.team5431.titan.core.subsystem.CTREMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Elevator extends CTREMechanism {
 
@@ -52,8 +54,8 @@ public class Elevator extends CTREMechanism {
     private CANrange canRange;
     private boolean attached;
 
-    private ElevatorPositions position;
-    private ElevatorStates states;
+    @Getter @Setter private ElevatorPositions position;
+    @Getter @Setter private ElevatorStates states;
 
     /**
      * @param leader   json
@@ -73,9 +75,9 @@ public class Elevator extends CTREMechanism {
 
         if (attached) {
             follower.setControl(new Follower(ElevatorConstants.leftId, ElevatorConstants.follwerInvert));
-            Logger.recordOutput("Elevator/Mode", position.toString());
-            Logger.recordOutput("Elevator/States", states.toString());
-            Logger.recordOutput("Elevator/Setpoint", position.rotation.in(Rotation));
+            Logger.recordOutput("Elevator/Mode", getPosition());
+            Logger.recordOutput("Elevator/States", getStates());
+            Logger.recordOutput("Elevator/Setpoint", getPosition().rotation.in(Rotation));
             Logger.recordOutput("Elevator/CANCoderPosition", elevatorCANcoder.getPosition().getValueAsDouble());
             Logger.recordOutput("Elevator/Position", leader.getPosition().getValueAsDouble());
             Logger.recordOutput("Elevator/Voltage", leader.getMotorVoltage().getValueAsDouble());
@@ -93,8 +95,9 @@ public class Elevator extends CTREMechanism {
 
     public void periodic() {
         if (attached) {
-            SmartDashboard.putString("Elevator Mode", position.toString());
-            SmartDashboard.putNumber("Elevator Setpoint", position.rotation.in(Rotation));
+            SmartDashboard.putString("Elevator Mode", getPosition().toString());
+            SmartDashboard.putString("Elevator State", getStates().toString());
+            SmartDashboard.putNumber("Elevator Setpoint", getPosition().rotation.in(Rotation));
             SmartDashboard.putNumber("Elevator Position", leader.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator/CANCoderPosition", elevatorCANcoder.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Position", follower.getPosition().getValueAsDouble());

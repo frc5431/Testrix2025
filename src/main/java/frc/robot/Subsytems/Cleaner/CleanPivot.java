@@ -16,6 +16,8 @@ import frc.robot.Util.Constants.CleanPivotConstants;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CleanPivot extends REVMechanism {
 
@@ -23,12 +25,12 @@ public class CleanPivot extends REVMechanism {
 	public SparkClosedLoopController controller;
 	public AbsoluteEncoder absoluteEncoder;
 	public RelativeEncoder relativeEncoder;
-	public CleanPivotModes mode;
-	public CleanPivotStates state;
 	public double massKg;
 	public boolean isShooter;
 	public boolean attached;
 
+	@Getter @Setter public CleanPivotModes mode;
+	@Getter @Setter public CleanPivotStates state;
 	public static class PivotConfig extends Config {
 
 		public PivotConfig() {
@@ -53,8 +55,9 @@ public class CleanPivot extends REVMechanism {
 		this.state = CleanPivotStates.STOW;
 		config.applySparkConfig(motor);
 
-		Logger.recordOutput("Cleaner/Pivot/Mode", mode.toString());
-		Logger.recordOutput("Cleaner/Pivot/Setpoint", mode.angle.in(Rotation));
+		Logger.recordOutput("Cleaner/Pivot/Mode", getMode());
+		Logger.recordOutput("Cleaner/Pivot/State", getState());
+		Logger.recordOutput("Cleaner/Pivot/Setpoint", getMode().angle.in(Rotation));
 		Logger.recordOutput("Cleaner/Pivot/Output", getMotorOutput());
 		Logger.recordOutput("Cleaner/Pivot/Position", absoluteEncoder.getPosition());
 		Logger.recordOutput("Cleaner/Pivot/Current", getMotorCurrent());
@@ -63,17 +66,14 @@ public class CleanPivot extends REVMechanism {
 	}
 
 	public void periodic() {
-		SmartDashboard.putString("Cleaner Pivot Mode", mode.toString());
-		SmartDashboard.putNumber("Cleaner Pivot Setpoint", mode.angle.in(Rotation));
+		SmartDashboard.putString("Cleaner Pivot Mode", getMode().toString());
+		SmartDashboard.putString("Cleaner Pivot Mode", getState().toString());
+		SmartDashboard.putNumber("Cleaner Pivot Setpoint", getMode().angle.in(Rotation));
 		SmartDashboard.putNumber("Cleaner Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Cleaner Pivot Position", absoluteEncoder.getPosition());
 		SmartDashboard.putNumber("Cleaner Pivot Current", getMotorCurrent());
 		SmartDashboard.putNumber("Cleaner Pivot Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Cleaner Pivot Velocity", getMotorVelocity());
-	}
-
-	public void setManipJointState(CleanPivotStates cleanerPivotStates) {
-		this.state = cleanerPivotStates;
 	}
 
 	public void runEnum(CleanPivotModes cleanPivotModes) {
@@ -114,14 +114,6 @@ public class CleanPivot extends REVMechanism {
 	public Command cleanerPivotResetPositionCommand() {
 		return new RunCommand(() -> this.setZero(), this)
 				.withName("CleanPivot.setZero");
-	}
-
-	public String getMode() {
-		return this.mode.toString();
-	}
-
-	public String getManipJointState() {
-		return this.state.toString();
 	}
 
 	@Override
