@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Rotation;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,14 +19,12 @@ import lombok.Setter;
 
 public class IntakePivot extends REVMechanism {
 
-	public SparkMax motor;
-	public SparkClosedLoopController controller;
-	public AbsoluteEncoder absoluteEncoder;
-	public double massKg;
-	public boolean isShooter;
+	private SparkMax motor;
+	private AbsoluteEncoder absoluteEncoder;
+	private boolean attached;
 
-	@Getter public IntakePivotModes mode;
-	@Getter @Setter public IntakePivotStates state;
+	@Getter private IntakePivotModes mode;
+	@Getter @Setter private IntakePivotStates state;
 
 	public static class PivotConfig extends Config {
 
@@ -44,8 +41,8 @@ public class IntakePivot extends REVMechanism {
 
 	public IntakePivot(SparkMax motor, boolean attached) {
 		super(motor, attached);
-
-		this.config = config;
+		this.attached = attached;
+		this.absoluteEncoder = motor.getAbsoluteEncoder();
 		this.motor = motor;
 		this.mode = IntakePivotModes.STOW;
 		this.state = IntakePivotStates.STOW;
@@ -54,7 +51,7 @@ public class IntakePivot extends REVMechanism {
 
 		Logger.recordOutput("Intake/Pivot/Mode", getMode());
 		Logger.recordOutput("Intake/Pivot/State", getState());
-		Logger.recordOutput("Intake/Pivot/SetPoint", getMode().angle.in(Rotation));
+		Logger.recordOutput("Intake/Pivot/Setpoint", getMode().angle.in(Rotation));
 		Logger.recordOutput("Intake/Pivot/Output", getMotorOutput());
 		Logger.recordOutput("Intake/Pivot/Position", absoluteEncoder.getPosition());
 		Logger.recordOutput("Intake/Pivot/Current", getMotorCurrent());
@@ -65,7 +62,7 @@ public class IntakePivot extends REVMechanism {
 	public void periodic() {
 		SmartDashboard.putString("Intake Pivot Mode", getMode().toString());
 		SmartDashboard.putString("Intake Pivot State", getState().toString());
-		SmartDashboard.putNumber("Intake Pivot SetPoint", getMode().angle.in(Rotation));
+		SmartDashboard.putNumber("Intake Pivot Setpoint", getMode().angle.in(Rotation));
 		SmartDashboard.putNumber("Intake Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Intake Pivot Position", absoluteEncoder.getPosition());
 		SmartDashboard.putNumber("Intake Pivot Current", getMotorCurrent());

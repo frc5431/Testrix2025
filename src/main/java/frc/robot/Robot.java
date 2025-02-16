@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
-
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -29,14 +28,14 @@ public class Robot extends LoggedRobot {
       Logger.start();
 
     } else {
-    /*
-      setUseTiming(false);
-      String logPath = LogFileUtil.findReplayLog();
-      Logger.setReplaySource(new WPILOGReader(logPath));
-      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-    */
+      /*
+       * setUseTiming(false);
+       * String logPath = LogFileUtil.findReplayLog();
+       * Logger.setReplaySource(new WPILOGReader(logPath));
+       * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+       * "_sim")));
+       */
     }
-
 
     m_robotContainer = new RobotContainer();
   }
@@ -75,7 +74,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousExit() {
-    
+
   }
 
   @Override

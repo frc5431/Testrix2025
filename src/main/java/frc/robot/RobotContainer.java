@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,8 +23,10 @@ import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
+import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
+import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
@@ -34,15 +41,18 @@ import lombok.Getter;
 public class RobotContainer {
 
 	private final Systems systems = new Systems();
+	private final RobotMechanism robotMechanism = new RobotMechanism();
 
 	private final Intake intake = systems.getIntake();
+	private final IntakePivot intakePivot = systems.getIntakePivot();
 	private final Feeder feeder = systems.getFeeder();
 	private final Cleaner cleaner = systems.getCleaner();
 	private final Elevator elevator = systems.getElevator();
 	private final CleanPivot cleanPivot = systems.getCleanPivot();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
-	@Getter private final TitanCANdle candle = systems.getCandle();
+	@Getter
+	private final TitanCANdle candle = systems.getCandle();
 
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
@@ -55,10 +65,13 @@ public class RobotContainer {
 	// Automated Triggers
 
 	// Gamepiece Status
+	@Getter
 	private Trigger hasAlgae = new Trigger(() -> gamePieceStatus == GamePieceStates.ALGAE);
+	@Getter
 	private Trigger hasCoral = new Trigger(() -> gamePieceStatus == GamePieceStates.CORAL);
 
 	// Subsystem Triggers
+	@Getter
 	private Trigger isIntaking = new Trigger(
 			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
 
@@ -71,7 +84,7 @@ public class RobotContainer {
 
 	// Preset Controls
 	private Trigger processorPreset = operator.back();
-	private Trigger stowPreset = operator.rightDpad();
+	private Trigger feedPreset = operator.rightDpad();
 	private Trigger scoreL2Preset = operator.downDpad();
 	private Trigger scoreL3Preset = operator.leftDpad();
 	private Trigger scoreL4Preset = operator.upDpad();
@@ -89,7 +102,7 @@ public class RobotContainer {
 		configureBindings();
 	}
 
-	public void periodic() {
+	public void subsystemPeriodic() {
 		intake.periodic();
 		feeder.periodic();
 		cleaner.periodic();
@@ -97,7 +110,14 @@ public class RobotContainer {
 		cleanPivot.periodic();
 		manipJoint.periodic();
 		manipulator.periodic();
+		intakePivot.periodic();
+	}
+
+	public void periodic() {
+		subsystemPeriodic();
 		SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+		
+		SmartDashboard.putData("mechanism", robotMechanism.elevator);
 
 	}
 
@@ -112,8 +132,8 @@ public class RobotContainer {
 				new ElevatorStowCommand(CleanPivotModes.INTAKE, elevator, manipJoint, cleanPivot)
 						.withName("Elevator Algae Intake"));
 
-		stowPreset.onTrue(
-				new ElevatorStowCommand(CleanPivotModes.STOW, elevator, manipJoint, cleanPivot)
+		feedPreset.onTrue(
+				new ElevatorStowCommand(elevator, manipJoint)
 						.withName("Elevator Stow"));
 
 		scoreL2Preset.onTrue(
