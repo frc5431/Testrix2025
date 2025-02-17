@@ -413,8 +413,12 @@ public final class Constants {
         public static final Angle rightLLRollOffset = Units.Degrees.of(0);
         public static final Angle rightLLPitchOffset = Units.Degrees.of(0);
         public static final Angle rightLLYawOffset = Units.Degrees.of(0);
+
+        public static final int leftTagPipeline = 0;
+        public static final int rightTagPipeline = 0;
         
-        
+        public static final Distance visionRejectDistance = Units.Meters.of(1);
+
     }
 
     public static class ManipJointConstants {

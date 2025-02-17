@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +21,7 @@ import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
+import frc.robot.Util.Constants.VisionConstants;
 import frc.team5431.titan.core.vision.Limelight;
 
 import java.text.DecimalFormat;
@@ -35,15 +37,7 @@ public class Vision extends SubsystemBase {
      */
     
 
-        /* Pipeline configs */
-        public static final int frontTagPipeline = 0;
-        public static final int rearTagPipeline = 0;
-        public static final int leftTagPipeline = 0;
-        public static final int rightTagPipeline = 0;
-        public static final int detectNotePipeline = 0;
-
-        /* Pose Estimation Constants */
-        public static final double VISION_REJECT_DISTANCE = 1.8; // 2.3;
+        /* Pose Estimation Constants */ // 2.3;
 
         // Increase these numbers to trust global measurements from vision less.
         public static double VISION_STD_DEV_X = 0.5;
@@ -64,12 +58,12 @@ public class Vision extends SubsystemBase {
     /* Limelights */
     public final VisionHelper leftLL =
             new LimelightHelpers().new VisionHelper(
-                    VisionConfig.LEFT_LL, VisionConfig.leftTagPipeline, VisionConfig.LEFT_CONFIG);
+                    VisionConfig.LEFT_LL, VisionConstants.leftTagPipeline, VisionConfig.LEFT_CONFIG);
     public final LimelightLogger leftLogger = new LimelightLogger("Left", leftLL);
     public final VisionHelper rightLL =
             new LimelightHelpers().new VisionHelper(
                     VisionConfig.RIGHT_LL,
-                    VisionConfig.rightTagPipeline,
+                    VisionConstants.rightTagPipeline,
                     VisionConfig.RIGHT_CONFIG);
     public final LimelightLogger rightLogger = new LimelightLogger("Right", rightLL);
     public final VisionHelper[] allLimelights = {leftLL, rightLL};

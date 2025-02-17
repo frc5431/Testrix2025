@@ -76,13 +76,6 @@ public class VisionUtil {
                 .withRotation(VisionConstants.rightLLRollOffset.in(Units.Degrees), VisionConstants.rightLLPitchOffset.in(Units.Degrees), VisionConstants.rightLLYawOffset.in(Units.Degrees));
 
 
-        /* Pipeline configs */
-        public static final int leftTagPipeline = 0;
-        public static final int rightTagPipeline = 0;
-
-        /* Pose Estimation Constants */
-        public static final double VISION_REJECT_DISTANCE = 1.8; // 2.3;
-
         // Increase these numbers to trust global measurements from vision less.
         public static double VISION_STD_DEV_X = 0.5;
         public static double VISION_STD_DEV_Y = 0.5;
