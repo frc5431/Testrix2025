@@ -210,8 +210,8 @@ public class Field {
         return !isBlue();
     }
 
-    public static final Trigger red = new Trigger(() -> isRed());
-    public static final Trigger blue = new Trigger(() -> isBlue());
+    public @Getter static final Trigger red = new Trigger(() -> isRed());
+    public @Getter static final Trigger blue = new Trigger(() -> isBlue());
 
     // Flip the angle if we are blue, as we are setting things for a red driver station angle
     // This flips the left and right side for aiming purposes

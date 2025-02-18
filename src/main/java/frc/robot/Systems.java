@@ -7,6 +7,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Cleaner.Cleaner;
+import frc.robot.Subsytems.Climber.Climber;
+import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
@@ -14,6 +16,7 @@ import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
+import frc.robot.Util.TunerConstants;
 import frc.robot.Util.Constants.*;
 import lombok.Getter;
 
@@ -21,15 +24,17 @@ public class Systems {
 
     private MotorType brushless = MotorType.kBrushless;
 
-    @Getter private Intake intake;
-    @Getter private IntakePivot intakePivot;
-    @Getter private Feeder feeder;
-    @Getter private Elevator elevator;
-    @Getter private Manipulator manipulator;
-    @Getter private ManipJoint manipJoint;
-    @Getter private Cleaner cleaner;
-    @Getter private CleanPivot cleanPivot;
-    @Getter private TitanCANdle candle;
+    private @Getter Intake intake;
+    private @Getter IntakePivot intakePivot;
+    private @Getter Feeder feeder;
+    private @Getter Elevator elevator;
+    private @Getter Manipulator manipulator;
+    private @Getter ManipJoint manipJoint;
+    private @Getter Cleaner cleaner;
+    private @Getter CleanPivot cleanPivot;
+    private @Getter TitanCANdle candle;
+    private @Getter Climber climber;
+    private @Getter Drivebase drivebase;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
@@ -42,6 +47,7 @@ public class Systems {
     private SparkMax manipJointMotor;
     private SparkMax feederMotor;
     private SparkMax intakePivotMotor;
+    private SparkMax climberMotor;
 
     /* Neo 550s */
     private SparkMax manipulatorMotor;
@@ -59,6 +65,7 @@ public class Systems {
         cleanPivotMotor = new SparkMax(CleanPivotConstants.id, brushless);
         manipJointMotor = new SparkMax(ManipJointConstants.id, brushless);
         feederMotor = new SparkMax(FeederConstants.id, brushless);
+        climberMotor = new SparkMax(ClimberConstants.id, brushless);
 
         /* Neo 550s */
         manipulatorMotor = new SparkMax(ManipulatorConstants.id, brushless);
@@ -72,6 +79,12 @@ public class Systems {
         cleanPivot = new CleanPivot(cleanPivotMotor, CleanPivotConstants.attached);
         manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
         manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
+        climber = new Climber(climberMotor, ClimberConstants.attached);
         candle = new TitanCANdle();
+        
+        drivebase = new Drivebase(
+                TunerConstants.DrivetrainConstants, 
+                TunerConstants.FrontLeft, TunerConstants.FrontRight,
+                TunerConstants.BackLeft, TunerConstants.BackRight);
     }
 }

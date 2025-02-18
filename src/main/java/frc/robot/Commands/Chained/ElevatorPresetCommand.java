@@ -27,7 +27,6 @@ public class ElevatorPresetCommand extends Command {
     public void initialize() {
         elevator.runEnum(position.getElevatorMode());
         manipJoint.runEnum(position.getJointMode());
-
     }
     
 }

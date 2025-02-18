@@ -9,13 +9,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -44,7 +39,8 @@ public final class Constants {
         public static final int operatorPort = 1;
 
         public static final double deadzone = 0.15;
-        
+        public static final double triggerThreshold = 0.5;
+    
         public static final PresetPosition StowPosition = new PresetPosition(
                 ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
 
@@ -368,18 +364,23 @@ public final class Constants {
 
         public static final int id = 20;
         public static final boolean attached = true;
+        public static final boolean isInverted = false;
+        public static final IdleMode idleMode = IdleMode.kBrake;
+        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+
+        public static final Angle zeroOffset = Units.Rotation.of(0);
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
-        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
-        public static final Angle stowAngle = Units.Rotation.of(0);
-        public static final Angle deployAngle = Units.Rotation.of(0);
-        public static final boolean isInverted = false;
-        public static final Angle zeroOffset = Units.Rotation.of(0);
-        public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
+
         public static final double p = 0;
         public static final double i = 0;
         public static final double d = 0;
-
+        public static final double iMax = 0;
+        
+        public static final Angle stowAngle = Units.Rotation.of(0);
+        public static final Angle deployAngle = Units.Rotation.of(0);
+        
         public enum IntakePivotModes {
             STOW(stowAngle),
             DEPLOY(deployAngle);
@@ -526,7 +527,7 @@ public final class Constants {
         public static final double maxForwardOutput = 0;
         public static final double maxReverseOutput = 0;
 
-        public static final IdleMode idleMode = IdleMode.kCoast;
+        public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
 
@@ -535,6 +536,7 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0;
 
+        public static final AngularVelocity climbVelocity = Units.RPM.of(0);
         public static final Angle stow_angle = Units.Rotation.of(0);
         public static final Angle align_angle = Units.Rotation.of(0);
         public static final Angle climb_angle = Units.Rotation.of(0);
@@ -575,6 +577,7 @@ public final class Constants {
         public static final Color green = new Color(56, 209, 0);
         public static final Color blue = new Color(8, 32, 255);
         public static final Color red = new Color(255, 0, 0);
+        public static final Color yellow = new Color(252, 186, 3);
 
         // Misc
         public static final Color black = new Color(0, 0, 0);
@@ -587,7 +590,9 @@ public final class Constants {
             BOTH(cyanish, .5),
             SLOW_WHITE(coralWhite, .2),
             FLASHING_ORANGE(orange, .8),
+            STRESS_TIME(yellow, .2),
             BLINK_RED(red, .5),
+            BLINK_BLUE(blue, .5),
             FLASHING_GREEN(green, .8);
 
             public Color color;

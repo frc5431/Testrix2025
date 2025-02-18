@@ -1,13 +1,16 @@
 package frc.robot.Subsytems.Climber;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.ClimberConstants;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
@@ -84,9 +87,18 @@ public class Climber extends REVMechanism {
 
     }
 
+    protected void runRPM(AngularVelocity rpm) {
+        this.mode = ClimberModes.CLIMB;
+        setVelocity(rpm);
+    }
+
     protected void runEnum(ClimberModes Climbermode) {
         this.mode = Climbermode;
         setMotorPosition(Climbermode.angle);
+    }
+
+    public Command runClimberCommand(AngularVelocity rpm) {
+        return new StartEndCommand(() -> runRPM(rpm), () -> runRPM(RPM.of(0)), this);
     }
 
     public Command runClimberCommand(ClimberModes climberModes) {

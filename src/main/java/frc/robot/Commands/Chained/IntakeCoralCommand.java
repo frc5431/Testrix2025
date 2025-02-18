@@ -21,18 +21,19 @@ public class IntakeCoralCommand extends SequentialCommandGroup {
     public IntakeCoralCommand(Intake intake, IntakePivot intakePivot, Manipulator manipulator, Elevator elevator,
             ManipJoint manipJoint) {
         addCommands(
-            new ParallelCommandGroup(
-                    new ElevatorStowCommand(elevator, manipJoint),
-                    intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY),
-                    intake.runIntakeCommand(IntakeModes.INTAKE),
-                    manipulator.runManipulatorCommand(ManipulatorModes.FEED))
-                        .until(() -> manipulator.getBeambreakStatus()),
-            new ParallelCommandGroup(
-                    manipulator.runManipulatorCommand(ManipulatorModes.IDLE),
-                    intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)),
-                    new ElevatorStowCommand(elevator, manipJoint)
+                new ParallelCommandGroup(
+                        intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY),
+                        new ElevatorFeedCommand(elevator, manipJoint),
+                        intake.runIntakeCommand(IntakeModes.INTAKE),
+                        manipulator.runManipulatorCommand(ManipulatorModes.FEED))
+                                .until(() -> manipulator.getBeambreakStatus()),
+                new ParallelCommandGroup(
+                        manipulator.runManipulatorCommand(ManipulatorModes.FEED).withTimeout(0.1)
+                                .andThen(manipulator.runManipulatorCommand(ManipulatorModes.IDLE)),
+                        intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)),
+                new ElevatorStowCommand(elevator, manipJoint)
 
-                );
+        );
 
         addRequirements(intake, intakePivot, manipulator, manipJoint, elevator);
 

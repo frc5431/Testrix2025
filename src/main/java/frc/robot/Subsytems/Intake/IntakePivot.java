@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakePivotConstants;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotStates;
@@ -33,6 +34,9 @@ public class IntakePivot extends REVMechanism {
 			configSoftLimit(IntakePivotConstants.softLimitEnabled, IntakePivotConstants.softLimitForwardMax,
 			IntakePivotConstants.softLimitReverseMax);
 			configInverted(IntakePivotConstants.isInverted);
+			configIdleMode(IntakePivotConstants.idleMode);
+			configAbsoluteEncoderInverted(IntakeConstants.isInverted);
+			configMaxIAccum(IntakePivotConstants.iMax);
 			configFeedbackSensorSource(IntakePivotConstants.feedbackSensor, IntakePivotConstants.zeroOffset);
 			configPIDGains(IntakePivotConstants.p, IntakePivotConstants.i, IntakePivotConstants.d);
 		}

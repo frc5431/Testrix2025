@@ -41,8 +41,8 @@ public class Feeder extends REVMechanism {
             configMaxMotion(FeederConstants.mm_velocity, FeederConstants.mm_maxAccel, FeederConstants.mm_error);
         }
     }
+    
     private FeederConfig config = new FeederConfig();
-
 
     public Feeder(SparkMax motor, boolean attachted) {
         super(motor, attachted);
