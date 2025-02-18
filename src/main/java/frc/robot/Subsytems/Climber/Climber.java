@@ -24,8 +24,8 @@ public class Climber extends REVMechanism {
     public boolean attached;
     public SysIdRoutine routine;
 
-    @Getter private ClimberModes mode;
-    @Getter @Setter private ClimberStates state;
+    private @Getter ClimberModes mode;
+    private @Getter @Setter ClimberStates state;
 
     public static class ClimberConfig extends Config {
 
@@ -44,7 +44,6 @@ public class Climber extends REVMechanism {
     }
 
     private ClimberConfig config = new ClimberConfig();
-
 
     public Climber(SparkMax motor, boolean attached) {
         super(motor, attached);

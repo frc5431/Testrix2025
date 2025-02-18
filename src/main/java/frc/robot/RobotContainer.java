@@ -35,7 +35,9 @@ import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GamePieceConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
+import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
 import lombok.Getter;
 
@@ -125,6 +127,7 @@ public class RobotContainer {
 		SmartDashboard.putData("mechanism", robotMechanism.elevator);
 
 		gamePieceStatus = (manipulator.getBeambreakStatus()) ? GamePieceStates.CORAL : GamePieceStates.NONE;
+		manipulator.setState((manipulator.getBeambreakStatus()) ? ManipulatorStates.LOCKED : ManipulatorStates.EMPTY);
 
 	}
 

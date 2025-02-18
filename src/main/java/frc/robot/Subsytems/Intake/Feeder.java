@@ -23,8 +23,8 @@ public class Feeder extends REVMechanism {
     public boolean attachted;
     public SysIdRoutine routine;
 
-    @Getter private FeederModes mode;
-    @Getter @Setter private FeederStates state;
+    private @Getter FeederModes mode;
+    private @Getter @Setter FeederStates state;
 
     public static class FeederConfig extends Config {
 

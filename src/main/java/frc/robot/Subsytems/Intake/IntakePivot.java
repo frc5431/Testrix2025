@@ -24,8 +24,8 @@ public class IntakePivot extends REVMechanism {
 	private AbsoluteEncoder absoluteEncoder;
 	private boolean attached;
 
-	@Getter private IntakePivotModes mode;
-	@Getter @Setter private IntakePivotStates state;
+	private @Getter IntakePivotModes mode;
+	private @Getter @Setter  IntakePivotStates state;
 
 	public static class PivotConfig extends Config {
 
@@ -34,9 +34,9 @@ public class IntakePivot extends REVMechanism {
 			configSoftLimit(IntakePivotConstants.softLimitEnabled, IntakePivotConstants.softLimitForwardMax,
 			IntakePivotConstants.softLimitReverseMax);
 			configInverted(IntakePivotConstants.isInverted);
-			configIdleMode(IntakePivotConstants.idleMode);
 			configAbsoluteEncoderInverted(IntakeConstants.isInverted);
-			configMaxIAccum(IntakePivotConstants.iMax);
+			configIdleMode(IntakePivotConstants.idleMode);
+			configMaxIAccum(IntakePivotConstants.maxIAccum);
 			configFeedbackSensorSource(IntakePivotConstants.feedbackSensor, IntakePivotConstants.zeroOffset);
 			configPIDGains(IntakePivotConstants.p, IntakePivotConstants.i, IntakePivotConstants.d);
 		}

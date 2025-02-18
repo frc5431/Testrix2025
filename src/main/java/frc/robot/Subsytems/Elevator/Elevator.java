@@ -58,13 +58,19 @@ public class Elevator extends CTREMechanism {
     private CANrange canRange;
     private boolean attached;
 
-    @Getter private ElevatorPositions position;
-    @Getter @Setter private ElevatorStates states;
+    @Getter
+    private ElevatorPositions position;
+    @Getter
+    @Setter
+    private ElevatorStates states;
 
     /**
-     * @param leader   json
-     * @param follower zwach
-     * @param attached is the mechanism in use
+     * @param leader
+     *            json
+     * @param follower
+     *            zwach
+     * @param attached
+     *            is the mechanism in use
      */
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
@@ -129,23 +135,35 @@ public class Elevator extends CTREMechanism {
         }
     }
 
-    	/**
-	 * Checks if the motor is reaching the rotational setpoint
-	 * 
-	 * @param target the target rotation angle
-	 * @param error  allowed error in rotations (keep SMALL)
-	 * @return true if the motor's angle position is within the error of the target
-	 *         angle position
-	 */
-	public boolean getPositionSetpointGoal(Angle target, Angle error) {
-		if (attached) {
-			if (Calc.approxEquals(leader.getRotorPosition().getValueAsDouble(), target.in(Rotation),
-					error.in(Rotation))) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Checks if the motor is reaching the rotational setpoint
+     * 
+     * @param target
+     *            the target rotation angle
+     * @param error
+     *            allowed error in rotations (keep SMALL)
+     * @return true if the motor's angle position is within the error of the target
+     *         angle position
+     */
+    public boolean getPositionSetpointGoal(Angle target, Angle error) {
+        if (attached) {
+            if (Calc.approxEquals(leader.getRotorPosition().getValueAsDouble(), target.in(Rotation),
+                    error.in(Rotation))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return if above or equal to the safe swing distance in rotations
+     */
+    public boolean isSwingSafe() {
+        if (attached) {
+            return leader.getRotorPosition().getValue().gte(ElevatorConstants.safeSwing);
+        }
+        return false;
+    }
 
     public void runEnum(ElevatorPositions position) {
         this.position = position;

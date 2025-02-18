@@ -49,7 +49,7 @@ public class Manipulator extends REVMechanism {
 		this.motor = motor;
 		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
-		this.state = ManipulatorStates.IDLE;
+		this.state = ManipulatorStates.EMPTY;
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Manipulator/Rollers/Mode", getMode());
@@ -83,7 +83,7 @@ public class Manipulator extends REVMechanism {
 
 		switch (this.mode) {
 			case IDLE:
-				setState(ManipulatorStates.IDLE);
+				setState(ManipulatorStates.EMPTY);
 				break;
 			case SCORE:
 				setState(ManipulatorStates.INTAKING);

@@ -19,7 +19,6 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 		addCommands(
 				// Score
                 manipulator.runManipulatorCommand(ManipulatorModes.SCORE).until(() -> !manipulator.getBeambreakStatus()),
-			//	manipulator.
                 // Stow
 				new ElevatorStowCommand(elevator, manipJoint)
 
@@ -32,7 +31,6 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 	 * @param elevator
 	 * @param manipJoint
 	 * @param manipulator
-	 * @param cleanPivot
 	 */
 	public ScoreCoralCommand(Elevator elevator, ManipJoint manipJoint, Manipulator manipulator) {
 		addCommands(

@@ -28,10 +28,9 @@ public class TitanCANdle extends SubsystemBase {
     // https://github.com/FRC2539/javabot-2023/blob/main/src/main/java/frc/robot/subsystems/LightsSubsystem.java
 
     public static final CANdle candle = new CANdle(CANdleConstants.id, Constants.canbus);
+
     enum TitanPrideColor {
-        CYAN,
-        BLUE,
-        PURPLE
+        CYAN, BLUE, PURPLE
     }
 
     TitanPrideColor currentPRIDE = TitanPrideColor.BLUE;
@@ -47,7 +46,6 @@ public class TitanCANdle extends SubsystemBase {
         config.vBatOutputMode = VBatOutputMode.Modulated;
         candle.configAllSettings(config, 100);
 
-        
     }
 
     public void setBrightness(double percent) {
@@ -56,19 +54,19 @@ public class TitanCANdle extends SubsystemBase {
 
     public void titanPride() {
         int timeSec = LocalTime.now().getSecond();
-        
+
         if (timeSec % 2 == 0 && !hasRunThisSecond) {
             hasRunThisSecond = true;
-            switch(currentPRIDE) {
+            switch (currentPRIDE) {
                 case BLUE:
                     LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.purple, 1);
                 case PURPLE:
                     LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.cyanish, 1);
                 case CYAN:
-                LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.darkBlue, 1);
+                    LEDSegment.MainStrip.setFlowAnimation(CANdleConstants.darkBlue, 1);
             }
-                
-        }else {
+
+        } else {
             hasRunThisSecond = false;
         }
     }
@@ -91,10 +89,9 @@ public class TitanCANdle extends SubsystemBase {
     public void changeAnimation(AnimationTypes type) {
         LEDSegment.MainStrip.setStrobeAnimation(type.color, type.speed);
     }
+
     public static enum LEDSegment {
-        BatteryIndicator(0, 2, 0),
-        DriverStationIndicator(2, 1, -1),
-        MainStrip(3, 300, 1);
+        BatteryIndicator(0, 2, 0), DriverStationIndicator(2, 1, -1), MainStrip(3, 300, 1);
 
         public final int startIndex;
         public final int segmentSize;
@@ -108,7 +105,7 @@ public class TitanCANdle extends SubsystemBase {
 
         public void setColor(Color color) {
             clearAnimation();
-            candle.setLEDs(((int)color.red), ((int)color.green), ((int)color.blue), 0, startIndex, segmentSize);
+            candle.setLEDs(((int) color.red), ((int) color.green), ((int) color.blue), 0, startIndex, segmentSize);
         }
 
         private void setAnimation(Animation animation) {
@@ -130,21 +127,25 @@ public class TitanCANdle extends SubsystemBase {
 
         public void setFlowAnimation(Color color, double speed) {
             setAnimation(new ColorFlowAnimation(
-                    ((int)color.red), ((int)color.green), ((int)color.blue), 0, speed, segmentSize, Direction.Forward, startIndex));
+                    ((int) color.red), ((int) color.green), ((int) color.blue), 0, speed, segmentSize,
+                    Direction.Forward, startIndex));
         }
 
         public void setFadeAnimation(Color color, double speed) {
             setAnimation(
-                    new SingleFadeAnimation(((int)color.red), ((int)color.green), ((int)color.blue), 0, speed, segmentSize, startIndex));
+                    new SingleFadeAnimation(((int) color.red), ((int) color.green), ((int) color.blue), 0, speed,
+                            segmentSize, startIndex));
         }
 
         public void setBandAnimation(Color color, double speed) {
             setAnimation(new LarsonAnimation(
-                    ((int)color.red), ((int)color.green), ((int)color.blue), 0, speed, segmentSize, BounceMode.Front, 3, startIndex));
+                    ((int) color.red), ((int) color.green), ((int) color.blue), 0, speed, segmentSize, BounceMode.Front,
+                    3, startIndex));
         }
 
         public void setStrobeAnimation(Color color, double speed) {
-            setAnimation(new StrobeAnimation(((int)color.red), ((int)color.green), ((int)color.blue), 0, speed, segmentSize, startIndex));
+            setAnimation(new StrobeAnimation(((int) color.red), ((int) color.green), ((int) color.blue), 0, speed,
+                    segmentSize, startIndex));
         }
 
         public void setRainbowAnimation(double speed) {
