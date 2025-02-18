@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Chained.EjectCoralCommand;
+import frc.robot.Commands.Chained.ElevatorFeedCommand;
 import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
@@ -129,23 +130,23 @@ public class RobotContainer {
 
 		// Elevator Controls
 		processorPreset.onTrue(
-				new ElevatorStowCommand(CleanPivotModes.INTAKE, elevator, manipJoint, cleanPivot)
+				new ElevatorStowCommand(elevator, manipJoint)
 						.withName("Elevator Algae Intake"));
 
 		feedPreset.onTrue(
-				new ElevatorStowCommand(elevator, manipJoint)
-						.withName("Elevator Stow"));
+				new ElevatorFeedCommand(elevator, manipJoint)
+						.withName("Elevator Feed Stow Positon"));
 
 		scoreL2Preset.onTrue(
-				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint)
 						.withName("Elevator L2"));
 
 		scoreL3Preset.onTrue(
-				new ElevatorPresetCommand(ControllerConstants.ScoreL3Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL3Position, elevator, manipJoint)
 						.withName("Elevator L3"));
 
 		scoreL4Preset.onTrue(
-				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint, cleanPivot)
+				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint)
 						.withName("Elevator L4"));
 
 		// Intake Controls

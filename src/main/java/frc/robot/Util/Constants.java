@@ -283,7 +283,8 @@ public final class Constants {
         public static final boolean gravityType = false;
         public static final boolean breakType = true;
         
-        public static final boolean canRangeAttached = true;
+        public static final boolean canRangeAttached = false;
+        public static final boolean canCoderAttached = false;
 
         public static final int leftId = 14;
         public static final int rightId = 15;
@@ -308,7 +309,7 @@ public final class Constants {
         public static final Angle maxFowardRotation = Units.Rotation.of(0);
         public static final Angle rotationOffset = Units.Rotation.of(0);
 
-        public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RemoteCANcoder;
+        public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
 
         //static voltage needed to hold position
         public static final double s = 0;
@@ -319,6 +320,7 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0;
 
+        public static final Angle error = Units.Rotation.of(0);
         public static final Angle stow = Units.Rotation.of(0);
         public static final Angle feed = Units.Rotation.of(0);
         public static final Angle algaeProcessor = Units.Rotation.of(0);

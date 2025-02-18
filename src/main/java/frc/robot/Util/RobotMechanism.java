@@ -9,9 +9,6 @@ import lombok.Getter;
 
 public class RobotMechanism {
     
-
-
-
     @Getter public Mechanism2d elevator = new Mechanism2d(2, 8, new Color8Bit(Color.kYellow));
     @Getter public MechanismRoot2d elevatorBase = elevator.getRoot("Elevator", 2, 0);
     @Getter public MechanismLigament2d wrist = new MechanismLigament2d("Wrist", 3, 8, 2, new Color8Bit(Color.kPurple));

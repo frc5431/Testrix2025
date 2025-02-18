@@ -1,52 +1,26 @@
 package frc.robot.Commands.Chained;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.Subsytems.Cleaner.CleanPivot;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
-import frc.robot.Util.Constants.ManipJointConstants;
-import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
+import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 
-public class ElevatorStowCommand extends ParallelCommandGroup {
+public class ElevatorStowCommand extends SequentialCommandGroup {
 
-	/**
-	 * @param elevator
-	 * @param manipJoint
-	 */
 	public ElevatorStowCommand(Elevator elevator, ManipJoint manipJoint) {
 		addCommands(
-				manipJoint.runCleanerPivotCommand(ManipJointPositions.FEED),
-				// when prev commands finish (instantaly since its RunCommands)
-				// sets elevator to stow angle only if the manipulator is near the stow angle
-				// this ensures that the manip doesnt hit anything while the elevator goes down
-				elevator.runElevatorCommand(ElevatorPositions.STOW).onlyIf(() -> manipJoint
-						.getAngleSetpointGoal(ManipJointConstants.feed, ManipJointConstants.error))
-
+				//rises to l2 so manip can safely move
+				elevator.runElevatorCommand(ElevatorPositions.CORALL2),
+				//manip runs to stow position only if the elevator is at the setpoint goal
+				manipJoint.runCleanerPivotCommand(ManipJointPositions.STOW).onlyIf(
+					() -> elevator.getPositionSetpointGoal(ElevatorConstants.coralL2, ElevatorConstants.error)),
+				//since its sequential, this lowers once the manip is 
+				elevator.runElevatorCommand(ElevatorPositions.STOW)
 		);
+		
 		addRequirements(elevator, manipJoint);
-	}
-
-	/**
-	 * @param mode
-	 * @param elevator
-	 * @param manipJoint
-	 * @param cleanPivot
-	 */
-	public ElevatorStowCommand(CleanPivotModes mode, Elevator elevator, ManipJoint manipJoint, CleanPivot cleanPivot) {
-		addCommands(
-				// runs (cleaner) pivot command in junction with running manipJoint to stow
-				cleanPivot.runCleanerPivotCommand(mode),
-				manipJoint.runCleanerPivotCommand(ManipJointPositions.STOW),
-				// when prev commands finish (instantaly since it they are RunCommands)
-				// sets elevator to stow angle only if the manipulator is near the stow angle
-				// this ensures that the manip doesnt hit anything while the elevator goes down
-				elevator.runElevatorCommand(ElevatorPositions.STOW).onlyIf(() -> manipJoint
-						.getAngleSetpointGoal(ManipJointConstants.stow, ManipJointConstants.error))
-
-		);
-		addRequirements(elevator, manipJoint, cleanPivot);
 	}
 
 }

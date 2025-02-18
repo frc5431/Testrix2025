@@ -6,12 +6,14 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipJointConstants;
+import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,8 +73,22 @@ public class ManipJoint extends REVMechanism {
 		SmartDashboard.putNumber("ManipJoint Position", this.getMotorPosition());
 	}
 
-	public void setManipJointState(ManipJointStates ManipJointState) {
-		this.state = ManipJointState;
+	/**
+	 * Checks if the motor is reaching the rotational setpoint
+	 * 
+	 * @param target the target rotation angle
+	 * @param error  allowed error in rotations (keep SMALL)
+	 * @return true if the motor's angle position is within the error of the target
+	 *         angle position
+	 */
+	public boolean getPositionSetpointGoal(Angle target, Angle error) {
+		if (attached) {
+			if (Calc.approxEquals(motor.getAlternateEncoder().getPosition(), target.in(Rotations),
+					error.in(Rotations))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected void stop() {

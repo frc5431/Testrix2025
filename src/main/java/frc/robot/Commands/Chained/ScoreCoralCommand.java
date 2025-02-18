@@ -5,7 +5,6 @@ import frc.robot.Subsytems.Cleaner.CleanPivot;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
-import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 
 public class ScoreCoralCommand extends SequentialCommandGroup {
@@ -20,8 +19,9 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 		addCommands(
 				// Score
                 manipulator.runManipulatorCommand(ManipulatorModes.SCORE).until(() -> !manipulator.getBeambreakStatus()),
+			//	manipulator.
                 // Stow
-				new ElevatorStowCommand(CleanPivotModes.STOW, elevator, manipJoint, cleanPivot)
+				new ElevatorStowCommand(elevator, manipJoint)
 
 		);
 		addRequirements(elevator, manipulator, cleanPivot);
