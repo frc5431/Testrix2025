@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -15,16 +14,17 @@ import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.subsystem.REVMechanism;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Manipulator extends REVMechanism {
 
 	private ManipulatorConfig config = new ManipulatorConfig();
 	private SparkMax motor;
-	private DigitalInput beambreak;
 	public boolean attached;
 
-	private ManipulatorModes mode;
-	private ManipulatorStates state;
+	@Getter private ManipulatorModes mode;
+	@Getter @Setter private ManipulatorStates state;
 
 	public static class ManipulatorConfig extends Config {
 
@@ -32,7 +32,7 @@ public class Manipulator extends REVMechanism {
 			super("Manipulator", ManipulatorConstants.id);
 			configIdleMode(ManipulatorConstants.idleMode);
 			configInverted(ManipulatorConstants.isInverted);
-			configGearRatio(ManipulatorConstants.gearRatio);
+			configEncoderPosRatio(ManipulatorConstants.gearRatio);
 			configMaxIAccum(ManipulatorConstants.maxIAccum);
 			configMaxMotionPositionMode(ManipulatorConstants.mm_positionMode);
 			configPIDGains(ManipulatorConstants.p, ManipulatorConstants.i, ManipulatorConstants.d);
@@ -45,16 +45,16 @@ public class Manipulator extends REVMechanism {
 
 	public Manipulator(SparkMax motor, boolean attached) {
 		super(motor, attached);
-		beambreak = new DigitalInput(ManipulatorConstants.channel);
+		motor.getForwardLimitSwitch().isPressed();
 		this.motor = motor;
 		attached = ManipJointConstants.attached;
 		this.mode = ManipulatorModes.IDLE;
-		this.state = ManipulatorStates.IDLE;
+		this.state = ManipulatorStates.EMPTY;
 		config.applySparkConfig(motor);
 
 		Logger.recordOutput("Manipulator/Rollers/Mode", getMode());
-		Logger.recordOutput("Manipulator/Rollers/State", getManipulatorState());
-		Logger.recordOutput("Mainpulator/Rollers/Setpoint", mode.speed.in(RPM));
+		Logger.recordOutput("Manipulator/Rollers/State", getState());
+		Logger.recordOutput("Mainpulator/Rollers/Setpoint", getMode().speed.in(RPM));
 		Logger.recordOutput("Manipulator/Rollers/Velocity", getMotorVelocity());
 		Logger.recordOutput("Manipulator/Rollers/Voltage", getMotorVoltage());
 		Logger.recordOutput("Manipulator/Rollers/Current", getMotorCurrent());
@@ -72,33 +72,29 @@ public class Manipulator extends REVMechanism {
 
 	@Override
 	public void periodic() {
-		SmartDashboard.putString("Mainpulator Mode", getMode());
-		SmartDashboard.putNumber("Mainpulator Setpoint", mode.speed.in(RPM));
-		SmartDashboard.putString("Manipulator State", getManipulatorState());
+		SmartDashboard.putString("Mainpulator Mode", getMode().toString());
+		SmartDashboard.putNumber("Mainpulator Setpoint", getMode().speed.in(RPM));
+		SmartDashboard.putString("Manipulator State", getState().toString());
 		SmartDashboard.putNumber("Mainpulator Output", getMotorOutput());
 		SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
 		SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
-		SmartDashboard.putBoolean("ManipJoint Beambreak Status", this.getBeambreakStatus());
+		SmartDashboard.putBoolean("ManipJoint Beambreak Status", getBeambreakStatus());
 
 		switch (this.mode) {
 			case IDLE:
-				setManipulatorState(ManipulatorStates.IDLE);
+				setState(ManipulatorStates.EMPTY);
 				break;
 			case SCORE:
-				setManipulatorState(ManipulatorStates.INTAKING);
+				setState(ManipulatorStates.INTAKING);
 				break;
 			case REVERSE:
-				setManipulatorState(ManipulatorStates.OUTTAKING);
+				setState(ManipulatorStates.OUTTAKING);
 				break;
 			case FEED:
-				setManipulatorState(ManipulatorStates.INTAKING);
+				setState(ManipulatorStates.INTAKING);
 				break;
 		}
-	}
-
-	public void setManipulatorState(ManipulatorStates manipulatorStates) {
-		this.state = manipulatorStates;
 	}
 
 	protected void stop() {
@@ -121,16 +117,8 @@ public class Manipulator extends REVMechanism {
                 .withName("Cleaner.runEnum");
     }
 
-	public String getMode() {
-		return this.mode.toString();
-	}
-
-	public String getManipulatorState() {
-		return this.state.toString();
-	}
-
 	public boolean getBeambreakStatus() {
-		return beambreak.get();
+		return motor.getForwardLimitSwitch().isPressed();
 	}
 
 }
