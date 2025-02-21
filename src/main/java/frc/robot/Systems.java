@@ -23,14 +23,20 @@ import lombok.Getter;
 
 public class Systems {
 
-    private Intake intake;
-    private Elevator elevator;
-    private Manipulator manipulator;
-    private ManipJoint manipJoint;
-    private Cleaner cleaner;
-    private CleanPivot cleanPivot;
-    private TitanCANdle candle;
-    private Vision vision;
+    private MotorType brushless = MotorType.kBrushless;
+
+    private @Getter Intake intake;
+    private @Getter Feeder feeder;
+    private @Getter IntakePivot intakePivot;
+    private @Getter ManipJoint manipJoint;
+    private @Getter Manipulator manipulator;
+    private @Getter Elevator elevator;
+    private @Getter Cleaner cleaner;
+    private @Getter CleanPivot cleanPivot;
+    private @Getter TitanCANdle candle;
+    private @Getter Vision vision;
+    private @Getter Climber climber;
+    private @Getter Drivebase drivebase;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;

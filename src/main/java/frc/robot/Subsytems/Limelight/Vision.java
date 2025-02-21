@@ -1,20 +1,17 @@
 package frc.robot.Subsytems.Limelight;
 
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Subsytems.Drivebase.Drivebase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.RawFiducial;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.Trio;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
@@ -22,13 +19,13 @@ import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
 import frc.robot.Util.Constants.VisionConstants;
-import frc.team5431.titan.core.vision.Limelight;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-//TODO: DO NOT DELETE ANY IMPORTS, it's unused the stuff below is commented
 
 public class Vision extends SubsystemBase {
     /**
@@ -47,14 +44,12 @@ public class Vision extends SubsystemBase {
         public static final Matrix<N3, N1> visionStdMatrix =
                 VecBuilder.fill(VISION_STD_DEV_X, VISION_STD_DEV_Y, VISION_STD_DEV_THETA);
 
-        /* Vision Command Configs */
-
-            
-        
+        // TODO: deal with this
+        private Drivebase drivebase;
 
         
     
-
+    //TODO: we only have one for now
     /* Limelights */
     public final VisionHelper leftLL =
             new LimelightHelpers().new VisionHelper(
@@ -73,7 +68,7 @@ public class Vision extends SubsystemBase {
 
     private final DecimalFormat df = new DecimalFormat();
 
-    @AutoLogOutput(key = "Vision/a_Integrating")
+    @AutoLogOutput(key = "Vision/is_Integrating")
     public static boolean isIntegrating = false;
 
     public ArrayList<Trio<Pose3d, Pose2d, Double>> autonPoses =
@@ -95,7 +90,9 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double yaw = 0; /* = Robot.swerve.getRotation().getDegrees();*/ //TODO fix this assign actual value
+        // Yaw should be 0 when intake faces red alliance and manip faces blue
+        // Yaw should be 180 when intake faces blue alliance and manip faces red
+        double yaw = drivebase.getOperatorForwardDirection().getMeasure().plus(Degrees.of(180)).in(Degrees);
         for (VisionHelper visionHelper : poseLimelights) {
             visionHelper.setRobotOrientation(yaw);
 
@@ -112,32 +109,22 @@ public class Vision extends SubsystemBase {
         try {
             isIntegrating = false;
             // Will NOT run in auto
-            if (DriverStation.isTeleopEnabled()) {
-                // if the front camera sees tag and we are aiming, only use that camera
-                // if (isAiming && speakerLL.targetInView()) {
-                //     for (Limelight limelight : limelights) {
-                //         if (limelight.CAMERA_NAME == speakerLL.CAMERA_NAME) {
-                //             addFilteredVisionInput(limelight);
-                //         } else {
-                //             limelight.sendInvalidStatus("speaker only rejection");
-                //         }
-                //         isIntegrating |= limelight.isIntegrating;
-                //     }
-                // } else {
+            if (DriverStation.isTeleopEnabled() && VisionConstants.useVisionPeriodic) {
+                
                 // choose LL with best view of tags and integrate from only that camera
                 VisionHelper bestLimelight = getBestLimelight();
                 for (VisionHelper visionHelper : poseLimelights) {
-                    if (visionHelper.CAMERA_NAME == bestLimelight.CAMERA_NAME) {
+                    if (/*TODO: add is aligning */ Field.isReef(((int)bestLimelight.getClosestTagID()))) {
                         addFilteredVisionInput(bestLimelight);
                     } else {
-                        visionHelper.sendInvalidStatus("not best rejection");
+                        visionHelper.sendInvalidStatus("SAD!: Apriltag is not matched Reef ID");
                     }
                     isIntegrating |= visionHelper.isIntegrating;
                 }
-                // }
+
             }
         } catch (Exception e) {
-            System.out.println("Vision pose not present but tried to access it (manmade error)");
+            System.out.println("Vision pose not present but tried to access it [vision.periodic()]");
         }
     }
 
@@ -155,11 +142,10 @@ public class Vision extends SubsystemBase {
             Pose2d megaPose2d = ll.getMegaPose2d();
             RawFiducial[] tags = ll.getRawFiducial();
             double highestAmbiguity = 2;
-            // ChassisSpeeds robotSpeed /* = Robot.swerve.getVelocity(true); */; //TODO: fix this assign value
+            ChassisSpeeds robotSpeeds = drivebase.getChassisSpeeds();
 
             // distance from current pose to vision estimated pose
-            double poseDifference = 1; /* =
-                    Robot.swerve.getPose().getTranslation().getDistance(botpose.getTranslation()); */ //TODO: Fix this
+            double poseError = drivebase.getRobotPose().getTranslation().getDistance(botpose.getTranslation());
 
             /* rejections */
             // reject pose if individual tag ambiguity is too high
@@ -175,59 +161,59 @@ public class Vision extends SubsystemBase {
                 ll.tagStatus += "Tag " + tag.id + ": " + tag.ambiguity;
                 // ambiguity rejection check
                 if (tag.ambiguity > 0.9) {
-                    ll.sendInvalidStatus("ambiguity rejection");
+                    ll.sendInvalidStatus("vision: ambiguity rejection {vision:179ish}");
                     return;
                 }
             }
             if (Field.poseOutOfField(botpose3D)) {
                 // reject if pose is out of the field
-                ll.sendInvalidStatus("bound rejection");
+                ll.sendInvalidStatus("vision: bound rejection {vision:185ish}");
                 return;
-             } /*else if (Math.abs(robotSpeed.omegaRadiansPerSecond) >= 1.6) {
-            //     // reject if we are rotating more than 0.5 rad/s
-            //     ll.sendInvalidStatus("rotation rejection");
-            //     return; }*/ //TODO: when robotSpeed has value uncomment this
+             } else if (Math.abs(robotSpeeds.omegaRadiansPerSecond) >= VisionConstants.maxRadPerSec.in(RadiansPerSecond)) {
+                 // reject if we are rotating more than an amount of radians per second
+                 ll.sendInvalidStatus("vision: robot rotation too fast");
+                 return; }
             else if (Math.abs(botpose3D.getZ()) > 0.25) {
                 // reject if pose is .25 meters in the air
-                ll.sendInvalidStatus("height rejection");
+                ll.sendInvalidStatus("vision: height rejection");
                 return;
             } else if (Math.abs(botpose3D.getRotation().getX()) > 5
                     || Math.abs(botpose3D.getRotation().getY()) > 5) {
                 // reject if pose is 5 degrees titled in roll or pitch
-                ll.sendInvalidStatus("roll/pitch rejection");
+                ll.sendInvalidStatus("vision: roll/pitch rejection");
                 return;
-            } else if (targetSize <= 0.025) {
-                ll.sendInvalidStatus("size rejection");
+            } else if (targetSize <= VisionConstants.minSizeRejection) {
+                ll.sendInvalidStatus("vision: size rejection");
                 return;
             }
-            /* integrations */
+            /* CONFIDENCE (integration/standard devation) Evaluation */
             // if almost stationary and extremely close to tag
-            /*else if (robotSpeed.vxMetersPerSecond + robotSpeed.vyMetersPerSecond <= 0.2
+            else if (robotSpeeds.vxMetersPerSecond + robotSpeeds.vyMetersPerSecond <= VisionConstants.velocityLowTrustThreshold
                     && targetSize > 0.4) {
-                ll.sendValidStatus("Stationary close integration");
-                xyStds = 0.1;
-                degStds = 0.1; //TODO: uncomment when robotSpeed has value
-            } */ else if (multiTags && targetSize > 0.05) {
-                ll.sendValidStatus("Multi integration");
-                xyStds = 0.25;
-                degStds = 8;
+                ll.sendValidStatus("Vision: Stationary close integration");
+                xyStds = VisionConstants.highTrustStds;
+                degStds = VisionConstants.highTrustStds; 
+            }  else if (multiTags && targetSize > 0.05) {
+                ll.sendValidStatus("Vision: Multi integration");
+                xyStds = VisionConstants.servicableTrustStds;
+                degStds = VisionConstants.badTrustStds;
                 if (targetSize > 0.09) {
-                    ll.sendValidStatus("Strong Multi integration");
-                    xyStds = 0.1;
-                    degStds = 0.1;
+                    ll.sendValidStatus("Vision: Strong Multi integration");
+                    xyStds = VisionConstants.highTrustStds;
+                    degStds = VisionConstants.highTrustStds;
                 }
-            } else if (targetSize > 0.8 && poseDifference < 0.5) {
+            } else if (targetSize > 0.8 && poseError < 0.5) {
                 ll.sendValidStatus("Close integration");
-                xyStds = 0.5;
-                degStds = 16;
-            } else if (targetSize > 0.1 && poseDifference < 0.3) {
+                xyStds = VisionConstants.defaultTrustStds;
+                degStds = VisionConstants.abysmalTrustStds;
+            } else if (targetSize > 0.1 && poseError < 0.3) {
                 ll.sendValidStatus("Proximity integration");
-                xyStds = 2.0;
-                degStds = 999999;
+                xyStds = VisionConstants.decreasedTrustStds;
+                degStds = VisionConstants.noTrustStds;
             } else if (highestAmbiguity < 0.25 && targetSize >= 0.03) {
                 ll.sendValidStatus("Stable integration");
-                xyStds = 0.5;
-                degStds = 999999;
+                xyStds = VisionConstants.noTrustStds;
+                degStds = VisionConstants.noTrustStds;
             } else {
                 System.out.println("Rejected, get better");
                 return;
@@ -235,95 +221,35 @@ public class Vision extends SubsystemBase {
 
             // strict with degree std and ambiguity and rotation because this is megatag1
             if (highestAmbiguity > 0.5) {
-                degStds = 15;
+                degStds = VisionConstants.dismalTrustStds;
             }
 
-            // if (robotSpeed.omegaRadiansPerSecond >= 0.5) {
-            //     degStds = 15;
-            // } //TODO: Uncomment when robotSpeed has value
+            if (robotSpeeds.omegaRadiansPerSecond >= VisionConstants.lowTrustRadPerSec.in(RadiansPerSecond)) {
+                degStds = VisionConstants.dismalTrustStds;
+            }
 
             // track STDs
             VisionConfig.VISION_STD_DEV_X = xyStds;
             VisionConfig.VISION_STD_DEV_Y = xyStds;
             VisionConfig.VISION_STD_DEV_THETA = degStds;
 
-            // TODO: Fix this
-            // Robot.swerve.setVisionMeasurementStdDevs(
-            //         VecBuilder.fill(
-            //                 VisionConfig.VISION_STD_DEV_X,
-            //                 VisionConfig.VISION_STD_DEV_Y,
-            //                 VisionConfig.VISION_STD_DEV_THETA));
+            drivebase.setVisionMeasurementStdDevs(
+                    VecBuilder.fill(
+                            VisionConfig.VISION_STD_DEV_X,
+                            VisionConfig.VISION_STD_DEV_Y,
+                            VisionConfig.VISION_STD_DEV_THETA));
 
             Pose2d integratedPose = new Pose2d(megaPose2d.getTranslation(), botpose.getRotation());
-            // Robot.swerve.addVisionMeasurement(integratedPose, timeStamp); //TODO: Fix this
+            drivebase.addVisionMeasurement(integratedPose, timeStamp);
         } else {
             ll.tagStatus = "no tags";
-            ll.sendInvalidStatus("no tag found rejection");
+            ll.sendInvalidStatus("Vision: no tag found rejection");
         }
     }
-
-    /**
-     * REQUIRES ACCURATE POSE ESTIMATION. Uses trigonometric functions to calculate the angle
-     * between the robot heading and the angle required to face the speaker center.
-     *
-     * @return angle between robot heading and speaker in degrees
-     */
     
-
-    
-
-    /** Returns the distance from the speaker in meters, adjusted for the robot's movement. */
-
-    /**
-     * Gets a field-relative position for the shot to the speaker the robot should take, adjusted
-     * for the robot's movement.
-     *
-     * @return A {@link Translation2d} representing a field relative position in meters.
-     */
-    public Translation2d getAdjustedTargetPos(Translation2d targetPose) {
-        double NORM_FUDGE = 0.075;
-        double tunableNoteVelocity = 1;
-        double tunableNormFudge = 0;
-        double tunableStrafeFudge = 1;
-        double tunableSpeakerYFudge = 0.0;
-        double tunableSpeakerXFudge = 0.0;
-
-        Translation2d robotPos; /* = Robot.swerve.getPose().getTranslation(); */ //TODO: fix this
-        targetPose = Field.flipXifRed(targetPose);
-        // double xDifference = Math.abs(robotPos.getX() - targetPose.getX()); //TODO: uncomment when robotPos has value
-        // double spinYFudge =
-        //         (xDifference < 5.8)
-        //                 ? 0.05
-        //                 : 0.8; // change spin fudge for score distances vs. feed distances //TODO: uncomment when xDifference has value
-
-        // ChassisSpeeds robotVel; /* = Robot.swerve.getVelocity(true);*/ // TODO: fix this
-
-        // double distance = robotPos.getDistance(targetPose); //TODO: uncomment when robotPos has value
-        // double normFactor =
-        //         Math.hypot(robotVel.vxMetersPerSecond, robotVel.vyMetersPerSecond) < NORM_FUDGE
-        //                 ? 0.0
-        //                 : Math.abs(
-        //                         MathUtil.angleModulus(
-        //                                         robotPos.minus(targetPose).getAngle().getRadians()
-        //                                                 - Math.atan2(
-        //                                                         robotVel.vyMetersPerSecond,
-        //                                                         robotVel.vxMetersPerSecond))
-        //                                 / Math.PI); //TODO: uncomment when robotVel has value
-
-        double x =
-                targetPose.getX() + (Field.isBlue() ? tunableSpeakerXFudge : -tunableSpeakerXFudge);
-        // - (robotVel.vxMetersPerSecond * (distance / tunableNoteVelocity));
-        //      * (1.0 - (tunableNormFudge * normFactor)));
-        double y =
-                targetPose.getY()
-                        // + (Field.isBlue() ? -spinYFudge : spinYFudge) //TODO: uncomment when spinYFudge has value
-                        + tunableSpeakerYFudge;
-        // - (robotVel.vyMetersPerSecond * (distance / tunableNoteVelocity));
-        //       * tunableStrafeFudge);
-
-        return new Translation2d(x, y);
-    }
-
+    //TODO: create slow moving adjustment function
+    //TODO: create align command (own class?)
+   
     public void autonResetPoseToVision() {
         boolean reject = true;
         boolean firstSuccess = false;
@@ -371,7 +297,7 @@ public class Vision extends SubsystemBase {
         boolean reject = false;
         if (targetInView) {
             Pose2d botpose = botpose3D.toPose2d();
-            Pose2d robotPose; /* = Robot.swerve.getPose();*/ //TODO: fix this
+            Pose2d robotPose = drivebase.getRobotPose();
             if (Field.poseOutOfField(botpose3D)
                     || Math.abs(botpose3D.getZ()) > 0.25
                     || (Math.abs(botpose3D.getRotation().getX()) > 5
@@ -405,29 +331,30 @@ public class Vision extends SubsystemBase {
             VisionConfig.VISION_STD_DEV_Y = 0.001;
             VisionConfig.VISION_STD_DEV_THETA = 0.001;
 
-            // System.out.println(
-            //         "ResetPoseToVision: Old Pose X: "
-            //                 + robotPose.getX()
-            //                 + " Y: "
-            //                 + robotPose.getY()
-            //                 + " Theta: "
-            //                 + robotPose.getRotation().getDegrees()); //TODO: Uncomment when robotPose has value
-            // Robot.swerve.setVisionMeasurementStdDevs(
-            //         VecBuilder.fill(
-            //                 VisionConfig.VISION_STD_DEV_X,
-            //                 VisionConfig.VISION_STD_DEV_Y,
-            //                 VisionConfig.VISION_STD_DEV_THETA)); //TODO: fix this
+            System.out.println(
+                    "ResetPoseToVision: Old Pose X: "
+                            + robotPose.getX()
+                            + " Y: "
+                            + robotPose.getY()
+                            + " Theta: "
+                            + robotPose.getRotation().getDegrees()); 
+            drivebase.setVisionMeasurementStdDevs(
+                    VecBuilder.fill(
+                            VisionConfig.VISION_STD_DEV_X,
+                            VisionConfig.VISION_STD_DEV_Y,
+                            VisionConfig.VISION_STD_DEV_THETA)); 
 
             Pose2d integratedPose = new Pose2d(megaPose.getTranslation(), botpose.getRotation());
-            // Robot.swerve.addVisionMeasurement(integratedPose, poseTimestamp); //TODO: fix this
-            // robotPose = Robot.swerve.getPose(); */ //TODO: fix this
-            // System.out.println(
-            //         "ResetPoseToVision: New Pose X: "
-            //                 + robotPose.getX()
-            //                 + " Y: "
-            //                 + robotPose.getY()
-            //                 + " Theta: "
-            //                 + robotPose.getRotation().getDegrees()); //TODO: Uncomment when robotPose has value
+            drivebase.addVisionMeasurement(integratedPose, poseTimestamp);
+            // robotpose after vision mesurments have been added
+            robotPose = drivebase.getRobotPose();
+            System.out.println(
+                    "ResetPoseToVision: New Pose X: "
+                            + robotPose.getX()
+                            + " Y: "
+                            + robotPose.getY()
+                            + " Theta: "
+                            + robotPose.getRotation().getDegrees()); 
             System.out.println("ResetPoseToVision: SUCCESS");
             return true;
         }
@@ -511,5 +438,4 @@ public class Vision extends SubsystemBase {
         isAiming = false;
     }
 
-    /** Logging */
 }
