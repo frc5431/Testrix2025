@@ -29,10 +29,10 @@ import frc.robot.Util.Field;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.TunerConstants.TunerSwerveDrivetrain;
-import frc.team5431.titan.core.misc.Calc;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -236,6 +236,30 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
+
+    public Command alignWheelsCommand(Rotation2d direction){
+       return run(() -> new SwerveRequest.PointWheelsAt().withModuleDirection(direction));
+    }
+
+    
+    /**
+     * @param chassisSpeeds
+     * @return
+     * If we have issues this is a good place to start. Not confident on the end command
+     */
+    public Command driveRobotCenteric(ChassisSpeeds chassisSpeeds){
+        return new StartEndCommand(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds), () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0)), this);
+    }
+
+    public Command faceTargetCommand(Rotation2d faceDirection){
+        return run(() -> new SwerveRequest.FieldCentricFacingAngle().withTargetDirection(faceDirection));
+    }
+
+    // public Command alignRobotCentericXCommand(double targetDifferece, double  xVelocity){
+        
+    //     return run(() -> new SwerveRequest.ApplyRobotSpeeds()
+    //     .withSpeeds(new ChassisSpeeds(0.0, xVelocity, 0.0))).;
+    // }
 
     /**
      * Runs the SysId Quasistatic test in the given direction for the routine

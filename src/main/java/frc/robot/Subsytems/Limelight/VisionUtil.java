@@ -30,8 +30,6 @@ public class VisionUtil {
         public Distance v_distanceSetpoint;
         public Distance h_distanceSetpoint;
 
-        
-
         public void setLimeLight(Limelight limelight, int pipeline) {
             this.limelight = limelight;
             this.pipeline = pipeline;

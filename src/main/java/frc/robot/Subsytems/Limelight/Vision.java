@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsytems.Drivebase.Drivebase;
@@ -18,6 +19,7 @@ import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
+import lombok.Setter;
 import frc.robot.Util.Constants.VisionConstants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -26,13 +28,16 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.fasterxml.jackson.databind.util.RootNameLookup;
+
+import frc.robot.RobotContainer;
 
 public class Vision extends SubsystemBase {
     /**
      * Configs must be initialized and added as limelights to {@link Vision} {@code allLimelights} &
      * {@code poseLimelights}
      */
-    
+    public RobotContainer my_robotContainer;
 
         /* Pose Estimation Constants */ // 2.3;
 
@@ -74,10 +79,12 @@ public class Vision extends SubsystemBase {
     public ArrayList<Trio<Pose3d, Pose2d, Double>> autonPoses =
             new ArrayList<Trio<Pose3d, Pose2d, Double>>();
 
-    private boolean isAiming = false;
+    private @Setter boolean isAligning = false;
 
-    public Vision() {
+    public Vision(RobotContainer robot) {
         setName("Vision");
+
+        my_robotContainer = robot;
 
         // logging
         df.setMaximumFractionDigits(2);
@@ -114,7 +121,7 @@ public class Vision extends SubsystemBase {
                 // choose LL with best view of tags and integrate from only that camera
                 VisionHelper bestLimelight = getBestLimelight();
                 for (VisionHelper visionHelper : poseLimelights) {
-                    if (/*TODO: add is aligning */ Field.isReef(((int)bestLimelight.getClosestTagID()))) {
+                    if (my_robotContainer.getReefAlignment().getAsBoolean() && Field.isReef((bestLimelight.getClosestTagID()))) {
                         addFilteredVisionInput(bestLimelight);
                     } else {
                         visionHelper.sendInvalidStatus("SAD!: Apriltag is not matched Reef ID");
@@ -252,6 +259,7 @@ public class Vision extends SubsystemBase {
    
     public void autonResetPoseToVision() {
         boolean reject = true;
+        //TODO: why isnt this used? confer with spectrum code
         boolean firstSuccess = false;
         double batchSize = 5;
         for (int i = autonPoses.size() - 1; i > autonPoses.size() - (batchSize + 1); i--) {
@@ -395,12 +403,23 @@ public class Vision extends SubsystemBase {
         return false;
     }
 
+    public Distance getCameraXDistance (){
+        return LimelightHelpers.getCameraPose3d_TargetSpace(this.getBestLimelight().CAMERA_NAME).getMeasureX();
+    }
+    public Distance getCameraYDistance (){
+        return LimelightHelpers.getCameraPose3d_TargetSpace(this.getBestLimelight().CAMERA_NAME).getMeasureZ();
+    }
+
+         
+
+
     /** Change all LL pipelines to the same pipeline */
     public void setLimelightPipelines(int pipeline) {
         for (VisionHelper visionHelper : allLimelights) {
             visionHelper.setLimelightPipeline(pipeline);
         }
     }
+
 
     /** Set both LLs to blink */
     public Command blinkLimelights() {
@@ -430,12 +449,5 @@ public class Vision extends SubsystemBase {
                 .withName("Vision.blinkLimelights");
     }
 
-    public void setAiming() {
-        isAiming = true;
-    }
-
-    public void setNotAiming() {
-        isAiming = false;
-    }
 
 }

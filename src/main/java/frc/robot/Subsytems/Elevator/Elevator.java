@@ -2,6 +2,8 @@ package frc.robot.Subsytems.Elevator;
 
 import static edu.wpi.first.units.Units.Rotation;
 
+import javax.annotation.processing.Generated;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
@@ -64,6 +66,9 @@ public class Elevator extends CTREMechanism {
     @Setter
     private ElevatorStates states;
 
+    private @Getter TalonFX elevatorLeft;
+    private @Getter TalonFX elevatorRight;
+
     /**
      * @param leader
      *            json
@@ -74,6 +79,7 @@ public class Elevator extends CTREMechanism {
      */
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
+           
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;

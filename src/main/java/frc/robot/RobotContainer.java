@@ -17,8 +17,6 @@ import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
-import frc.robot.Subsytems.Cleaner.CleanPivot;
-import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
@@ -30,12 +28,10 @@ import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
-import frc.robot.Util.Constants.CleanerConstants.CleanerModes;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
-import frc.robot.Util.Constants.GamePieceConstants.GamePieceStates;
+import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
-import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -50,13 +46,11 @@ public class RobotContainer {
 	private final Intake intake = systems.getIntake();
 	private final IntakePivot intakePivot = systems.getIntakePivot();
 	private final Feeder feeder = systems.getFeeder();
-	private final Cleaner cleaner = systems.getCleaner();
 	private final Elevator elevator = systems.getElevator();
-	private final CleanPivot cleanPivot = systems.getCleanPivot();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
 	private final Climber climber = systems.getClimber();
-	private @Getter final TitanCANdle candle = systems.getCandle();
+	private @Getter final TitanCANdle candle = systems.getTitanCANdle();
 
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
@@ -82,10 +76,15 @@ public class RobotContainer {
 	// LED Triggers
 
 	// Driver Controls
+	private Trigger alignRightReef = driver.rightBumper();
+	private Trigger alignLeftReef = driver.leftBumper();
 
 	// Climber Controls
 	private Trigger climberOut = driver.leftTrigger(ControllerConstants.triggerThreshold);
 	private Trigger climberClimb = driver.rightTrigger(ControllerConstants.triggerThreshold);
+
+	// more Game Status
+	private @Getter Trigger reefAlignment = new Trigger(() -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());
 
 	// Operator Controls
 
@@ -97,9 +96,6 @@ public class RobotContainer {
 	private Trigger scoreL3Preset = operator.leftDpad();
 	private Trigger scoreL4Preset = operator.upDpad();
 
-	// Cleaner Controls
-	private Trigger intakeAlgae = operator.b();
-	private Trigger outtakeAlgae = operator.x();
 
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
@@ -113,10 +109,8 @@ public class RobotContainer {
 	public void subsystemPeriodic() {
 		intake.periodic();
 		feeder.periodic();
-		cleaner.periodic();
 		climber.periodic();
 		elevator.periodic();
-		cleanPivot.periodic();
 		manipJoint.periodic();
 		manipulator.periodic();
 		intakePivot.periodic();
@@ -172,10 +166,6 @@ public class RobotContainer {
 				(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.REVERSE).withName("Score Coral"));
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
-
-		// Cleaner Controls
-		intakeAlgae.whileTrue(cleaner.runCleanerCommand(CleanerModes.INTAKE).withName("Intake Algae"));
-		outtakeAlgae.whileTrue(cleaner.runCleanerCommand(CleanerModes.OUTTAKE).withName("Outtake Algae"));
 
 	}
 

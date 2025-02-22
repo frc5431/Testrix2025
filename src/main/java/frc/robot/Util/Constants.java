@@ -12,7 +12,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Velocity;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -21,7 +20,8 @@ public final class Constants {
 
     public static final String canbus = "Omnivore";
 
-    public static class GamePieceConstants {
+    public static class GameConstants {
+
         public enum GamePieceStates {
             CORAL,
             ALGAE,
@@ -73,7 +73,7 @@ public final class Constants {
             STUCK,
         }
 
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final int id = 21;
         public static final double gearRatio = 3 / 1;
@@ -365,7 +365,7 @@ public final class Constants {
         }
 
         public static final int id = 20;
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
@@ -422,6 +422,10 @@ public final class Constants {
 
         public static final int leftTagPipeline = 0;
         public static final int rightTagPipeline = 0;
+
+        public static final Distance rightPipeOffset = Units.Inches.of(6);
+        public static final Distance leftPipeOffset = Units.Inches.of(6);
+        public static final Distance allowedError = Units.Inches.of(1);
         
         public static final double highTrustStds = 0.1;
         public static final double servicableTrustStds = 0.25;
@@ -525,7 +529,7 @@ public final class Constants {
             FEEDING,
         }
 
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final int id = 22;
         public static final double gearRatio = 1 / 1;
@@ -620,6 +624,7 @@ public final class Constants {
     }
 
     public static class CANdleConstants {
+        public static final boolean attached = false;
         public static final int id = 18;
 
         public static final double fast = 0.8;
