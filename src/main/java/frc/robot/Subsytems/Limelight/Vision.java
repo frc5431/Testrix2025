@@ -421,7 +421,7 @@ public class Vision extends SubsystemBase {
     }
 
 
-    /** Set both LLs to blink */
+    /** Set all LLs to blink */
     public Command blinkLimelights() {
         return startEnd(
                         () -> {

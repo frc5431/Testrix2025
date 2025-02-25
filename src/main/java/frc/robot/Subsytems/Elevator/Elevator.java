@@ -2,8 +2,6 @@ package frc.robot.Subsytems.Elevator;
 
 import static edu.wpi.first.units.Units.Rotation;
 
-import javax.annotation.processing.Generated;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.Follower;
