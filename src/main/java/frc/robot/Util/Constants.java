@@ -87,6 +87,7 @@ public final class Constants {
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
 
+        public static final Voltage s = Units.Volts.of(1.3);
         public static final double p = 1;
         public static final double i = 0.01;
         public static final double d = 0.3;
