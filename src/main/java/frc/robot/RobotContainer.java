@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,11 +15,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
 import frc.robot.Commands.Chained.EjectCoralCommand;
 import frc.robot.Commands.Chained.ElevatorFeedCommand;
 import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
+import frc.robot.Commands.Chained.ScoreCoralCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -26,6 +32,7 @@ import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
+import frc.robot.Util.Titan8BitDoController;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
@@ -55,6 +62,7 @@ public class RobotContainer {
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
 			ControllerConstants.deadzone);
+	private Titan8BitDoController operator8BitDo = new Titan8BitDoController(ControllerConstants.operatorPort);
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
@@ -89,21 +97,25 @@ public class RobotContainer {
 	// Operator Controls
 
 	// Preset Controls
-	private Trigger intakePreset = operator.leftBumper();
-	private Trigger processorPreset = operator.back();
-	private Trigger feedPreset = operator.rightDpad();
-	private Trigger scoreL2Preset = operator.downDpad();
-	private Trigger scoreL3Preset = operator.leftDpad();
-	private Trigger scoreL4Preset = operator.upDpad();
+	private Trigger intakePreset = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper() : operator.leftBumper();
+	private Trigger processorPreset = ControllerConstants.using8BitDo ? operator8BitDo.getMinus() : operator.back();
+	private Trigger feedPreset = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
+	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
+	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
+	private Trigger scoreL4Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovUp() : operator.upDpad();
 
+	// Cleaner Controls
+	private Trigger intakeAlgae = ControllerConstants.using8BitDo ? operator8BitDo.getB() : operator.b();
+	private Trigger outtakeAlgae = ControllerConstants.using8BitDo ? operator8BitDo.getX() : operator.x();
 
 	// Intake Controls
-	private Trigger intakeCoral = operator.a();
-	private Trigger scoreCoral = operator.y();
-	private Trigger reverseFeed = operator.rightStick();
+	private Trigger intakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getA() : operator.a();
+	private Trigger scoreCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY() : operator.y();
+	private Trigger reverseFeed = ControllerConstants.using8BitDo ? operator8BitDo.getRightDPadDown() : operator.rightStick();
 
 	public RobotContainer() {
 		configureBindings();
+		setCommandMappings();
 	}
 
 	public void subsystemPeriodic() {
@@ -120,7 +132,8 @@ public class RobotContainer {
 		subsystemPeriodic();
 		SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 		SmartDashboard.putData("mechanism", robotMechanism.elevator);
-
+		SmartDashboard.putBoolean("Operator Controller", ControllerConstants.using8BitDo);
+		SmartDashboard.putBoolean("Intake Algae (Test)", intakeAlgae.getAsBoolean());
 		gamePieceStatus = (manipulator.getBeambreakStatus()) ? GamePieceStates.CORAL : GamePieceStates.NONE;
 		manipulator.setState((manipulator.getBeambreakStatus()) ? ManipulatorStates.LOCKED : ManipulatorStates.EMPTY);
 
@@ -198,4 +211,27 @@ public class RobotContainer {
 		return Commands.print("No autonomous command configured");
 	}
 
+	public void setCommandMappings() {
+		NamedCommands.registerCommand("EjectCoralCommand",
+				new EjectCoralCommand(intake, feeder, manipulator));
+		NamedCommands.registerCommand("ElevatorFeedCommand",
+				new ElevatorFeedCommand(elevator, manipJoint));
+		NamedCommands.registerCommand("ElevatorL1PresetCommand",
+		 new ElevatorPresetCommand(ControllerConstants.ScoreL1Position, elevator, manipJoint));
+		NamedCommands.registerCommand("ElevatorL2PresetCommand",
+				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint));
+		NamedCommands.registerCommand("ElevatorL3PresetCommand",
+				new ElevatorPresetCommand(ControllerConstants.ScoreL3Position, elevator, manipJoint));
+		NamedCommands.registerCommand("ElevatorL4PresetCommand",
+				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint));
+		NamedCommands.registerCommand("ElevatorStowCommand",
+				new ElevatorStowCommand(elevator, manipJoint));
+		NamedCommands.registerCommand("IntakeCoralCommand",
+				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
+		NamedCommands.registerCommand("AutoIntakeCoralCommand",
+				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
+		NamedCommands.registerCommand("ScoreCoralCommand",
+				new ScoreCoralCommand(elevator, manipJoint, manipulator, cleanPivot));
+
+	}
 }

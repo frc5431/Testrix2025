@@ -31,7 +31,6 @@ public final class Constants {
     }
 
     public static class ControllerConstants {
-
         public enum ControlStates {
             ALGAE,
             CORAL,
@@ -39,6 +38,9 @@ public final class Constants {
         
         public static final int driverPort = 0;
         public static final int operatorPort = 1;
+
+        public static final boolean using8BitDo = false;
+
 
         public static final double deadzone = 0.15;
         public static final double triggerThreshold = 0.5;
