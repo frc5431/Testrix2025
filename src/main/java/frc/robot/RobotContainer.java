@@ -231,7 +231,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoIntakeCoralCommand",
 				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("ScoreCoralCommand",
-				new ScoreCoralCommand(elevator, manipJoint, manipulator, cleanPivot));
+				new ScoreCoralCommand(elevator, manipJoint, manipulator));
 
 	}
 }
