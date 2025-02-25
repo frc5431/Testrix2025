@@ -10,8 +10,12 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -21,8 +25,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
+import frc.robot.Util.Field;
+import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.TunerConstants.TunerSwerveDrivetrain;
@@ -187,6 +194,38 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         
     }
 
+        /**
+     * The function `getRobotPose` returns the robot's pose after checking and updating it.
+     *
+     * @return The `getRobotPose` method is returning the robot's current pose after calling the
+     *     `seedCheckedPose` method with the current pose as an argument.
+     */
+    public Pose2d getRobotPose() {
+        Pose2d pose = getState().Pose;
+        return keepPoseOnField(pose);
+    }
+
+    // Keep the robot on the field
+    private Pose2d keepPoseOnField(Pose2d pose) {
+        
+        double halfBot = DrivebaseConstants.robotLength.div(2).in(Meters);
+        double x = pose.getX();
+        double y = pose.getY();
+
+        //WARNING: IF ANTHING BAD IS EVER HAPPENING, IM NOT SURE THIS IS RIGHT
+        double newX = MathUtil.clamp(x, halfBot, (Field.getFieldLength().in(Meters) - halfBot));
+        double newY = MathUtil.clamp(y, halfBot, (Field.getFieldLength().in(Meters) - halfBot));
+
+        if (x != newX || y != newY) {
+            pose = new Pose2d(new Translation2d(newX, newY), pose.getRotation());
+            resetPose(pose);
+        }
+        return pose;
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return getKinematics().toChassisSpeeds(getState().ModuleStates);
+    }
 
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
@@ -197,6 +236,30 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
+
+    public Command alignWheelsCommand(Rotation2d direction){
+       return run(() -> new SwerveRequest.PointWheelsAt().withModuleDirection(direction));
+    }
+
+    
+    /**
+     * @param chassisSpeeds
+     * @return
+     * If we have issues this is a good place to start. Not confident on the end command
+     */
+    public Command driveRobotCenteric(ChassisSpeeds chassisSpeeds){
+        return new StartEndCommand(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds), () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0)), this);
+    }
+
+    public Command faceTargetCommand(Rotation2d faceDirection){
+        return run(() -> new SwerveRequest.FieldCentricFacingAngle().withTargetDirection(faceDirection));
+    }
+
+    // public Command alignRobotCentericXCommand(double targetDifferece, double  xVelocity){
+        
+    //     return run(() -> new SwerveRequest.ApplyRobotSpeeds()
+    //     .withSpeeds(new ChassisSpeeds(0.0, xVelocity, 0.0))).;
+    // }
 
     /**
      * Runs the SysId Quasistatic test in the given direction for the routine

@@ -23,6 +23,7 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 				new ElevatorStowCommand(elevator, manipJoint)
 
 		);
+		
 		addRequirements(elevator, manipulator, cleanPivot);
 	}
 

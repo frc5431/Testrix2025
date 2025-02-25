@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
 
 public class Field {
-	public static final Distance fieldLength = Units.Inches.of(690.876);
+	public @Getter static final Distance fieldLength = Units.Inches.of(690.876);
 	private @Getter static final Distance halfLength = fieldLength.div(2);
 	public static final Distance fieldWidth = Units.Inches.of(317);
 	private @Getter static final Distance halfWidth = fieldWidth.div(2);
@@ -58,6 +59,8 @@ public class Field {
 				Units.Inches.of(25.824),
 				Rotation2d.fromDegrees(144.011 - 90));
 	}
+
+	public static final double[] reefAprilTags = { 6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22 };
 
 	public static class Reef {
 		public static final Translation2d center = new Translation2d(Units.Inches.of(176.746),
@@ -193,6 +196,19 @@ public class Field {
 
 	@Getter
 	private static final Distance aprilTagWidth = Units.Inches.of(6.50);
+
+	public static boolean isReef(double id) {
+		for (double x : reefAprilTags) {
+			if (x == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isRedTag(double id){
+		return id < 12;
+	}
 
 	/** Returns {@code true} if the robot is on the blue alliance. */
 	public static boolean isBlue() {

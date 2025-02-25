@@ -1,7 +1,12 @@
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.CANdle.TitanCANdle;
@@ -10,8 +15,10 @@ import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
+import frc.robot.Util.Field;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
+import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
@@ -22,28 +29,30 @@ import lombok.Getter;
 
 public class Systems {
 
+    public static @Getter AprilTagFieldLayout apriltagLayout;
+
     private MotorType brushless = MotorType.kBrushless;
 
     private @Getter Intake intake;
     private @Getter IntakePivot intakePivot;
     private @Getter Feeder feeder;
-    private @Getter Elevator elevator;
-    private @Getter Manipulator manipulator;
     private @Getter ManipJoint manipJoint;
+    private @Getter Manipulator manipulator;
+    private @Getter Elevator elevator;
     private @Getter Cleaner cleaner;
     private @Getter CleanPivot cleanPivot;
-    private @Getter TitanCANdle candle;
+    private @Getter TitanCANdle titanCANdle;
+    private static @Getter Vision vision;
     private @Getter Climber climber;
-    private @Getter Drivebase drivebase;
+    private static @Getter Drivebase drivebase;
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
     private TalonFX elevatorRight;
+    public CANdle candle;
 
     /* Neo 1.1s */
     private SparkMax intakeMotor;
-    private SparkMax cleanerMotor;
-    private SparkMax cleanPivotMotor;
     private SparkMax manipJointMotor;
     private SparkMax feederMotor;
     private SparkMax intakePivotMotor;
@@ -54,36 +63,63 @@ public class Systems {
 
     public Systems() {
 
-        /* Kraken X60s */
-        elevatorLeft = new TalonFX(ElevatorConstants.leftId, Constants.canbus);
-        elevatorRight = new TalonFX(ElevatorConstants.rightId, Constants.canbus);
+        //I have ill wishes for the person that made apriltagfieldlayout code, count your days and your blessings for i pray them to be few
+        try{
+            apriltagLayout = new AprilTagFieldLayout("src/main/java/frc/robot/Util/2025-reefscape-welded.json");
+            if(Field.isRed()) {
+                apriltagLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+            }else{
+                apriltagLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+            }
+            
 
-        /* Neo 1.1s */
-        intakeMotor = new SparkMax(IntakeConstants.id, brushless);
-        intakePivotMotor = new SparkMax(IntakePivotConstants.id, brushless);
-        cleanerMotor = new SparkMax(CleanerConstants.id, brushless);
-        cleanPivotMotor = new SparkMax(CleanPivotConstants.id, brushless);
-        manipJointMotor = new SparkMax(ManipJointConstants.id, brushless);
-        feederMotor = new SparkMax(FeederConstants.id, brushless);
-        climberMotor = new SparkMax(ClimberConstants.id, brushless);
+        }catch(Exception e){
+            System.out.println("Failed to load April Tag Map");
+        }
 
-        /* Neo 550s */
-        manipulatorMotor = new SparkMax(ManipulatorConstants.id, brushless);
+        if (IntakeConstants.attached) {
+            intakeMotor = new SparkMax(IntakeConstants.id, brushless);
+            intake = new Intake(intakeMotor, IntakeConstants.attached);
+        }
 
-        /*----------*/
-        feeder = new Feeder(feederMotor, FeederConstants.attached);
-        intake = new Intake(intakeMotor, IntakeConstants.attached);
-        intakePivot = new IntakePivot(intakePivotMotor, IntakePivotConstants.attached);
-        elevator = new Elevator(elevatorLeft, elevatorRight, ElevatorConstants.attached);
-        cleaner = new Cleaner(cleanerMotor, CleanerConstants.attached);
-        cleanPivot = new CleanPivot(cleanPivotMotor, CleanPivotConstants.attached);
-        manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
-        manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
-        climber = new Climber(climberMotor, ClimberConstants.attached);
-        candle = new TitanCANdle();
-        
+        if (IntakePivotConstants.attached) {
+            intakePivotMotor = new SparkMax(IntakePivotConstants.id, brushless);
+            intakePivot = new IntakePivot(intakePivotMotor, IntakePivotConstants.attached);
+        }
+
+        if (FeederConstants.attached) {
+            feederMotor = new SparkMax(FeederConstants.id, brushless);
+            feeder = new Feeder(feederMotor, FeederConstants.attached);
+        }
+
+        if (ManipulatorConstants.attached) {
+            manipulatorMotor = new SparkMax(ManipulatorConstants.id, brushless);
+            manipulator = new Manipulator(manipulatorMotor, ManipulatorConstants.attached);
+        }
+
+        if (ManipJointConstants.attached) {
+            manipJointMotor = new SparkMax(ManipJointConstants.id, brushless);
+            manipJoint = new ManipJoint(manipJointMotor, ManipJointConstants.attached);
+        }
+
+        if (ElevatorConstants.attached) {
+            elevatorLeft = new TalonFX(ElevatorConstants.leftId, Constants.canbus);
+            elevatorRight = new TalonFX(ElevatorConstants.rightId, Constants.canbus);
+            elevator = new Elevator(elevatorLeft, elevatorRight, ElevatorConstants.attached);
+        }
+
+        if (ClimberConstants.attached) {
+            climberMotor = new SparkMax(ClimberConstants.id, brushless);
+            climber = new Climber(climberMotor, ClimberConstants.attached);
+        }
+
+        if (CANdleConstants.attached) {
+            candle = new CANdle(CANdleConstants.id, Constants.canbus);
+            titanCANdle = new TitanCANdle(candle);
+        }
+
         drivebase = new Drivebase(
-                TunerConstants.DrivetrainConstants, 
+                TunerConstants.DrivetrainConstants,
                 TunerConstants.FrontLeft, TunerConstants.FrontRight,
                 TunerConstants.BackLeft, TunerConstants.BackRight);
     }

@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -19,7 +20,8 @@ public final class Constants {
 
     public static final String canbus = "Omnivore";
 
-    public static class GamePieceConstants {
+    public static class GameConstants {
+
         public enum GamePieceStates {
             CORAL,
             ALGAE,
@@ -73,7 +75,7 @@ public final class Constants {
             STUCK,
         }
 
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final int id = 21;
         public static final double gearRatio = 3 / 1;
@@ -87,6 +89,7 @@ public final class Constants {
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
 
+        public static final Voltage s = Units.Volts.of(1.3);
         public static final double p = 1;
         public static final double i = 0.01;
         public static final double d = 0.3;
@@ -365,7 +368,7 @@ public final class Constants {
         }
 
         public static final int id = 20;
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
@@ -394,6 +397,66 @@ public final class Constants {
             }
 
         }
+
+    }
+
+    public static class DrivebaseConstants {
+        public static final Distance robotLength = Units.Inches.of(28);
+    }
+
+    public static class VisionConstants {
+
+        public static final boolean useVisionPeriodic = true;
+
+        public static final String cameraName = "Vision";
+        public static final Distance leftLLForwardOffset = Units.Inches.of(0);
+        public static final Distance leftLLRightOffset = Units.Inches.of(0);
+        public static final Distance leftLLUpOffset = Units.Inches.of(0);
+        public static final Angle leftLLRollOffset = Units.Degrees.of(0);
+        public static final Angle leftLLPitchOffset = Units.Degrees.of(0);
+        public static final Angle leftLLYawOffset = Units.Degrees.of(0);
+
+        public static final Distance rightLLForwardOffset = Units.Inches.of(0);
+        public static final Distance rightLLRightOffset = Units.Inches.of(0);
+        public static final Distance rightLLUpOffset = Units.Inches.of(0);
+        public static final Angle rightLLRollOffset = Units.Degrees.of(0);
+        public static final Angle rightLLPitchOffset = Units.Degrees.of(0);
+        public static final Angle rightLLYawOffset = Units.Degrees.of(0);
+
+        public static final int leftTagPipeline = 0;
+        public static final int rightTagPipeline = 0;
+
+        public static final Distance rightPipeOffset = Units.Inches.of(6);
+        public static final Distance leftPipeOffset = Units.Inches.of(6);
+        public static final Distance allowedError = Units.Inches.of(1);
+        
+        public static final double highTrustStds = 0.1;
+        public static final double servicableTrustStds = 0.25;
+        public static final double defaultTrustStds = 0.5;
+        public static final double decreasedTrustStds = 2;
+
+        public static final double lowTrustStds = 5;
+        public static final double badTrustStds = 8;
+        public static final double dismalTrustStds = 15;
+        public static final double abysmalTrustStds = 16;
+        public static final double noTrustStds = 9999;
+
+
+
+
+        /**
+         *  idk what unit this is
+         * spectrum did 0.025
+         */
+        public static final double minSizeRejection = 0.025;
+        public static final AngularVelocity maxRadPerSec = Units.RadiansPerSecond.of(1.6);
+        public static final AngularVelocity lowTrustRadPerSec = Units.RadiansPerSecond.of(0.5);
+
+        public static final Distance visionRejectDistance = Units.Meters.of(1);
+        /**
+         * Meters per Second
+         */
+        public static final double velocityLowTrustThreshold = 0.2;
 
     }
 
@@ -469,7 +532,7 @@ public final class Constants {
             FEEDING,
         }
 
-        public static final boolean attached = true;
+        public static final boolean attached = false;
         public static final boolean isInverted = false;
         public static final int id = 22;
         public static final double gearRatio = 1 / 1;
@@ -564,6 +627,7 @@ public final class Constants {
     }
 
     public static class CANdleConstants {
+        public static final boolean attached = false;
         public static final int id = 18;
 
         public static final double fast = 0.8;

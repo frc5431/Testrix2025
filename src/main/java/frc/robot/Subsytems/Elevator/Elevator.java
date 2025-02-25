@@ -64,6 +64,9 @@ public class Elevator extends CTREMechanism {
     @Setter
     private ElevatorStates states;
 
+    private @Getter TalonFX elevatorLeft;
+    private @Getter TalonFX elevatorRight;
+
     /**
      * @param leader
      *            json
@@ -74,6 +77,7 @@ public class Elevator extends CTREMechanism {
      */
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
+           
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;
