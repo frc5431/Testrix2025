@@ -24,6 +24,7 @@ import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Climber.Climber;
+import frc.robot.Subsytems.Drivebase.AlignReefCommand;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
@@ -32,7 +33,7 @@ import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
-import frc.robot.Util.Titan8BitDoController;
+import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
@@ -62,7 +63,7 @@ public class RobotContainer {
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
 			ControllerConstants.deadzone);
-	private Titan8BitDoController operator8BitDo = new Titan8BitDoController(ControllerConstants.operatorPort);
+	private TitanBitDoController operator8BitDo = new TitanBitDoController(ControllerConstants.operatorPort);
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
@@ -86,6 +87,8 @@ public class RobotContainer {
 	// Driver Controls
 	private Trigger alignRightReef = driver.rightBumper();
 	private Trigger alignLeftReef = driver.leftBumper();
+	private Trigger alignCenterReef = driver.a();
+	private Trigger driveStow = driver.x();
 
 	// Climber Controls
 	private Trigger climberOut = driver.leftTrigger(ControllerConstants.triggerThreshold);
@@ -144,6 +147,20 @@ public class RobotContainer {
 		// Climber Controls
 		climberOut.onTrue(climber.runClimberCommand(ClimberModes.ALIGN));
 		climberClimb.whileTrue(climber.runClimberCommand(ClimberConstants.climbVelocity));
+		
+		// Align Reef Commands
+		alignLeftReef.onTrue(
+			new AlignReefCommand(false).withName("Align Left of Reef")
+		);
+		alignRightReef.onTrue(
+			new AlignReefCommand(true).withName("Align Right of Reef")
+		);
+		alignCenterReef.onTrue(
+			new AlignReefCommand().withName("Align Center of Reef")
+		);
+		driveStow.onTrue(
+			new ElevatorStowCommand(elevator, manipJoint).withName("Driver Stow Elevator")
+		);
 
 	}
 
@@ -154,8 +171,9 @@ public class RobotContainer {
 				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
 						.withName("Intake Coral Preset"));
 
+		//TODO: Need to fix this preset command
 		processorPreset.onTrue(
-				new ElevatorStowCommand(elevator, manipJoint)
+				new ElevatorPresetCommand(Util.PresetPosition(0), elevator, manipJoint)
 						.withName("Elevator Algae Intake"));
 
 		feedPreset.onTrue(
@@ -217,7 +235,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("ElevatorFeedCommand",
 				new ElevatorFeedCommand(elevator, manipJoint));
 		NamedCommands.registerCommand("ElevatorL1PresetCommand",
-		 new ElevatorPresetCommand(ControllerConstants.ScoreL1Position, elevator, manipJoint));
+				new ElevatorPresetCommand(ControllerConstants.ScoreL1Position, elevator, manipJoint));
 		NamedCommands.registerCommand("ElevatorL2PresetCommand",
 				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint));
 		NamedCommands.registerCommand("ElevatorL3PresetCommand",

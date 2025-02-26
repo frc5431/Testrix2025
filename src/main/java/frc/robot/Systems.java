@@ -41,7 +41,7 @@ public class Systems {
     private @Getter Elevator elevator;
     private @Getter Cleaner cleaner;
     private @Getter CleanPivot cleanPivot;
-    private @Getter TitanCANdle titanCANdle;
+    private static @Getter TitanCANdle titanCANdle;
     private static @Getter Vision vision;
     private @Getter Climber climber;
     private static @Getter Drivebase drivebase;

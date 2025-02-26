@@ -5,6 +5,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -12,6 +13,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -428,8 +430,17 @@ public final class Constants {
 
         public static final Distance rightPipeOffset = Units.Inches.of(6);
         public static final Distance leftPipeOffset = Units.Inches.of(6);
+        public static final Distance pipeScoreOffset = Units.Inches.of(6);
+        public static final Distance centerScoreOffset = Units.Inches.of(2);
+        public static final Distance centerOffset = Units.Inches.of(2);
         public static final Distance allowedError = Units.Inches.of(1);
         
+        public static final LinearVelocity alignYVelocity = Units.FeetPerSecond.of(1/1);
+        public static final LinearVelocity alignXVelocity = Units.FeetPerSecond.of(1/1);
+        public static final AngularVelocity alignThetaVelocity = Units.RadiansPerSecond.of(0.0);
+        public static final ChassisSpeeds alignXSpeed = new ChassisSpeeds(alignXVelocity, Units.FeetPerSecond.of(0), alignThetaVelocity);
+        public static final ChassisSpeeds alignYSpeed = new ChassisSpeeds(Units.FeetPerSecond.of(0), alignYVelocity, alignThetaVelocity);
+
         public static final double highTrustStds = 0.1;
         public static final double servicableTrustStds = 0.25;
         public static final double defaultTrustStds = 0.5;

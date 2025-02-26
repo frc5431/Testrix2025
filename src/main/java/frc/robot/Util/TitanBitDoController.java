@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
 
-public class Titan8BitDoController extends XboxController {
+public class TitanBitDoController extends XboxController {
     /**
      * Trigger-Based 8BitDoController
      * 
      * @param port
      */
-    public Titan8BitDoController(final int port) {
+    public TitanBitDoController(final int port) {
         super(port);
     }
 

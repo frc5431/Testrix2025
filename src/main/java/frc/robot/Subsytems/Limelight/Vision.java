@@ -17,6 +17,7 @@ import frc.robot.Subsytems.Limelight.LimelightHelpers.RawFiducial;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.Trio;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
+import frc.robot.Subsytems.Limelight.VisionUtil.VisionCommandConfig;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
 import lombok.Setter;
@@ -415,6 +416,24 @@ public class Vision extends SubsystemBase {
     public boolean getPipeAlignDist(boolean rightTrue) {
         return Calc.approxEquals(getCameraXDistance().in(Inches),
                 rightTrue ? VisionConstants.rightPipeOffset.in(Inches) : VisionConstants.leftPipeOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean getPipeScoreDist() {
+        return Calc.approxEquals(getCameraYDistance().in(Inches),
+                VisionConstants.pipeScoreOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean leftOfTag(){
+        return getCameraXDistance().in(Inches)<VisionConstants.centerOffset.in(Inches);
+    }
+    public boolean isCentered(){
+        return Calc.approxEquals(getCameraXDistance().in(Inches),
+                VisionConstants.centerOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean getCenterScoreDistance() {
+        return Calc.approxEquals(getCameraYDistance().in(Inches),
+                VisionConstants.centerScoreOffset.in(Inches),
                 VisionConstants.allowedError.in(Inches));
     }
 
