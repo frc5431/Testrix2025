@@ -9,6 +9,9 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -25,7 +28,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
+import frc.robot.Util.Constants;
 import frc.robot.Util.Field;
+import frc.robot.Util.TunerConstants;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -150,7 +155,19 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
 
         
 
-        configureAutoBuilder();
+        AutoBuilder.configure(
+            this::getRobotPose,
+            this::resetPose, 
+            this::getChassisSpeeds,
+            (speeds, feedforwards) -> driveRobotCenteric(speeds),
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            TunerConstants.robotConfig,
+            () -> Field.isRed(),
+            this
+        );
     }
 
     public void resetGyro() {
@@ -226,7 +243,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     public ChassisSpeeds getChassisSpeeds() {
         return getKinematics().toChassisSpeeds(getState().ModuleStates);
     }
-
+    
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *

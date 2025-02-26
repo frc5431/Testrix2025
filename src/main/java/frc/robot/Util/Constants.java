@@ -1,10 +1,14 @@
 package frc.robot.Util;
 
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -12,14 +16,22 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Mass;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
+import frc.robot.Util.Constants;
 
 public final class Constants {
 
     public static final String canbus = "Omnivore";
+    
+    // // WARNING THIS IS FAKE NUMBERS TODO AND I NEED TO LEANR WHAT THEY MEAN!
+    // public static final ModuleConfig moduleConfig = new ModuleConfig(Units.Inches.of(2), Units.FeetPerSecond.of(1), 1, new DCMotor(1, 1, 1, 1, 1, 1), Units.Amps.of(80), 1);
 
+    // public static final RobotConfig robotConfig = new RobotConfig(Units.Pounds.of(12),
+    //         Units.KilogramSquareMeters.of(2),
+    //         moduleConfig, new Translation2d(1, 1));
     public static class GameConstants {
 
         public enum GamePieceStates {
@@ -75,7 +87,7 @@ public final class Constants {
             STUCK,
         }
 
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final int id = 21;
         public static final double gearRatio = 3 / 1;
@@ -129,7 +141,7 @@ public final class Constants {
             OUTTAKING
         }
 
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final int id = 26;
         public static final double gearRatio = 1 / 1;
         public static final Current supplyLimit = Units.Amps.of(0);
@@ -178,7 +190,7 @@ public final class Constants {
         }
 
         public static final int id = 25;
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final Angle softLimitForwardMax = Units.Rotation.of(0);
         public static final boolean softLimitEnabled = true;
         public static final Angle intakeAngle = Units.Rotation.of(0);
@@ -368,7 +380,7 @@ public final class Constants {
         }
 
         public static final int id = 20;
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
@@ -532,7 +544,7 @@ public final class Constants {
             FEEDING,
         }
 
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final int id = 22;
         public static final double gearRatio = 1 / 1;

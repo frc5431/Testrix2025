@@ -6,9 +6,12 @@ package frc.robot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -66,6 +69,8 @@ public class RobotContainer {
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
+	private final SendableChooser<Command> autoChooser;
+
 	// Triggers
 
 	// Automated Triggers
@@ -115,7 +120,11 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		configureBindings();
+
 		setCommandMappings();
+
+		autoChooser = AutoBuilder.buildAutoChooser();
+		SmartDashboard.putData("Auto Chooser", autoChooser);
 	}
 
 	public void subsystemPeriodic() {
@@ -126,6 +135,7 @@ public class RobotContainer {
 		manipJoint.periodic();
 		manipulator.periodic();
 		intakePivot.periodic();
+		
 	}
 
 	public void periodic() {
@@ -208,7 +218,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return Commands.print("No autonomous command configured");
+		return autoChooser.getSelected();
 	}
 
 	public void setCommandMappings() {
