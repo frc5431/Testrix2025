@@ -30,7 +30,7 @@ import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
-import frc.robot.Util.Titan8BitDoController;
+import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.ClimberConstants.ClimberModes;
@@ -55,12 +55,12 @@ public class RobotContainer {
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
 	private final Climber climber = systems.getClimber();
-	private @Getter final TitanCANdle candle = systems.getTitanCANdle();
+	private @Getter final TitanCANdle candle = Systems.getTitanCANdle();
 
 	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
 	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
 			ControllerConstants.deadzone);
-	private Titan8BitDoController operator8BitDo = new Titan8BitDoController(ControllerConstants.operatorPort);
+	private TitanBitDoController operator8BitDo = new TitanBitDoController(ControllerConstants.operatorPort);
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 

@@ -1,6 +1,6 @@
 package frc.robot.Subsytems.Limelight;
 
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,11 +17,15 @@ import frc.robot.Subsytems.Limelight.LimelightHelpers.RawFiducial;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.Trio;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
+import frc.robot.Subsytems.Limelight.VisionUtil.VisionCommandConfig;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
 import lombok.Setter;
 import frc.robot.Util.Constants.VisionConstants;
+import frc.team5431.titan.core.misc.Calc;
+
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.text.DecimalFormat;
@@ -34,50 +38,46 @@ import frc.robot.RobotContainer;
 
 public class Vision extends SubsystemBase {
     /**
-     * Configs must be initialized and added as limelights to {@link Vision} {@code allLimelights} &
+     * Configs must be initialized and added as limelights to {@link Vision}
+     * {@code allLimelights} &
      * {@code poseLimelights}
      */
     public RobotContainer my_robotContainer;
 
-        /* Pose Estimation Constants */ // 2.3;
+    /* Pose Estimation Constants */ // 2.3;
 
-        // Increase these numbers to trust global measurements from vision less.
-        public static double VISION_STD_DEV_X = 0.5;
-        public static double VISION_STD_DEV_Y = 0.5;
-        public static double VISION_STD_DEV_THETA = 99999999;
+    // Increase these numbers to trust global measurements from vision less.
+    public static double VISION_STD_DEV_X = 0.5;
+    public static double VISION_STD_DEV_Y = 0.5;
+    public static double VISION_STD_DEV_THETA = 99999999;
 
-        public static final Matrix<N3, N1> visionStdMatrix =
-                VecBuilder.fill(VISION_STD_DEV_X, VISION_STD_DEV_Y, VISION_STD_DEV_THETA);
+    public static final Matrix<N3, N1> visionStdMatrix = VecBuilder.fill(VISION_STD_DEV_X, VISION_STD_DEV_Y,
+            VISION_STD_DEV_THETA);
 
-        // TODO: deal with this
-        private Drivebase drivebase;
+    // TODO: deal with this
+    private Drivebase drivebase;
 
-        
-    
-    //TODO: we only have one for now
+    // TODO: we only have one for now
     /* Limelights */
-    public final VisionHelper leftLL =
-            new LimelightHelpers().new VisionHelper(
-                    VisionConfig.LEFT_LL, VisionConstants.leftTagPipeline, VisionConfig.LEFT_CONFIG);
+    public final VisionHelper leftLL = new LimelightHelpers().new VisionHelper(
+            VisionConfig.LEFT_LL, VisionConstants.leftTagPipeline, VisionConfig.LEFT_CONFIG);
     public final LimelightLogger leftLogger = new LimelightLogger("Left", leftLL);
-    public final VisionHelper rightLL =
-            new LimelightHelpers().new VisionHelper(
-                    VisionConfig.RIGHT_LL,
-                    VisionConstants.rightTagPipeline,
-                    VisionConfig.RIGHT_CONFIG);
+    public final VisionHelper rightLL = new LimelightHelpers().new VisionHelper(
+            VisionConfig.RIGHT_LL,
+            VisionConstants.rightTagPipeline,
+            VisionConfig.RIGHT_CONFIG);
     public final LimelightLogger rightLogger = new LimelightLogger("Right", rightLL);
-    public final VisionHelper[] allLimelights = {leftLL, rightLL};
+    public final VisionHelper[] allLimelights = { leftLL, rightLL };
     public final VisionHelper[] poseLimelights = {
-        leftLL, rightLL
-    }; 
+            leftLL, rightLL
+    };
 
     private final DecimalFormat df = new DecimalFormat();
 
     @AutoLogOutput(key = "Vision/is_Integrating")
     public static boolean isIntegrating = false;
 
-    public ArrayList<Trio<Pose3d, Pose2d, Double>> autonPoses =
-            new ArrayList<Trio<Pose3d, Pose2d, Double>>();
+    public ArrayList<Trio<Pose3d, Pose2d, Double>> autonPoses = new ArrayList<Trio<Pose3d, Pose2d, Double>>();
 
     private @Setter boolean isAligning = false;
 
@@ -107,8 +107,7 @@ public class Vision extends SubsystemBase {
                 Pose3d botpose3D = visionHelper.getRawPose3d();
                 Pose2d megaPose2d = visionHelper.getMegaPose2d();
                 double timeStamp = visionHelper.getRawPoseTimestamp();
-                Pose2d integratablePose =
-                        new Pose2d(megaPose2d.getTranslation(), botpose3D.toPose2d().getRotation());
+                Pose2d integratablePose = new Pose2d(megaPose2d.getTranslation(), botpose3D.toPose2d().getRotation());
                 autonPoses.add(Trio.of(botpose3D, integratablePose, timeStamp));
             }
         }
@@ -117,11 +116,12 @@ public class Vision extends SubsystemBase {
             isIntegrating = false;
             // Will NOT run in auto
             if (DriverStation.isTeleopEnabled() && VisionConstants.useVisionPeriodic) {
-                
+
                 // choose LL with best view of tags and integrate from only that camera
                 VisionHelper bestLimelight = getBestLimelight();
                 for (VisionHelper visionHelper : poseLimelights) {
-                    if (my_robotContainer.getReefAlignment().getAsBoolean() && Field.isReef((bestLimelight.getClosestTagID()))) {
+                    if (my_robotContainer.getReefAlignment().getAsBoolean()
+                            && Field.isReef((bestLimelight.getClosestTagID()))) {
                         addFilteredVisionInput(bestLimelight);
                     } else {
                         visionHelper.sendInvalidStatus("SAD!: Apriltag is not matched Reef ID");
@@ -176,11 +176,12 @@ public class Vision extends SubsystemBase {
                 // reject if pose is out of the field
                 ll.sendInvalidStatus("vision: bound rejection {vision:185ish}");
                 return;
-             } else if (Math.abs(robotSpeeds.omegaRadiansPerSecond) >= VisionConstants.maxRadPerSec.in(RadiansPerSecond)) {
-                 // reject if we are rotating more than an amount of radians per second
-                 ll.sendInvalidStatus("vision: robot rotation too fast");
-                 return; }
-            else if (Math.abs(botpose3D.getZ()) > 0.25) {
+            } else if (Math.abs(robotSpeeds.omegaRadiansPerSecond) >= VisionConstants.maxRadPerSec
+                    .in(RadiansPerSecond)) {
+                // reject if we are rotating more than an amount of radians per second
+                ll.sendInvalidStatus("vision: robot rotation too fast");
+                return;
+            } else if (Math.abs(botpose3D.getZ()) > 0.25) {
                 // reject if pose is .25 meters in the air
                 ll.sendInvalidStatus("vision: height rejection");
                 return;
@@ -195,12 +196,13 @@ public class Vision extends SubsystemBase {
             }
             /* CONFIDENCE (integration/standard devation) Evaluation */
             // if almost stationary and extremely close to tag
-            else if (robotSpeeds.vxMetersPerSecond + robotSpeeds.vyMetersPerSecond <= VisionConstants.velocityLowTrustThreshold
+            else if (robotSpeeds.vxMetersPerSecond
+                    + robotSpeeds.vyMetersPerSecond <= VisionConstants.velocityLowTrustThreshold
                     && targetSize > 0.4) {
                 ll.sendValidStatus("Vision: Stationary close integration");
                 xyStds = VisionConstants.highTrustStds;
-                degStds = VisionConstants.highTrustStds; 
-            }  else if (multiTags && targetSize > 0.05) {
+                degStds = VisionConstants.highTrustStds;
+            } else if (multiTags && targetSize > 0.05) {
                 ll.sendValidStatus("Vision: Multi integration");
                 xyStds = VisionConstants.servicableTrustStds;
                 degStds = VisionConstants.badTrustStds;
@@ -253,20 +255,19 @@ public class Vision extends SubsystemBase {
             ll.sendInvalidStatus("Vision: no tag found rejection");
         }
     }
-    
-    //TODO: create slow moving adjustment function
-    //TODO: create align command (own class?)
-   
+
+    // TODO: create slow moving adjustment function
+    // TODO: create align command (own class?)
+
     public void autonResetPoseToVision() {
         boolean reject = true;
-        //TODO: why isnt this used? confer with spectrum code
+        // TODO: why isnt this used? confer with spectrum code
         boolean firstSuccess = false;
         double batchSize = 5;
         for (int i = autonPoses.size() - 1; i > autonPoses.size() - (batchSize + 1); i--) {
             Trio<Pose3d, Pose2d, Double> poseInfo = autonPoses.get(i);
-            boolean success =
-                    resetPoseToVision(
-                            true, poseInfo.getFirst(), poseInfo.getSecond(), poseInfo.getThird());
+            boolean success = resetPoseToVision(
+                    true, poseInfo.getFirst(), poseInfo.getSecond(), poseInfo.getThird());
             if (success) {
                 if (i == autonPoses.size() - 1) {
                     firstSuccess = true;
@@ -285,8 +286,8 @@ public class Vision extends SubsystemBase {
                             + " of "
                             + autonPoses.size()
                             + " possible tries");
-           
-        } 
+
+        }
     }
 
     public void resetPoseToVision() {
@@ -345,12 +346,12 @@ public class Vision extends SubsystemBase {
                             + " Y: "
                             + robotPose.getY()
                             + " Theta: "
-                            + robotPose.getRotation().getDegrees()); 
+                            + robotPose.getRotation().getDegrees());
             drivebase.setVisionMeasurementStdDevs(
                     VecBuilder.fill(
                             VisionConfig.VISION_STD_DEV_X,
                             VisionConfig.VISION_STD_DEV_Y,
-                            VisionConfig.VISION_STD_DEV_THETA)); 
+                            VisionConfig.VISION_STD_DEV_THETA));
 
             Pose2d integratedPose = new Pose2d(megaPose.getTranslation(), botpose.getRotation());
             drivebase.addVisionMeasurement(integratedPose, poseTimestamp);
@@ -362,7 +363,7 @@ public class Vision extends SubsystemBase {
                             + " Y: "
                             + robotPose.getY()
                             + " Theta: "
-                            + robotPose.getRotation().getDegrees()); 
+                            + robotPose.getRotation().getDegrees());
             System.out.println("ResetPoseToVision: SUCCESS");
             return true;
         }
@@ -398,20 +399,43 @@ public class Vision extends SubsystemBase {
      */
     public boolean hasAccuratePose() {
         for (VisionHelper visionHelper : poseLimelights) {
-            if (visionHelper.hasAccuratePose()) return true;
+            if (visionHelper.hasAccuratePose())
+                return true;
         }
         return false;
     }
 
-    public Distance getCameraXDistance (){
+    public Distance getCameraXDistance() {
         return LimelightHelpers.getCameraPose3d_TargetSpace(this.getBestLimelight().CAMERA_NAME).getMeasureX();
     }
-    public Distance getCameraYDistance (){
+
+    public Distance getCameraYDistance() {
         return LimelightHelpers.getCameraPose3d_TargetSpace(this.getBestLimelight().CAMERA_NAME).getMeasureZ();
     }
 
-         
-
+    public boolean getPipeAlignDist(boolean rightTrue) {
+        return Calc.approxEquals(getCameraXDistance().in(Inches),
+                rightTrue ? VisionConstants.rightPipeOffset.in(Inches) : VisionConstants.leftPipeOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean getPipeScoreDist() {
+        return Calc.approxEquals(getCameraYDistance().in(Inches),
+                VisionConstants.pipeScoreOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean leftOfTag(){
+        return getCameraXDistance().in(Inches)<VisionConstants.centerOffset.in(Inches);
+    }
+    public boolean isCentered(){
+        return Calc.approxEquals(getCameraXDistance().in(Inches),
+                VisionConstants.centerOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
+    public boolean getCenterScoreDistance() {
+        return Calc.approxEquals(getCameraYDistance().in(Inches),
+                VisionConstants.centerScoreOffset.in(Inches),
+                VisionConstants.allowedError.in(Inches));
+    }
 
     /** Change all LL pipelines to the same pipeline */
     public void setLimelightPipelines(int pipeline) {
@@ -420,34 +444,32 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
     /** Set all LLs to blink */
     public Command blinkLimelights() {
         return startEnd(
-                        () -> {
-                            for (VisionHelper visionHelper : allLimelights) {
-                                visionHelper.blinkLEDs();
-                            }
-                        },
-                        () -> {
-                            for (VisionHelper visionHelper : allLimelights) {
-                                visionHelper.setLEDMode(false);
-                            }
-                        })
-                .withName("Vision.blinkLimelights");
+                () -> {
+                    for (VisionHelper visionHelper : allLimelights) {
+                        visionHelper.blinkLEDs();
+                    }
+                },
+                () -> {
+                    for (VisionHelper visionHelper : allLimelights) {
+                        visionHelper.setLEDMode(false);
+                    }
+                })
+                        .withName("Vision.blinkLimelights");
     }
 
     /** Set left LL to blink */
     public Command solidLimelight() {
         return startEnd(
-                        () -> {
-                            leftLL.setLEDMode(true);
-                        },
-                        () -> {
-                            leftLL.setLEDMode(false);
-                        })
-                .withName("Vision.blinkLimelights");
+                () -> {
+                    leftLL.setLEDMode(true);
+                },
+                () -> {
+                    leftLL.setLEDMode(false);
+                })
+                        .withName("Vision.blinkLimelights");
     }
-
 
 }
