@@ -1,6 +1,5 @@
 package frc.robot.Subsytems.Limelight;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,7 +16,6 @@ import frc.robot.Subsytems.Limelight.LimelightHelpers.RawFiducial;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.Trio;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
-import frc.robot.Subsytems.Limelight.VisionUtil.VisionCommandConfig;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
 import lombok.Setter;
@@ -31,8 +29,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.AutoLogOutput;
-
-import com.fasterxml.jackson.databind.util.RootNameLookup;
 
 import frc.robot.RobotContainer;
 
