@@ -4,18 +4,13 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
@@ -222,25 +217,25 @@ public class RobotContainer {
 	}
 
 	public void setCommandMappings() {
-		NamedCommands.registerCommand("EjectCoralCommand",
+		NamedCommands.registerCommand("EjectCoral",
 				new EjectCoralCommand(intake, feeder, manipulator));
-		NamedCommands.registerCommand("ElevatorFeedCommand",
+		NamedCommands.registerCommand("ElevatorFeed",
 				new ElevatorFeedCommand(elevator, manipJoint));
-		NamedCommands.registerCommand("ElevatorL1PresetCommand",
+		NamedCommands.registerCommand("L1Preset",
 		 new ElevatorPresetCommand(ControllerConstants.ScoreL1Position, elevator, manipJoint));
-		NamedCommands.registerCommand("ElevatorL2PresetCommand",
+		NamedCommands.registerCommand("L2Preset",
 				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint));
-		NamedCommands.registerCommand("ElevatorL3PresetCommand",
+		NamedCommands.registerCommand("L3Preset",
 				new ElevatorPresetCommand(ControllerConstants.ScoreL3Position, elevator, manipJoint));
-		NamedCommands.registerCommand("ElevatorL4PresetCommand",
+		NamedCommands.registerCommand("L4Preset",
 				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint));
-		NamedCommands.registerCommand("ElevatorStowCommand",
+		NamedCommands.registerCommand("StowPreset",
 				new ElevatorStowCommand(elevator, manipJoint));
-		NamedCommands.registerCommand("IntakeCoralCommand",
+		NamedCommands.registerCommand("IntakeCoral",
 				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
-		NamedCommands.registerCommand("AutoIntakeCoralCommand",
+		NamedCommands.registerCommand("AutoIntakeCoral",
 				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
-		NamedCommands.registerCommand("ScoreCoralCommand",
+		NamedCommands.registerCommand("ScoreCoral",
 				new ScoreCoralCommand(elevator, manipJoint, manipulator));
 
 	}

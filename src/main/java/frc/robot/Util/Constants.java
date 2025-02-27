@@ -1,14 +1,11 @@
 package frc.robot.Util;
 
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -16,7 +13,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Mass;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
@@ -75,6 +71,12 @@ public final class Constants {
         public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
                 ManipJointPositions.SCOREL4, CleanPivotModes.STOW);
 
+    }
+
+    public static class AutonConstants {
+        // The PID values from last year
+        public static final PIDConstants translationPID = new PIDConstants(2, 0, 0);
+        public static final PIDConstants rotationPID = new PIDConstants(.1, 0, .01);
     }
 
     public static class IntakeConstants {
