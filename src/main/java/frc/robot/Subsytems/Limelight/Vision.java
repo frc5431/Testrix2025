@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.RawFiducial;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.Trio;
 import frc.robot.Subsytems.Limelight.LimelightHelpers.VisionHelper;
 import frc.robot.Subsytems.Limelight.VisionUtil.LimelightLogger;
 import frc.robot.Subsytems.Limelight.VisionUtil.VisionConfig;
 import frc.robot.Util.Field;
+import lombok.Getter;
 import lombok.Setter;
 import frc.robot.Util.Constants.VisionConstants;
 import frc.team5431.titan.core.misc.Calc;
@@ -30,7 +32,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import frc.robot.RobotContainer;
+import frc.robot.Systems;
 
 public class Vision extends SubsystemBase {
     /**
@@ -38,8 +40,11 @@ public class Vision extends SubsystemBase {
      * {@code allLimelights} &
      * {@code poseLimelights}
      */
-    public RobotContainer my_robotContainer;
 
+    private @Getter Trigger reefAlignment = new Trigger(
+			Systems.getDriver().rightBumper().or(Systems.getDriver().leftBumper()));
+  
+     
     /* Pose Estimation Constants */ // 2.3;
 
     // Increase these numbers to trust global measurements from vision less.
@@ -55,17 +60,17 @@ public class Vision extends SubsystemBase {
 
     // TODO: we only have one for now
     /* Limelights */
-    public final VisionHelper leftLL = new LimelightHelpers().new VisionHelper(
-            VisionConfig.LEFT_LL, VisionConstants.leftTagPipeline, VisionConfig.LEFT_CONFIG);
-    public final LimelightLogger leftLogger = new LimelightLogger("Left", leftLL);
-    public final VisionHelper rightLL = new LimelightHelpers().new VisionHelper(
-            VisionConfig.RIGHT_LL,
-            VisionConstants.rightTagPipeline,
-            VisionConfig.RIGHT_CONFIG);
-    public final LimelightLogger rightLogger = new LimelightLogger("Right", rightLL);
-    public final VisionHelper[] allLimelights = { leftLL, rightLL };
+    public final VisionHelper centLL3 = new LimelightHelpers().new VisionHelper(
+            VisionConfig.LEFT_LL, VisionConstants.centerTagPipeline, VisionConfig.centerConfig);
+    public final LimelightLogger leftLogger = new LimelightLogger("Left", centLL3);
+    // public final VisionHelper rightLL = new LimelightHelpers().new VisionHelper(
+    //         VisionConfig.RIGHT_LL,
+    //         VisionConstants.rightTagPipeline,
+    //         VisionConfig.RIGHT_CONFIG);
+    // public final LimelightLogger rightLogger = new LimelightLogger("Right", rightLL);
+    public final VisionHelper[] allLimelights = { centLL3 };
     public final VisionHelper[] poseLimelights = {
-            leftLL, rightLL
+            centLL3
     };
 
     private final DecimalFormat df = new DecimalFormat();
@@ -77,10 +82,8 @@ public class Vision extends SubsystemBase {
 
     private @Setter boolean isAligning = false;
 
-    public Vision(RobotContainer robot) {
+    public Vision() {
         setName("Vision");
-
-        my_robotContainer = robot;
 
         // logging
         df.setMaximumFractionDigits(2);
@@ -116,7 +119,7 @@ public class Vision extends SubsystemBase {
                 // choose LL with best view of tags and integrate from only that camera
                 VisionHelper bestLimelight = getBestLimelight();
                 for (VisionHelper visionHelper : poseLimelights) {
-                    if (my_robotContainer.getReefAlignment().getAsBoolean()
+                    if (getReefAlignment().getAsBoolean()
                             && Field.isReef((bestLimelight.getClosestTagID()))) {
                         addFilteredVisionInput(bestLimelight);
                     } else {
@@ -252,12 +255,9 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    // TODO: create slow moving adjustment function
-    // TODO: create align command (own class?)
 
     public void autonResetPoseToVision() {
         boolean reject = true;
-        // TODO: why isnt this used? confer with spectrum code
         boolean firstSuccess = false;
         double batchSize = 5;
         for (int i = autonPoses.size() - 1; i > autonPoses.size() - (batchSize + 1); i--) {
@@ -367,7 +367,7 @@ public class Vision extends SubsystemBase {
     }
 
     public VisionHelper getBestLimelight() {
-        VisionHelper bestLimelight = rightLL;
+        VisionHelper bestLimelight = centLL3;
         double bestScore = 0;
         for (VisionHelper visionHelper : poseLimelights) {
             double score = 0;
@@ -460,10 +460,10 @@ public class Vision extends SubsystemBase {
     public Command solidLimelight() {
         return startEnd(
                 () -> {
-                    leftLL.setLEDMode(true);
+                    centLL3.setLEDMode(true);
                 },
                 () -> {
-                    leftLL.setLEDMode(false);
+                    centLL3.setLEDMode(false);
                 })
                         .withName("Vision.blinkLimelights");
     }

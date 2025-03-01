@@ -25,7 +25,7 @@ public class IntakePivot extends REVMechanism {
 	private boolean attached;
 
 	private @Getter IntakePivotModes mode;
-	private @Getter @Setter  IntakePivotStates state;
+	private @Getter @Setter IntakePivotStates state;
 
 	public static class PivotConfig extends Config {
 

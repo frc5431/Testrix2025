@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -23,15 +26,18 @@ import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.AlignReefCommand;
+import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Intake.IntakePivot;
+import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.TitanBitDoController;
+import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
@@ -54,16 +60,21 @@ public class RobotContainer {
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
-	// private final Climber climber = systems.getClimber();
-	private @Getter final TitanCANdle candle = Systems.getTitanCANdle();
+	private final Vision vision = Systems.getVision();
+	private final TitanCANdle candle = Systems.getTitanCANdle();
+	private final Drivebase drivebase = Systems.getDrivebase();
 	private final SendableChooser<Command> autoChooser;
 
-	private TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
-	private TitanController operator = new TitanController(ControllerConstants.operatorPort,
-			ControllerConstants.deadzone);
-	private TitanBitDoController operator8BitDo = new TitanBitDoController(ControllerConstants.operatorPort);
+	private TitanController driver = Systems.getDriver();
+	private TitanController operator = Systems.getOperator();
+	private TitanBitDoController operator8BitDo = Systems.getOperator8BitDo();
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
+
+	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
+   .withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1)).withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1)) // Add a 10% deadband
+   .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+   .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
 	// Triggers
 
@@ -86,7 +97,7 @@ public class RobotContainer {
 	private Trigger alignRightReef = driver.rightBumper();
 	private Trigger alignLeftReef = driver.leftBumper();
 	private Trigger alignCenterReef = driver.a();
-	private Trigger driveStow = driver.x();
+	private Trigger driverStow = driver.x();
 
 	// Climber Controls
 	// private Trigger climberOut =
@@ -136,7 +147,8 @@ public class RobotContainer {
 		manipJoint.periodic();
 		manipulator.periodic();
 		intakePivot.periodic();
-
+		drivebase.periodic();
+		
 	}
 
 	public void periodic() {
@@ -145,6 +157,13 @@ public class RobotContainer {
 		SmartDashboard.putData("mechanism", robotMechanism.elevator);
 		gamePieceStatus = (manipulator.getBeambreakStatus()) ? GamePieceStates.CORAL : GamePieceStates.NONE;
 		manipulator.setState((manipulator.getBeambreakStatus()) ? ManipulatorStates.LOCKED : ManipulatorStates.EMPTY);
+
+		// Drivebase
+		drivebase.setControl(
+			driverControl.withVelocityX(-driver.getLeftY())
+			   .withVelocityY(-driver.getLeftX())
+			   .withRotationalRate(-driver.getRightX()));
+
 
 	}
 
@@ -161,8 +180,8 @@ public class RobotContainer {
 				new AlignReefCommand(true).withName("Align Right Reef"));
 		alignCenterReef.onTrue(
 				new AlignReefCommand().withName("Align Center Reef"));
-		driveStow.onTrue(
-				new ElevatorStowCommand(elevator, manipJoint).withName("Driver Stow Elevator"));
+		driverStow.onTrue(
+				new ElevatorFeedCommand(elevator, manipJoint).withName("Driver Stow Elevator"));
 
 	}
 
@@ -196,13 +215,12 @@ public class RobotContainer {
 		// Intake Controls
 		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
 				(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
-		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.REVERSE).withName("Score Coral"));
+		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
 
 	}
 
 	public void configureBindings() {
-
 		configureOperatorControls();
 		configureDriverControls();
 	}
@@ -227,6 +245,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
+		vision.autonResetPoseToVision();
 		return autoChooser.getSelected();
 	}
 

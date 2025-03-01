@@ -16,17 +16,6 @@ public class RobotMechanism {
     public RobotMechanism() {
         elevatorBase.append(wrist);
         //wrist.append(elevatorBase);
-    }
-
-
-
-
-
-
-
-
-
-
-
+    }    
 
 }

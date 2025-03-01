@@ -85,7 +85,7 @@ public final class Constants {
             STUCK,
         }
 
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final int id = 21;
         public static final double gearRatio = 3 / 1;
@@ -378,7 +378,7 @@ public final class Constants {
         }
 
         public static final int id = 20;
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
@@ -411,6 +411,7 @@ public final class Constants {
     }
 
     public static class DrivebaseConstants {
+        public static final AngularVelocity MaxAngularRate = Units.RotationsPerSecond.of(0.75);
         public static final Distance robotLength = Units.Inches.of(28);
     }
 
@@ -418,13 +419,13 @@ public final class Constants {
 
         public static final boolean useVisionPeriodic = true;
 
-        public static final String cameraName = "Vision";
-        public static final Distance leftLLForwardOffset = Units.Inches.of(0);
-        public static final Distance leftLLRightOffset = Units.Inches.of(0);
-        public static final Distance leftLLUpOffset = Units.Inches.of(0);
-        public static final Angle leftLLRollOffset = Units.Degrees.of(0);
-        public static final Angle leftLLPitchOffset = Units.Degrees.of(0);
-        public static final Angle leftLLYawOffset = Units.Degrees.of(0);
+        public static final String cameraName = "LimeLight3";
+        public static final Distance centLLForwardOffset = Units.Inches.of(0);
+        public static final Distance centLLRightOffset = Units.Inches.of(0);
+        public static final Distance centLLUpOffset = Units.Inches.of(0);
+        public static final Angle centLLRollOffset = Units.Degrees.of(0);
+        public static final Angle centLLPitchOffset = Units.Degrees.of(0);
+        public static final Angle centLLYawOffset = Units.Degrees.of(0);
 
         public static final Distance rightLLForwardOffset = Units.Inches.of(0);
         public static final Distance rightLLRightOffset = Units.Inches.of(0);
@@ -433,7 +434,7 @@ public final class Constants {
         public static final Angle rightLLPitchOffset = Units.Degrees.of(0);
         public static final Angle rightLLYawOffset = Units.Degrees.of(0);
 
-        public static final int leftTagPipeline = 0;
+        public static final int centerTagPipeline = 0;
         public static final int rightTagPipeline = 0;
 
         public static final Distance rightPipeOffset = Units.Inches.of(6);
@@ -551,7 +552,7 @@ public final class Constants {
             FEEDING,
         }
 
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final boolean isInverted = false;
         public static final int id = 22;
         public static final double gearRatio = 1 / 1;

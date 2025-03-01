@@ -16,6 +16,7 @@ import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Util.Field;
+import frc.robot.Util.TitanBitDoController;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Limelight.Vision;
@@ -23,11 +24,18 @@ import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
-import frc.robot.Util.TunerConstants;
+import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
+import frc.team5431.titan.core.joysticks.TitanController;
+import frc.team5431.titan.core.vision.Limelight;
 import lombok.Getter;
 
 public class Systems {
+
+    private static @Getter TitanController driver = new TitanController(ControllerConstants.driverPort, ControllerConstants.deadzone);
+    private static @Getter TitanController operator = new TitanController(ControllerConstants.operatorPort,
+            ControllerConstants.deadzone);
+    private static @Getter TitanBitDoController operator8BitDo = new TitanBitDoController(ControllerConstants.operatorPort);
 
     public static @Getter AprilTagFieldLayout apriltagLayout;
 
@@ -63,17 +71,17 @@ public class Systems {
 
     public Systems() {
 
-        //I have ill wishes for the person that made apriltagfieldlayout code, count your days and your blessings for i pray them to be few
-        try{
+        // I have ill wishes for the person that made apriltagfieldlayout code, count
+        // your days and your blessings for i pray them to be few
+        try {
             apriltagLayout = new AprilTagFieldLayout("src/main/java/frc/robot/Util/2025-reefscape-welded.json");
-            if(Field.isRed()) {
+            if (Field.isRed()) {
                 apriltagLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-            }else{
+            } else {
                 apriltagLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
             }
-            
 
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Failed to load April Tag Map");
         }
 
@@ -118,9 +126,12 @@ public class Systems {
             titanCANdle = new TitanCANdle(candle);
         }
 
+        // Limelight limelight = new
+        vision = new Vision();
+
         drivebase = new Drivebase(
-                TunerConstants.DrivetrainConstants,
-                TunerConstants.FrontLeft, TunerConstants.FrontRight,
-                TunerConstants.BackLeft, TunerConstants.BackRight);
+                SwerveConstants.DrivetrainConstants,
+                SwerveConstants.FrontLeft, SwerveConstants.FrontRight,
+                SwerveConstants.BackLeft, SwerveConstants.BackRight);
     }
 }

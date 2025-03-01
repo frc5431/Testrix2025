@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Util.Field;
-import frc.robot.Util.TunerConstants;
+import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.AutonConstants;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Util.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.Util.SwerveConstants.TunerSwerveDrivetrain;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -163,7 +163,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
                     AutonConstants.translationPID,
                     AutonConstants.rotationPID
             ),
-            TunerConstants.robotConfig,
+            SwerveConstants.robotConfig,
             () -> Field.isRed(),
             this
         );

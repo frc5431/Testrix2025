@@ -1672,19 +1672,19 @@ public class LimelightHelpers {
     public VisionHelper(String cameraName, int pipeline) {
         this(cameraName);
         setLimelightPipeline(pipeline);
-    }
+    }     
 
     public VisionHelper(String cameraName, int pipeline, PhysicalConfig physicalConfig) {
         this(cameraName, pipeline);
         this.physicalConfig = physicalConfig;
-        // LimelightHelpers.setCameraPose_RobotSpace(
-        //         this.CAMERA_NAME,
-        //         physicalConfig.forward,
-        //         physicalConfig.right,
-        //         physicalConfig.up,
-        //         physicalConfig.roll,
-        //         physicalConfig.pitch,
-        //         physicalConfig.yaw);
+        LimelightHelpers.setCameraPose_RobotSpace(
+                this.CAMERA_NAME,
+                physicalConfig.forward,
+                physicalConfig.right,
+                physicalConfig.up,
+                physicalConfig.roll,
+                physicalConfig.pitch,
+                physicalConfig.yaw);
     }
 
     

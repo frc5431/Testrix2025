@@ -24,7 +24,7 @@ public class IntakeCoralCommand extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                         intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY),
                         new ElevatorFeedCommand(elevator, manipJoint),
-                        intake.runIntakeCommand(IntakeModes.INTAKE),
+                           
                         manipulator.runManipulatorCommand(ManipulatorModes.FEED))
                                 .until(() -> manipulator.getBeambreakStatus()),
                 new ParallelCommandGroup(

@@ -63,10 +63,10 @@ public class VisionUtil {
     public static final class VisionConfig {
         /* Limelight Configuration */
 
-        public static final String LEFT_LL = "limelight-left";
-        public static final PhysicalConfig LEFT_CONFIG = new PhysicalConfig()
-                .withTranslation(VisionConstants.leftLLForwardOffset.in(Units.Meters), VisionConstants.leftLLRightOffset.in(Units.Meters), VisionConstants.leftLLUpOffset.in(Units.Meters))
-                .withRotation(VisionConstants.leftLLRollOffset.in(Units.Degrees), VisionConstants.leftLLPitchOffset.in(Units.Degrees), VisionConstants.leftLLYawOffset.in(Units.Degrees));
+        public static final String LEFT_LL = "limelight-3";
+        public static final PhysicalConfig centerConfig = new PhysicalConfig()
+                .withTranslation(VisionConstants.centLLForwardOffset.in(Units.Meters), VisionConstants.centLLRightOffset.in(Units.Meters), VisionConstants.centLLUpOffset.in(Units.Meters))
+                .withRotation(VisionConstants.centLLRollOffset.in(Units.Degrees), VisionConstants.centLLPitchOffset.in(Units.Degrees), VisionConstants.centLLYawOffset.in(Units.Degrees));
 
         public static final String RIGHT_LL = "limelight-right";
         public static final PhysicalConfig RIGHT_CONFIG = new PhysicalConfig()
