@@ -1,12 +1,16 @@
 package frc.robot.Subsytems.Intake;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.IntakeConstants;
@@ -23,8 +27,11 @@ public class Intake extends REVMechanism {
     public boolean attached;
     public SysIdRoutine routine;
 
-    @Getter private IntakeModes mode;
-    @Getter @Setter private IntakeStates state;
+    @Getter
+    private IntakeModes mode;
+    @Getter
+    @Setter
+    private IntakeStates state;
 
     public static class IntakeConfig extends Config {
 
@@ -33,12 +40,11 @@ public class Intake extends REVMechanism {
             configIdleMode(IntakeConstants.idleMode);
             configInverted(IntakeConstants.isInverted);
             configEncoderPosRatio(IntakeConstants.gearRatio);
+            configFeedbackSensorSource(IntakeConstants.sensorType);
             configMaxIAccum(IntakeConstants.maxIAccum);
-            configMaxMotionPositionMode(IntakeConstants.mm_positionMode);
             configPIDGains(IntakeConstants.p, IntakeConstants.i, IntakeConstants.d);
             configSmartCurrentLimit(IntakeConstants.stallLimit, IntakeConstants.supplyLimit);
             configPeakOutput(IntakeConstants.maxForwardOutput, IntakeConstants.maxReverseOutput);
-            configMaxMotion(IntakeConstants.mm_velocity, IntakeConstants.mm_maxAccel, IntakeConstants.mm_error);
         }
     }
 
@@ -87,23 +93,32 @@ public class Intake extends REVMechanism {
 
     }
 
-	protected void stop() {
-		if (attached) {
-			motor.stopMotor();
-		}
-	}
+    protected void stop() {
+        if (attached) {
+            motor.stopMotor();
+        }
+    }
 
-	protected void setZero() {
-		resetPosition();
-	}
-    
-    public void runEnum(IntakeModes intakemode) {
+    protected void setZero() {
+        resetPosition();
+    }
+
+    public void runEnum(IntakeModes intakemode, boolean rpm) {
         this.mode = intakemode;
-        setVelocity(intakemode.speed);
+        if (rpm) {
+            setVelocity(intakemode.speed);
+        } else {
+            setPercentOutput(intakemode.output);
+        }
     }
 
     public Command runIntakeCommand(IntakeModes intakeModes) {
-        return new StartEndCommand(() -> this.runEnum(intakeModes), () -> this.runEnum(IntakeModes.IDLE), this)
+        return new RunCommand(() -> this.runEnum(intakeModes, IntakeConstants.useRpm), this)
+                .withName("Intake.runEnum");
+    }
+
+    public Command runIntakeCommand(IntakeModes intakeModes, boolean rpm) {
+        return new RunCommand(() -> this.runEnum(intakeModes, rpm), this)
                 .withName("Intake.runEnum");
     }
 

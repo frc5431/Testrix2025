@@ -218,21 +218,6 @@ public class RobotContainer {
 
 	}
 
-	/**
-	 * this better not be called in comp!
-	 */
-	private void configerProgrammerTestControls() {
-		driver.a().whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
-		driver.b().whileTrue(intake.runIntakeCommand(IntakeModes.OUTTAKE));
-		driver.rightBumper().onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY));
-		driver.leftBumper().onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW));
-		driver.x().onTrue(intakePivot.runIntakePivotCommandMM(IntakePivotModes.DEPLOY));
-		driver.y().onTrue(intakePivot.runIntakePivotCommandMM(IntakePivotModes.STOW));
-		driver.rightTrigger(ControllerConstants.triggerThreshold)
-				.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE));
-
-	}
-
 	public void configureBindings() {
 		configureOperatorControls();
 		configureDriverControls();
@@ -290,8 +275,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("ScoreCoral",
 				new ScoreCoralCommand(elevator, manipJoint, manipulator));
 
-		NamedCommands.registerCommand("AlignLeftReef", new AlignReefCommand(false));
-		NamedCommands.registerCommand("AlignRightReef", new AlignReefCommand(true));
+		// NamedCommands.registerCommand("AlignLeftReef", new AlignReefCommand(false));
+		// NamedCommands.registerCommand("AlignRightReef", new AlignReefCommand(true));
 
 	}
 }

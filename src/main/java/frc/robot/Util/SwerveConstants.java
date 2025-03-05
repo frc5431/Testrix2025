@@ -65,12 +65,12 @@ public class SwerveConstants {
                             // Swerve azimuth does not require much torque output, so we can set a
                             // relatively low
                             // stator current limit to help avoid brownouts without impacting performance.
-                            .withStatorCurrentLimit(Amps.of(60))
+                            .withStatorCurrentLimit(Amps.of(30))
                             .withStatorCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration()
-            .withMountPose(new MountPoseConfigs().withMountPoseYaw(45));
+            .withMountPose(new MountPoseConfigs().withMountPoseYaw(40));
 
     // CAN bus that the devices are located on;
     // All swerve devices must share the same CAN bus
