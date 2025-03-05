@@ -113,22 +113,22 @@ public class ManipJoint extends REVMechanism {
 
 	public Command runManipJointCommand(ManipJointPositions ManipJointmode) {
 		return new RunCommand(() -> this.runEnum(ManipJointmode), this)
-				.withName("CleanPivot.runEnum");
+				.withName("ManipJoint.runEnum");
 	}
 
 	public Command runManipJoingCommandMM(ManipJointPositions ManipJointmode) {
 		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
-				.withName("CleanPivot.runEnumMM");
+				.withName("ManipJoint.runEnumMM");
 	}
 
 	public Command stopManipJointCommand() {
 		return new RunCommand(() -> this.stop(), this)
-				.withName("CleanPivot.STOP");
+				.withName("ManipJoint.STOP");
 	}
 
 	public Command manipJointResetPositionCommand() {
 		return new RunCommand(() -> this.setZero(), this)
-				.withName("CleanPivot.setZero");
+				.withName("ManipJoint.setZero");
 	}
 
 	public double getMotorPosition() {
