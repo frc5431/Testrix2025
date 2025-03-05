@@ -74,7 +74,7 @@ public class Systems {
         // I have ill wishes for the person that made apriltagfieldlayout code, count
         // your days and your blessings for i pray them to be few
         try {
-            apriltagLayout = new AprilTagFieldLayout("src/main/java/frc/robot/Util/2025-reefscape-welded.json");
+            apriltagLayout = new AprilTagFieldLayout("src\\main\\java\\frc\\robot\\Util\\2025-reefscape-welded.json");
             if (Field.isRed()) {
                 apriltagLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
             } else {
