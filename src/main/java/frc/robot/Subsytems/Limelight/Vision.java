@@ -62,7 +62,8 @@ public class Vision extends SubsystemBase {
     /* Limelights */
     public final VisionHelper centLL3 = new LimelightHelpers().new VisionHelper(
             VisionConfig.LEFT_LL, VisionConstants.centerTagPipeline, VisionConfig.centerConfig);
-    public final LimelightLogger leftLogger = new LimelightLogger("Left", centLL3);
+
+    //public final LimelightLogger leftLogger = new LimelightLogger("Left", centLL3);
     // public final VisionHelper rightLL = new LimelightHelpers().new VisionHelper(
     //         VisionConfig.RIGHT_LL,
     //         VisionConstants.rightTagPipeline,

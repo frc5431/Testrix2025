@@ -63,7 +63,7 @@ public class VisionUtil {
     public static final class VisionConfig {
         /* Limelight Configuration */
 
-        public static final String LEFT_LL = "limelight-3";
+        public static final String LEFT_LL = VisionConstants.cameraName;
         public static final PhysicalConfig centerConfig = new PhysicalConfig()
                 .withTranslation(VisionConstants.centLLForwardOffset.in(Units.Meters), VisionConstants.centLLRightOffset.in(Units.Meters), VisionConstants.centLLUpOffset.in(Units.Meters))
                 .withRotation(VisionConstants.centLLRollOffset.in(Units.Degrees), VisionConstants.centLLPitchOffset.in(Units.Degrees), VisionConstants.centLLYawOffset.in(Units.Degrees));

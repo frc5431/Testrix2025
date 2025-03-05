@@ -19,23 +19,23 @@ public class Robot extends LoggedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    Logger.recordMetadata("Titan2025", "5431Robot");
-    AutoLogOutputManager.addPackage("frc.robot.Subsystems");
+    // Logger.recordMetadata("Titan2025", "5431Robot");
+    // AutoLogOutputManager.addPackage("frc.robot.Subsystems");
 
-    if (isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter());
-      Logger.addDataReceiver(new NT4Publisher());
-      Logger.start();
+    // if (isReal()) {
+    //   Logger.addDataReceiver(new WPILOGWriter());
+    //   Logger.addDataReceiver(new NT4Publisher());
+    //   Logger.start();
 
-    } else {
-      /*
-       * setUseTiming(false);
-       * String logPath = LogFileUtil.findReplayLog();
-       * Logger.setReplaySource(new WPILOGReader(logPath));
-       * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-       * "_sim")));
-       */
-    }
+    // } else {
+    //   /*
+    //    * setUseTiming(false);
+    //    * String logPath = LogFileUtil.findReplayLog();
+    //    * Logger.setReplaySource(new WPILOGReader(logPath));
+    //    * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+    //    * "_sim")));
+    //    */
+    // }
 
     m_robotContainer = new RobotContainer();
   }

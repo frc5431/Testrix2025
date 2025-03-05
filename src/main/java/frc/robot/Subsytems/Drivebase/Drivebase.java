@@ -330,6 +330,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
          */
         SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
         SmartDashboard.putNumber("Drivebase Rotation", this.getRotation3d().getAngle());
+        //SmartDashboard.putData("Swerve State", this.getState().ModuleStates);
 
         publisher.set(states);
 

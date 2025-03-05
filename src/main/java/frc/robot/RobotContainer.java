@@ -60,8 +60,8 @@ public class RobotContainer {
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
-	private final Vision vision = Systems.getVision();
-	private final TitanCANdle candle = Systems.getTitanCANdle();
+	//private final Vision vision = Systems.getVision();
+private final TitanCANdle candle = Systems.getTitanCANdle();
 	private final Drivebase drivebase = Systems.getDrivebase();
 	private final SendableChooser<Command> autoChooser;
 
@@ -173,13 +173,13 @@ public class RobotContainer {
 		// climberOut.onTrue(climber.runClimberCommand(ClimberModes.ALIGN));
 		// climberClimb.whileTrue(climber.runClimberCommand(ClimberConstants.climbVelocity));
 
-		// Align Reef Commands
-		alignLeftReef.onTrue(
-				new AlignReefCommand(false).withName("Align Left Reef"));
-		alignRightReef.onTrue(
-				new AlignReefCommand(true).withName("Align Right Reef"));
-		alignCenterReef.onTrue(
-				new AlignReefCommand().withName("Align Center Reef"));
+		// // Align Reef Commands
+		// alignLeftReef.onTrue(
+		// 		new AlignReefCommand(false).withName("Align Left Reef"));
+		// alignRightReef.onTrue(
+		// 		new AlignReefCommand(true).withName("Align Right Reef"));
+		// alignCenterReef.onTrue(
+		// 		new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
 				new ElevatorFeedCommand(elevator, manipJoint).withName("Driver Stow Elevator"));
 
@@ -227,25 +227,25 @@ public class RobotContainer {
 
 	public void onInitialize() {
 		// Default Commands
-		candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
-		// climber.runClimberCommand(ClimberModes.STOW);
+		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
+		// // climber.runClimberCommand(ClimberModes.STOW);
 
 		// Subsystem Status
 		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
 
-		// LED Status
-		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
-		isAutonEnabled.whileTrue(
-				candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
-						.withName("LED Auton Alliance"));
-		hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LED Coral"));
-		hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
-		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
+		// // LED Status
+		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
+		// isAutonEnabled.whileTrue(
+		// 		candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
+		// 				.withName("LED Auton Alliance"));
+		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LED Coral"));
+		// hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
+		// hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
 
 	}
 
 	public Command getAutonomousCommand() {
-		vision.autonResetPoseToVision();
+//		vision.autonResetPoseToVision();
 		return autoChooser.getSelected();
 	}
 

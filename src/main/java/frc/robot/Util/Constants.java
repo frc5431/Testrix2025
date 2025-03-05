@@ -384,8 +384,8 @@ public final class Constants {
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder; 
 
         public static final Angle zeroOffset = Units.Rotation.of(0);
-        public static final Angle softLimitReverseMax = Units.Rotation.of(0);
-        public static final Angle softLimitForwardMax = Units.Rotation.of(0);
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0.53);
+        public static final Angle softLimitForwardMax = Units.Rotation.of(0.95);
         public static final boolean softLimitEnabled = true;
 
         public static final double p = 1;
@@ -393,8 +393,8 @@ public final class Constants {
         public static final double d = 0.3;
         public static final double maxIAccum = 0.2;
         
-        public static final Angle stowAngle = Units.Rotation.of(0);
-        public static final Angle deployAngle = Units.Rotation.of(0);
+        public static final Angle stowAngle = Units.Rotation.of(0.555);
+        public static final Angle deployAngle = Units.Rotation.of(0.87);
         
         public enum IntakePivotModes {
             STOW(stowAngle),
@@ -512,12 +512,12 @@ public final class Constants {
         public static final Voltage kS = Units.Volts.of(0);
         //public static final ArmFeedforward jointFF = new ArmFeedforward(kS.in(Units.Volt));
 
-        public static final Angle stow = Units.Rotations.of(0);
-        public static final Angle feed = Units.Rotations.of(0);
-        public static final Angle scoreL1 = Units.Rotations.of(0);
-        public static final Angle scoreL2 = Units.Rotations.of(0);
-        public static final Angle scoreL3 = Units.Rotations.of(0);
-        public static final Angle scoreL4 = Units.Rotations.of(0);
+        public static final Angle stow = Units.Rotations.of(-0.29);
+        public static final Angle feed = Units.Rotations.of(-0.29);
+        public static final Angle scoreL1 = Units.Rotations.of(-0.29);
+        public static final Angle scoreL2 = Units.Rotations.of(-0.29);
+        public static final Angle scoreL3 = Units.Rotations.of(-0.29);
+        public static final Angle scoreL4 = Units.Rotations.of(-0.29);
         public static final Angle error = Units.Rotations.of(0);
 
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;

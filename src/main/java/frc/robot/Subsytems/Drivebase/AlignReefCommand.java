@@ -14,7 +14,7 @@ public class AlignReefCommand extends SequentialCommandGroup {
     private Vision vision = Systems.getVision();
     private TitanCANdle candle = Systems.getTitanCANdle();
     private AprilTagFieldLayout aprilTagFieldLayout = Systems.getApriltagLayout();
-
+//TODO ADD NULL CHECKING
     public AlignReefCommand(boolean rightTrue) {
         addCommands(
                 drivebase.faceTargetCommand(aprilTagFieldLayout
