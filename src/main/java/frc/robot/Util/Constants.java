@@ -158,7 +158,7 @@ public final class Constants {
         public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
         public static final AngularVelocity mm_velocity = Units.RPM.of(0);
         public static final AngularVelocity mm_error = Units.RPM.of(0);
-        public static final AngularVelocity intakeSpeed = Units.RPM.of(0);
+        public static final AngularVelocity intakeSpeed = Units.RPM.of(70);
         public static final AngularVelocity outtakeSpeed = Units.RPM.of(0);
         public static final AngularVelocity feedSpeed = Units.RPM.of(0);
         public static final AngularVelocity idleSpeed = Units.RPM.of(0);
