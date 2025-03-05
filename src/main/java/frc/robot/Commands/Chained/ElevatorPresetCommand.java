@@ -15,7 +15,7 @@ public class ElevatorPresetCommand extends ParallelCommandGroup {
 				
 		);
         // saftey protections
-        onlyIf(() -> manipJoint.getMode() != ManipJointPositions.FEED);
+        //If(() -> manipJoint.getMode() != ManipJointPositions.FEED);
 		addRequirements(elevator, manipJoint);
 	}
 

@@ -8,11 +8,14 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.FeederConstants;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.FeederConstants.FeederStates;
+import frc.robot.Util.Constants.IntakeConstants;
+import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 import lombok.Getter;
 import lombok.Setter;
@@ -87,14 +90,24 @@ public class Feeder extends REVMechanism {
 
     }
 
-    protected void runEnum(FeederModes Feedermode) {
-        this.mode = Feedermode;
-        setVelocity(Feedermode.speed);
+  
+    public void runEnum(FeederModes feederModes, boolean rpm) {
+        this.mode = feederModes;
+        if (rpm) {
+            setVelocity(feederModes.speed);
+        } else {
+            setPercentOutput(feederModes.output);
+        }
     }
 
-    public Command runFeederCommand(FeederModes modes) {
-        return new StartEndCommand(() -> this.runEnum(modes), () -> this.runEnum(FeederModes.IDLE), this)
-                .withName("Feeder.runEnum");
+    public Command runFeederCommand(FeederModes feederModes) {
+        return new RunCommand(() -> this.runEnum(feederModes, FeederConstants.useRPM), this)
+                .withName("Intake.runEnum");
+    }
+
+    public Command runFeederCommand(FeederModes feederModes, boolean rpm) {
+        return new RunCommand(() -> this.runEnum(feederModes, rpm), this)
+                .withName("Intake.runEnum");
     }
 
     protected void stop() {
