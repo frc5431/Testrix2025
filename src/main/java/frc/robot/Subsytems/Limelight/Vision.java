@@ -42,9 +42,8 @@ public class Vision extends SubsystemBase {
      */
 
     private @Getter Trigger reefAlignment = new Trigger(
-			Systems.getDriver().rightBumper().or(Systems.getDriver().leftBumper()));
-  
-     
+            Systems.getDriver().rightBumper().or(Systems.getDriver().leftBumper()));
+
     /* Pose Estimation Constants */ // 2.3;
 
     // Increase these numbers to trust global measurements from vision less.
@@ -63,12 +62,14 @@ public class Vision extends SubsystemBase {
     public final VisionHelper centLL3 = new LimelightHelpers().new VisionHelper(
             VisionConfig.LEFT_LL, VisionConstants.centerTagPipeline, VisionConfig.centerConfig);
 
-    //public final LimelightLogger leftLogger = new LimelightLogger("Left", centLL3);
+    // public final LimelightLogger leftLogger = new LimelightLogger("Left",
+    // centLL3);
     // public final VisionHelper rightLL = new LimelightHelpers().new VisionHelper(
-    //         VisionConfig.RIGHT_LL,
-    //         VisionConstants.rightTagPipeline,
-    //         VisionConfig.RIGHT_CONFIG);
-    // public final LimelightLogger rightLogger = new LimelightLogger("Right", rightLL);
+    // VisionConfig.RIGHT_LL,
+    // VisionConstants.rightTagPipeline,
+    // VisionConfig.RIGHT_CONFIG);
+    // public final LimelightLogger rightLogger = new LimelightLogger("Right",
+    // rightLL);
     public final VisionHelper[] allLimelights = { centLL3 };
     public final VisionHelper[] poseLimelights = {
             centLL3
@@ -256,7 +257,6 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
     public void autonResetPoseToVision() {
         boolean reject = true;
         boolean firstSuccess = false;
@@ -415,19 +415,23 @@ public class Vision extends SubsystemBase {
                 rightTrue ? VisionConstants.rightPipeOffset.in(Inches) : VisionConstants.leftPipeOffset.in(Inches),
                 VisionConstants.allowedError.in(Inches));
     }
+
     public boolean getPipeScoreDist() {
         return Calc.approxEquals(getCameraYDistance().in(Inches),
                 VisionConstants.pipeScoreOffset.in(Inches),
                 VisionConstants.allowedError.in(Inches));
     }
-    public boolean leftOfTag(){
-        return getCameraXDistance().in(Inches)<VisionConstants.centerOffset.in(Inches);
+
+    public boolean leftOfTag() {
+        return getCameraXDistance().in(Inches) < VisionConstants.centerOffset.in(Inches);
     }
-    public boolean isCentered(){
+
+    public boolean isCentered() {
         return Calc.approxEquals(getCameraXDistance().in(Inches),
                 VisionConstants.centerOffset.in(Inches),
                 VisionConstants.allowedError.in(Inches));
     }
+
     public boolean getCenterScoreDistance() {
         return Calc.approxEquals(getCameraYDistance().in(Inches),
                 VisionConstants.centerScoreOffset.in(Inches),
@@ -438,6 +442,15 @@ public class Vision extends SubsystemBase {
     public void setLimelightPipelines(int pipeline) {
         for (VisionHelper visionHelper : allLimelights) {
             visionHelper.setLimelightPipeline(pipeline);
+        }
+    }
+
+    public boolean OnlyIfNullChecker() {
+        try {
+            return (Field.isRedTag(getBestLimelight().getClosestTagID()) == Field.isRed())
+                    && Field.isReef(getBestLimelight().getClosestTagID());
+        } catch (Exception e) {
+            return false;
         }
     }
 

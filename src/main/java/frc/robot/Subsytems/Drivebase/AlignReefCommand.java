@@ -1,13 +1,13 @@
 package frc.robot.Subsytems.Drivebase;
 
-import frc.robot.Util.Field;
-import frc.robot.Util.Constants.VisionConstants;
-import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Limelight.Vision;
+import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
+import frc.robot.Util.Constants.VisionConstants;
+import frc.robot.Util.Field;
 
 public class AlignReefCommand extends SequentialCommandGroup {
     private Drivebase drivebase = Systems.getDrivebase();
@@ -47,8 +47,7 @@ public class AlignReefCommand extends SequentialCommandGroup {
 
         andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        onlyIf(() -> (Field.isRedTag(vision.getBestLimelight().getClosestTagID()) == Field.isRed())
-                && Field.isReef(vision.getBestLimelight().getClosestTagID()));
+        onlyIf(() -> vision.OnlyIfNullChecker());
 
         addRequirements(drivebase, vision, candle);
     }
