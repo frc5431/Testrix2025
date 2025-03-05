@@ -31,18 +31,16 @@ import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Intake.IntakePivot;
-import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
-import frc.robot.Util.Field;
 import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
-import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
+import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -60,8 +58,8 @@ public class RobotContainer {
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
 	private final Manipulator manipulator = systems.getManipulator();
-	//private final Vision vision = Systems.getVision();
-private final TitanCANdle candle = Systems.getTitanCANdle();
+	// private final Vision vision = Systems.getVision();
+	private final TitanCANdle candle = Systems.getTitanCANdle();
 	private final Drivebase drivebase = Systems.getDrivebase();
 	private final SendableChooser<Command> autoChooser;
 
@@ -72,9 +70,10 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
 	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
-   .withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1)).withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1)) // Add a 10% deadband
-   .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-   .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
+			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1)) // Add a 10% deadband
+			.withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+			.withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
 	// Triggers
 
@@ -133,8 +132,11 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 			: operator.rightStick();
 
 	public RobotContainer() {
-		configureBindings();
+		// Path Planner reccomends that construction of their namedcommands happens
+		// before anything else in robot container
 		setCommandMappings();
+
+		configureBindings();
 
 		autoChooser = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -148,7 +150,7 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 		manipulator.periodic();
 		intakePivot.periodic();
 		drivebase.periodic();
-		
+
 	}
 
 	public void periodic() {
@@ -160,10 +162,9 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 
 		// Drivebase
 		drivebase.setControl(
-			driverControl.withVelocityX(-driver.getLeftY())
-			   .withVelocityY(-driver.getLeftX())
-			   .withRotationalRate(-driver.getRightX()));
-
+				driverControl.withVelocityX(-driver.getLeftY())
+						.withVelocityY(-driver.getLeftX())
+						.withRotationalRate(-driver.getRightX()));
 
 	}
 
@@ -175,11 +176,11 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 
 		// // Align Reef Commands
 		// alignLeftReef.onTrue(
-		// 		new AlignReefCommand(false).withName("Align Left Reef"));
+		// new AlignReefCommand(false).withName("Align Left Reef"));
 		// alignRightReef.onTrue(
-		// 		new AlignReefCommand(true).withName("Align Right Reef"));
+		// new AlignReefCommand(true).withName("Align Right Reef"));
 		// alignCenterReef.onTrue(
-		// 		new AlignReefCommand().withName("Align Center Reef"));
+		// new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
 				new ElevatorFeedCommand(elevator, manipJoint).withName("Driver Stow Elevator"));
 
@@ -220,6 +221,21 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 
 	}
 
+	/**
+	 * this better not be called in comp!
+	 */
+	private void configerProgrammerTestControls() {
+		driver.a().whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
+		driver.b().whileTrue(intake.runIntakeCommand(IntakeModes.OUTTAKE));
+		driver.rightBumper().onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY));
+		driver.leftBumper().onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW));
+		driver.x().onTrue(intakePivot.runIntakePivotCommandMM(IntakePivotModes.DEPLOY));
+		driver.y().onTrue(intakePivot.runIntakePivotCommandMM(IntakePivotModes.STOW));
+		driver.rightTrigger(ControllerConstants.triggerThreshold)
+				.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE));
+
+	}
+
 	public void configureBindings() {
 		configureOperatorControls();
 		configureDriverControls();
@@ -227,25 +243,31 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 
 	public void onInitialize() {
 		// Default Commands
-		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
-		// // climber.runClimberCommand(ClimberModes.STOW);
+		intake.setDefaultCommand(intake.runIntakeCommand(IntakeModes.IDLE).withName("Intake Default Command"));
+		feeder.setDefaultCommand(feeder.runFeederCommand(FeederModes.IDLE).withName("Feeder Default Command"));
+		manipulator.setDefaultCommand(
+				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
+		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default
+		// Command"));
 
 		// Subsystem Status
 		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
 
 		// // LED Status
-		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
+		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED
+		// Endgame"));
 		// isAutonEnabled.whileTrue(
-		// 		candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
-		// 				.withName("LED Auton Alliance"));
-		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LED Coral"));
+		// candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED :
+		// AnimationTypes.BLINK_BLUE))
+		// .withName("LED Auton Alliance"));
+		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LED
+		// Coral"));
 		// hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
 		// hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
 
 	}
 
 	public Command getAutonomousCommand() {
-//		vision.autonResetPoseToVision();
 		return autoChooser.getSelected();
 	}
 
@@ -270,7 +292,7 @@ private final TitanCANdle candle = Systems.getTitanCANdle();
 				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("ScoreCoral",
 				new ScoreCoralCommand(elevator, manipJoint, manipulator));
-		
+
 		NamedCommands.registerCommand("AlignLeftReef", new AlignReefCommand(false));
 		NamedCommands.registerCommand("AlignRightReef", new AlignReefCommand(true));
 
