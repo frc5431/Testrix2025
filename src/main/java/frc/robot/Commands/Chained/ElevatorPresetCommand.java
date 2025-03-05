@@ -1,32 +1,23 @@
 package frc.robot.Commands.Chained;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.PresetPosition;
 
-public class ElevatorPresetCommand extends Command {
+public class ElevatorPresetCommand extends ParallelCommandGroup {
 
-    private PresetPosition position;
-    private Elevator elevator;
-    private ManipJoint manipJoint;
+	public ElevatorPresetCommand(PresetPosition position, Elevator elevator, ManipJoint manipJoint) {
+		addCommands(
+            manipJoint.runManipJointCommand(position.getJointMode()),
+            elevator.runElevatorCommand(position.getElevatorMode())
+				
+		);
+        // saftey protections
+        onlyIf(() -> manipJoint.getMode() != ManipJointPositions.FEED);
+		addRequirements(elevator, manipJoint);
+	}
 
-    /**
-     * @param position
-     * @param elevator
-     * @param manipJoint
-     */
-    public ElevatorPresetCommand(PresetPosition position, Elevator elevator, ManipJoint manipJoint) {
-        this.position = position;
-        this.elevator = elevator;
-        this.manipJoint = manipJoint;
-        this.addRequirements(elevator, manipJoint);
-    }
-
-    @Override
-    public void initialize() {
-        elevator.runEnum(position.getElevatorMode());
-        manipJoint.runEnum(position.getJointMode());
-    }
-    
 }
+

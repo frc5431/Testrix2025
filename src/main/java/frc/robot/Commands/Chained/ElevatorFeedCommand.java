@@ -15,7 +15,7 @@ public class ElevatorFeedCommand extends SequentialCommandGroup{
 	 */
 	public ElevatorFeedCommand(Elevator elevator, ManipJoint manipJoint) {
 		addCommands(
-				manipJoint.runCleanerPivotCommand(ManipJointPositions.FEED),
+				manipJoint.runManipJointCommand(ManipJointPositions.FEED),
 				// when prev commands finish (instantaly since its RunCommands)
 				// sets elevator to stow angle only if the manipulator is near the stow angle
 				// this ensures that the manip doesnt hit anything while the elevator goes down

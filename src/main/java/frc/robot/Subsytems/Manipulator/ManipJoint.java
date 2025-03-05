@@ -111,22 +111,22 @@ public class ManipJoint extends REVMechanism {
 		setMMPosition(ManipJointmode.position);
 	}
 
-	public Command runCleanerPivotCommand(ManipJointPositions ManipJointmode) {
+	public Command runManipJointCommand(ManipJointPositions ManipJointmode) {
 		return new RunCommand(() -> this.runEnum(ManipJointmode), this)
 				.withName("CleanPivot.runEnum");
 	}
 
-	public Command runCleanerPivotCommandMM(ManipJointPositions ManipJointmode) {
+	public Command runManipJoingCommandMM(ManipJointPositions ManipJointmode) {
 		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
 				.withName("CleanPivot.runEnumMM");
 	}
 
-	public Command stopCleanerPivotCommand() {
+	public Command stopManipJointCommand() {
 		return new RunCommand(() -> this.stop(), this)
 				.withName("CleanPivot.STOP");
 	}
 
-	public Command cleanerPivotResetPositionCommand() {
+	public Command manipJointResetPositionCommand() {
 		return new RunCommand(() -> this.setZero(), this)
 				.withName("CleanPivot.setZero");
 	}

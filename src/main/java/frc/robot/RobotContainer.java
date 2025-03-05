@@ -24,6 +24,7 @@ import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
+import frc.robot.Commands.Chained.SmartStowCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.AlignReefCommand;
 import frc.robot.Subsytems.Drivebase.Drivebase;
@@ -113,8 +114,7 @@ public class RobotContainer {
 	// Preset Controls
 	private Trigger intakePreset = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
 			: operator.leftBumper();
-	private Trigger processorPreset = ControllerConstants.using8BitDo ? operator8BitDo.getMinus() : operator.back();
-	private Trigger feedPreset = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
+	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
 	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
 	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
 	private Trigger scoreL4Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovUp() : operator.upDpad();
@@ -182,7 +182,8 @@ public class RobotContainer {
 		// alignCenterReef.onTrue(
 		// new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
-				new ElevatorFeedCommand(elevator, manipJoint).withName("Driver Stow Elevator"));
+				new SmartStowCommand(elevator, manipJoint, manipulator)
+						.withName("Driver Smart Stow"));
 
 	}
 
@@ -193,13 +194,9 @@ public class RobotContainer {
 				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
 						.withName("Intake Coral Preset"));
 
-		processorPreset.onTrue(
-				new ElevatorPresetCommand(ControllerConstants.FeedCoralPosition, elevator, manipJoint)
-						.withName("Elevator Algae Intake"));
-
-		feedPreset.onTrue(
-				new ElevatorFeedCommand(elevator, manipJoint)
-						.withName("Elevator Feed Positon"));
+		smartStow.onTrue(
+				new SmartStowCommand(elevator, manipJoint, manipulator)
+						.withName("Smart Stow"));
 
 		scoreL2Preset.onTrue(
 				new ElevatorPresetCommand(ControllerConstants.ScoreL2Position, elevator, manipJoint)

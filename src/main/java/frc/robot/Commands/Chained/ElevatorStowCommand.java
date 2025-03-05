@@ -14,12 +14,12 @@ public class ElevatorStowCommand extends SequentialCommandGroup {
 				//rises to l2 so manip can safely move
 				elevator.runElevatorCommand(ElevatorPositions.CORALL2),
 				//manip runs to stow position only if the elevator is at the setpoint goal
-				manipJoint.runCleanerPivotCommand(ManipJointPositions.STOW).onlyIf(
+				manipJoint.runManipJointCommand(ManipJointPositions.STOW).onlyIf(
 					() -> elevator.getPositionSetpointGoal(ElevatorConstants.coralL2, ElevatorConstants.error)),
 				//since its sequential, this lowers once the manip is 
-				elevator.runElevatorCommand(ElevatorPositions.STOW)
+				elevator.runElevatorCommand(ElevatorPositions.FEED)
 		);
-		
+
 		addRequirements(elevator, manipJoint);
 	}
 
