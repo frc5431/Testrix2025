@@ -251,6 +251,9 @@ public class RobotContainer {
 				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("ScoreCoral",
 				new ScoreCoralCommand(elevator, manipJoint, manipulator));
+		
+		NamedCommands.registerCommand("AlignLeftReef", new AlignReefCommand(false));
+		NamedCommands.registerCommand("AlignRightReef", new AlignReefCommand(true));
 
 	}
 }
