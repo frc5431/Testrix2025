@@ -34,13 +34,13 @@ public class ManipJoint extends REVMechanism {
 			configIdleMode(ManipJointConstants.idleMode);
 			configInverted(ManipJointConstants.isInverted);
 			configEncoderPosRatio(ManipJointConstants.gearRatio);
+			configPositionWrapping(true);
+			configAbsoluteEncoderInverted(false);
+			configPeakOutput(ManipJointConstants.maxForwardOutput, ManipJointConstants.maxReverseOutput);
 			configMaxIAccum(ManipJointConstants.maxIAccum);
-			configMaxMotionPositionMode(ManipJointConstants.mm_positionMode);
-			configPIDGains(ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);
+			configFeedForwardGains(ManipJointConstants.kS, ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);
 			configSmartCurrentLimit(ManipJointConstants.stallLimit, ManipJointConstants.supplyLimit);
 			configPeakOutput(ManipJointConstants.maxForwardOutput, ManipJointConstants.maxReverseOutput);
-			configMaxMotion(ManipJointConstants.mm_velocity, ManipJointConstants.mm_maxAccel,
-					ManipJointConstants.mm_error);
 		}
 	}
 

@@ -112,7 +112,9 @@ public class RobotContainer {
 	// Operator Controls
 
 	// Preset Controls
-	private Trigger intakePreset = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
+	private Trigger intakePreset = ControllerConstants.using8BitDo ? operator8BitDo.getRBumper()
+			: operator.rightBumper();
+	private Trigger stowIntake = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
 			: operator.leftBumper();
 	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
 	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
@@ -190,9 +192,11 @@ public class RobotContainer {
 	private void configureOperatorControls() {
 
 		// Elevator Controls
-		intakePreset.onTrue(
-				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
-						.withName("Intake Coral Preset"));
+		// intakePreset.onTrue(
+		// 		new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
+		// 				.withName("Intake Coral Preset"));
+		intakePreset.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY));
+		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW));
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
@@ -211,7 +215,7 @@ public class RobotContainer {
 						.withName("Elevator L4 Preset"));
 
 		// Intake Controls
-		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE), feeder.runFeederCommand(FeederModes.FEED),
 				(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
@@ -229,11 +233,12 @@ public class RobotContainer {
 		feeder.setDefaultCommand(feeder.runFeederCommand(FeederModes.IDLE).withName("Feeder Default Command"));
 		manipulator.setDefaultCommand(
 				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
+
 		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default
 		// Command"));
 
 		// Subsystem Status
-		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
+		//isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
 
 		// // LED Status
 		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED

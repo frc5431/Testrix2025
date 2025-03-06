@@ -106,7 +106,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum IntakeModes {
-            IDLE(idleSpeed , 0.0), INTAKE(intakeSpeed, 0.5), FEED(feedSpeed, 0.2), OUTTAKE(outtakeSpeed, -0.3);
+            IDLE(idleSpeed , 0.0), INTAKE(intakeSpeed, 0.6), FEED(feedSpeed, 0.2), OUTTAKE(outtakeSpeed, -0.3);
 
             public AngularVelocity speed;
             public double output;
@@ -234,12 +234,14 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ManipulatorModes {
-            IDLE(idleSpeed), SCORE(scoreSpeed), FEED(feedSpeed), REVERSE(reverseSpeed);
+            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, 0.4), FEED(feedSpeed, 0.4), REVERSE(reverseSpeed, -0.4);
 
             public AngularVelocity speed;
+            public double output;
 
-            ManipulatorModes(AngularVelocity speed) {
+            ManipulatorModes(AngularVelocity speed, double output) {
                 this.speed = speed;
+                this.output = output;
             }
 
         }
@@ -253,16 +255,16 @@ public final class Constants {
         }
 
         public static final boolean attached = true;
-        public static final boolean leaderInvert = false;
-        public static final boolean follwerInvert = true;
+        public static final boolean leaderInvert = true;
+        public static final boolean follwerInvert = false;
         public static final boolean gravityType = false;
         public static final boolean breakType = true;
 
         public static final boolean canRangeAttached = false;
         public static final boolean canCoderAttached = false;
 
-        public static final int leftId = 14;
-        public static final int rightId = 15;
+        public static final int leftId = 15;
+        public static final int rightId = 14;
         public static final int canCoderId = 16;
         public static final int canRangeId = 17;
         public static final double gearRatio = 1 / 1;
@@ -272,11 +274,11 @@ public final class Constants {
 
         public static final boolean useStallLimit = true;
         public static final boolean useSupplyLimit = true;
-        public static final Current stallLimit = Units.Amps.of(40);
+        public static final Current stallLimit = Units.Amps.of(45);
         public static final Current supplyLimit = Units.Amps.of(40);
 
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = 0;
+        public static final double maxForwardOutput = 0.5;
+        public static final double maxReverseOutput = 0.5;
 
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
@@ -301,7 +303,7 @@ public final class Constants {
         public static final Angle feed = Units.Rotation.of(0);
         public static final Angle algaeProcessor = Units.Rotation.of(0);
         public static final Angle coralL1 = Units.Rotation.of(0);
-        public static final Angle coralL2 = Units.Rotation.of(0);
+        public static final Angle coralL2 = Units.Rotation.of(1);
         public static final Angle algaeL2 = Units.Rotation.of(0);
         public static final Angle coralL3 = Units.Rotation.of(0);
         public static final Angle algaeL3 = Units.Rotation.of(0);
@@ -336,23 +338,28 @@ public final class Constants {
         public static final int id = 20;
         public static final boolean attached = true;
         public static final boolean isInverted = true;
+        public static final boolean ecoderInverted = false;
+
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder;
+        public static final Current supplyCurrent = Units.Amp.of(40);
+        public static final Current stallCurrent = Units.Amp.of(80);
         public static final double maxForwardOutput = 0.1;
-        public static final double maxReverseOutput = -1;
+        public static final double maxReverseOutput = -0.3;
 
-        public static final Angle zeroOffset = Units.Rotation.of(0);
-        public static final Angle softLimitReverseMax = Units.Rotation.of(0.53);
-        public static final Angle softLimitForwardMax = Units.Rotation.of(0.95);
+        public static final Angle zeroOffset = Units.Rotation.of(0.32);
+        public static final Angle softLimitReverseMax = Units.Rotation.of(0.39);
+        public static final Angle softLimitForwardMax = Units.Rotation.of(0.8);
         public static final boolean softLimitEnabled = true;
 
-        public static final double p = 1;
+        public static final double ff = 0.1;
+        public static final double p = 0.5;
         public static final double i = 0.01;
-        public static final double d = 0.3;
-        public static final double maxIAccum = 0.2;
+        public static final double d = 0.6;
+        public static final double maxIAccum = 0.1;
 
-        public static final Angle stowAngle = Units.Rotation.of(0.555);
-        public static final Angle deployAngle = Units.Rotation.of(0.87);
+        public static final Angle stowAngle = Units.Rotation.of(0.5);
+        public static final Angle deployAngle = Units.Rotation.of(0.75);
 
         public enum IntakePivotModes {
             STOW(stowAngle), DEPLOY(deployAngle);
@@ -445,29 +452,30 @@ public final class Constants {
         public static final boolean attached = true;
         public static final int id = 23;
         public static final double gearRatio = 1 / 1;
-        public static final Current supplyLimit = Units.Amps.of(30);
-        public static final Current stallLimit = Units.Amps.of(40);
+        public static final Current supplyLimit = Units.Amps.of(70);
+        public static final Current stallLimit = Units.Amps.of(80);
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final boolean isInverted = false;
         public static final Angle offset = Units.Rotation.of(0);
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = 0;
+        public static final double maxForwardOutput = 1;
+        public static final double maxReverseOutput = -0.1;
 
-        public static final double p = 1;
-        public static final double i = 0.01;
-        public static final double d = 0.3;
+        public static final double p = 0.5;
+        public static final double i = 0.1;
+        public static final double d = 1;
+
         public static final double maxIAccum = 0.2;
 
-        public static final Voltage kS = Units.Volts.of(0);
+        public static final double kS = 1.6;
         // public static final ArmFeedforward jointFF = new
         // ArmFeedforward(kS.in(Units.Volt));
 
         public static final Angle stow = Units.Rotations.of(-0.29);
         public static final Angle feed = Units.Rotations.of(-0.29);
         public static final Angle scoreL1 = Units.Rotations.of(-0.29);
-        public static final Angle scoreL2 = Units.Rotations.of(-0.29);
-        public static final Angle scoreL3 = Units.Rotations.of(-0.29);
+        public static final Angle scoreL2 = Units.Rotations.of(-1.5);
+        public static final Angle scoreL3 = Units.Rotations.of(-1.5);
         public static final Angle scoreL4 = Units.Rotations.of(-0.29);
         public static final Angle error = Units.Rotations.of(0);
 
@@ -525,13 +533,15 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum FeederModes {
-            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.4);
+            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.7);
 
             public AngularVelocity speed;
             public double output;
 
             FeederModes(AngularVelocity speed, Double output) {
                 this.speed = speed;
+                this.output = output;
+
             }
 
         }
