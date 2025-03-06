@@ -90,7 +90,6 @@ public class Feeder extends REVMechanism {
 
     }
 
-  
     public void runEnum(FeederModes feederModes, boolean rpm) {
         this.mode = feederModes;
         if (rpm) {
