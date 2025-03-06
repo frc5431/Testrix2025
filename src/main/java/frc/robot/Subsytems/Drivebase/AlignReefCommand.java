@@ -36,13 +36,17 @@ public class AlignReefCommand extends SequentialCommandGroup {
     }
 
     public AlignReefCommand() {
+        if (vision.OnlyIfNullChecker()) {
         addCommands(
+                
                 drivebase.faceTargetCommand(aprilTagFieldLayout
                         .getTagPose((int) vision.getBestLimelight().getClosestTagID()).get().getRotation()
                         .toRotation2d()),
                 drivebase.driveRobotCenteric(vision.leftOfTag() ? VisionConstants.alignXSpeed :  VisionConstants.alignXSpeed.times(-1)).until(() -> vision.isCentered()));
+                
                 // drivebase.driveRobotCenteric(VisionConstants.alignYSpeed).until(() -> vision.getCenterScoreDistance()));
-
+        }
+        
         alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_BLUE));
 
         andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
