@@ -12,26 +12,25 @@ import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 
 public class IntakeCoralCommand extends SequentialCommandGroup {
 
-    /**
-     * @param intake
-     * @param feeder
-     * @param manipulator
-     */
-    public IntakeCoralCommand(Intake intake, IntakePivot intakePivot, Manipulator manipulator, Elevator elevator,
-            ManipJoint manipJoint) {
-        addCommands(
-                new ParallelCommandGroup(
-                        intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY),
-                        new ElevatorFeedCommand(elevator, manipJoint),
-                        manipulator.runManipulatorCommand(ManipulatorModes.FEED))
-                                .until(() -> manipulator.getBeambreakStatus()),
-                new ParallelCommandGroup(
-                        manipulator.runManipulatorCommand(ManipulatorModes.FEED).withTimeout(0.1),
-                new ElevatorStowCommand(elevator, manipJoint))
+        /**
+         * @param intake
+         * @param feeder
+         * @param manipulator
+         */
+        public IntakeCoralCommand(Intake intake, IntakePivot intakePivot, Manipulator manipulator, Elevator elevator,
+                        ManipJoint manipJoint) {
+                addCommands(
+                                new ParallelCommandGroup(
+                                                intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY),
+                                                new ElevatorFeedCommand(elevator, manipJoint),
+                                                manipulator.runManipulatorCommand(ManipulatorModes.FEED))
+                                                                .until(() -> manipulator.getBeambreakStatus()),
+                                manipulator.runManipulatorCommand(ManipulatorModes.FEED).withTimeout(0.1),
+                                new ElevatorStowCommand(elevator, manipJoint)
 
-        );
+                );
 
-        addRequirements(intake, intakePivot, manipulator, manipJoint, elevator);
+                addRequirements(intake, intakePivot, manipulator, manipJoint, elevator);
 
-    }
+        }
 }

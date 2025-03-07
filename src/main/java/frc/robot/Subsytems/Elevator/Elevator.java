@@ -80,14 +80,13 @@ public class Elevator extends CTREMechanism {
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;
-        this.config = config;
         leader.getConfigurator().apply(config.talonConfig);
         follower.getConfigurator().apply(config.talonConfig);
         follower.setControl(new Follower(ElevatorConstants.leftId , ElevatorConstants.follwerInvert));
 
         this.position = ElevatorPositions.STOW;
         this.states = ElevatorStates.STOWED;
-
+        setZero();
         if (attached) {
             Logger.recordOutput("Elevator/Mode", getPosition());
             Logger.recordOutput("Elevator/States", getStates());
@@ -162,7 +161,7 @@ public class Elevator extends CTREMechanism {
 
     public void runEnum(ElevatorPositions position) {
         this.position = position;
-        setMotorPosition(position.rotation);
+        setMMPosition(position.rotation);
     }
 
     public void runEnumMM(ElevatorPositions position) {
@@ -212,7 +211,7 @@ public class Elevator extends CTREMechanism {
 
     @Override
     protected Config setConfig() {
-        return this.config = config;
+        return new ElevatorConfig();
     }
 
 
