@@ -177,6 +177,7 @@ public class RobotContainer {
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
 						.withName("Driver Smart Stow"));
+		zeroDrivebase.onTrue(drivebase.zeroGyro().withName("Zero Drivebase"));
 
 	}
 

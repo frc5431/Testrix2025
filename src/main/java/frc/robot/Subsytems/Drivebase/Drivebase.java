@@ -33,6 +33,7 @@ import frc.robot.Util.Constants.AutonConstants;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -171,6 +172,10 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
 
     public void resetGyro() {
         this.getPigeon2().setYaw(0);
+    }
+
+    public Command zeroGyro() {
+        return new RunCommand(() -> resetGyro(), this);
     }
 
     /**
