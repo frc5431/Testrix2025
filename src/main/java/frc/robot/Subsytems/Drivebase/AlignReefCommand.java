@@ -33,7 +33,7 @@ public class AlignReefCommand extends SequentialCommandGroup {
 
         // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        addRequirements(drivebase, vision, candle);
+        addRequirements(drivebase, vision);//, candle);
     }
 
     public AlignReefCommand() {
@@ -57,6 +57,6 @@ public class AlignReefCommand extends SequentialCommandGroup {
 
         // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        addRequirements(drivebase, vision, candle);
+        addRequirements(drivebase, vision);//, candle);
     }
 }

@@ -55,7 +55,7 @@ public class Vision extends SubsystemBase {
             VISION_STD_DEV_THETA);
 
     // TODO: deal with this
-    private Drivebase drivebase;
+    private Drivebase drivebase = Systems.getDrivebase();
 
     // TODO: we only have one for now
     /* Limelights */

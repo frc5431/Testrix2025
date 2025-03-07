@@ -52,7 +52,10 @@ public class Systems {
     private static @Getter TitanCANdle titanCANdle;
     private static @Getter Vision vision;
     private @Getter Climber climber;
-    private static @Getter Drivebase drivebase;
+    private static @Getter Drivebase drivebase = new Drivebase(
+        SwerveConstants.DrivetrainConstants,
+        SwerveConstants.FrontLeft, SwerveConstants.FrontRight,
+        SwerveConstants.BackLeft, SwerveConstants.BackRight);
 
     /* Kraken X60s */
     private TalonFX elevatorLeft;
@@ -129,9 +132,6 @@ public class Systems {
         // Limelight limelight = new
         vision = new Vision();
 
-        drivebase = new Drivebase(
-                SwerveConstants.DrivetrainConstants,
-                SwerveConstants.FrontLeft, SwerveConstants.FrontRight,
-                SwerveConstants.BackLeft, SwerveConstants.BackRight);
+        
     }
 }

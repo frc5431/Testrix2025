@@ -291,7 +291,7 @@ public final class Constants {
         // static voltage needed to hold position
         public static final double s = 15;
 
-        public static final double p = 10;
+        public static final double p = 6;
         public static final double i = 0.0;
         public static final double d = 0.0;
         public static final double maxIAccum = 0.2;

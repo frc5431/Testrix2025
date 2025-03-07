@@ -37,7 +37,7 @@ public class Elevator extends CTREMechanism {
             configMotionMagicPosition(ElevatorConstants.s);
             configGravityType(ElevatorConstants.gravityType);
             
-
+            
             configSupplyCurrentLimit(ElevatorConstants.supplyLimit, ElevatorConstants.useSupplyLimit);
             configStatorCurrentLimit(ElevatorConstants.stallLimit, ElevatorConstants.useStallLimit);
             //configReverseTorqueCurrentLimit(ElevatorConstants.reverseTorqueLimit);
@@ -80,6 +80,9 @@ public class Elevator extends CTREMechanism {
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;
+        config.talonConfig.MotorOutput.withPeakForwardDutyCycle(ElevatorConstants.maxForwardOutput);
+        config.talonConfig.MotorOutput.withPeakReverseDutyCycle(ElevatorConstants.maxReverseOutput  );
+
         leader.getConfigurator().apply(config.talonConfig);
         follower.getConfigurator().apply(config.talonConfig);
         follower.setControl(new Follower(ElevatorConstants.leftId , ElevatorConstants.follwerInvert));
