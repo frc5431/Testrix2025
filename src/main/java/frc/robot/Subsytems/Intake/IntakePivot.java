@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,8 +32,8 @@ public class IntakePivot extends REVMechanism {
 
 		public PivotConfig() {
 			super("IntakePivot", IntakePivotConstants.id);
-			// configSoftLimit(IntakePivotConstants.softLimitEnabled, IntakePivotConstants.softLimitForwardMax,
-			// IntakePivotConstants.softLimitReverseMax);
+			configMaxMotionPositionMode(IntakePivotConstants.mm_positionMode);
+			configMaxMotion(IntakePivotConstants.mm_velocity, IntakePivotConstants.mm_maxAccel, IntakePivotConstants.mm_error);
 			configPeakOutput(IntakePivotConstants.maxForwardOutput, IntakePivotConstants.maxReverseOutput);
 			configInverted(IntakePivotConstants.isInverted);
 			configAbsoluteEncoderInverted(!IntakeConstants.isInverted);
@@ -74,6 +75,7 @@ public class IntakePivot extends REVMechanism {
 		SmartDashboard.putNumber("Intake Pivot Current", getMotorCurrent());
 		SmartDashboard.putNumber("Intake Pivot Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Intake Pivot Velocity", getMotorVelocity());
+
 	}
 
 	protected void runEnum(IntakePivotModes intakePivotModes) {

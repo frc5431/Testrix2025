@@ -38,10 +38,12 @@ import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
+import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -195,8 +197,11 @@ public class RobotContainer {
 		// intakePreset.onTrue(
 		// 		new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
 		// 				.withName("Intake Coral Preset"));
-		intakePreset.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY));
-		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW));
+		// intakePreset.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.STOW));
+		// stowIntake.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.SCOREL2));
+		intakePreset.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.CORALL2));
+		stowIntake.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.STOW));
+
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)

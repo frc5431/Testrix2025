@@ -13,7 +13,7 @@ public class SmartScoreCommand extends SequentialCommandGroup {
      * If scoring L2/L3, auto stow
      * In cases when scoring L4, I dont wanna climb the reef
      * 
-     * @param elevator
+     * @param elevator    
      * @param manipJoint
      * @param manipulator
      */
@@ -21,7 +21,7 @@ public class SmartScoreCommand extends SequentialCommandGroup {
 
         addCommands(
                 (manipJoint.getMode() == ManipJointPositions.SCOREL2
-                        || manipJoint.getMode() == ManipJointPositions.SCOREL2)
+                        || manipJoint.getMode() == ManipJointPositions.SCOREL3)
                                 ? new ScoreCoralCommand(elevator, manipJoint, manipulator)
                                 : manipulator.runManipulatorCommand(ManipulatorModes.SCORE));
 

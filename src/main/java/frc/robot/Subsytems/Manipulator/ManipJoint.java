@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
+import frc.robot.Util.Constants.IntakePivotConstants;
 import frc.robot.Util.Constants.ManipJointConstants;
 import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.subsystem.REVMechanism;
@@ -34,11 +35,13 @@ public class ManipJoint extends REVMechanism {
 			configIdleMode(ManipJointConstants.idleMode);
 			configInverted(ManipJointConstants.isInverted);
 			configEncoderPosRatio(ManipJointConstants.gearRatio);
-			configPositionWrapping(true);
+			configMaxMotionPositionMode(ManipJointConstants.mm_positionMode);
+			configMaxMotion(ManipJointConstants.mm_velocity, ManipJointConstants.mm_maxAccel, ManipJointConstants.mm_error);
+			configPositionWrapping(false);
 			configAbsoluteEncoderInverted(false);
 			configPeakOutput(ManipJointConstants.maxForwardOutput, ManipJointConstants.maxReverseOutput);
 			configMaxIAccum(ManipJointConstants.maxIAccum);
-			configFeedForwardGains(ManipJointConstants.kS, ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);
+			configFeedForwardGains(ManipJointConstants.s, ManipJointConstants.p, ManipJointConstants.i, ManipJointConstants.d);
 			configSmartCurrentLimit(ManipJointConstants.stallLimit, ManipJointConstants.supplyLimit);
 			configPeakOutput(ManipJointConstants.maxForwardOutput, ManipJointConstants.maxReverseOutput);
 		}
