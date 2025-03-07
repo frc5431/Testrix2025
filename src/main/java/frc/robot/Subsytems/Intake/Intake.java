@@ -1,17 +1,13 @@
 package frc.robot.Subsytems.Intake;
 
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;

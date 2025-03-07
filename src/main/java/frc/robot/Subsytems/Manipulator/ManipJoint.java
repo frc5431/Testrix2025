@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
-import frc.robot.Util.Constants.IntakePivotConstants;
 import frc.robot.Util.Constants.ManipJointConstants;
 import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.subsystem.REVMechanism;
