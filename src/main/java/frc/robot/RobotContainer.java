@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -44,7 +45,6 @@ import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.SwerveConstants;
-import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -81,14 +81,14 @@ public class RobotContainer {
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
+	// desired top speed
+
 	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
 			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
-			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10% deadband
-			.withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-			.withSteerRequestType(SteerRequestType.MotionMagicExpo);
+			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10%
+																										// deadband
+			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-
-			
 	// Triggers
 
 	// Automated Triggers
@@ -167,19 +167,19 @@ public class RobotContainer {
 		gamePieceStatus = (manipulator.getBeambreakStatus()) ? GamePieceStates.CORAL : GamePieceStates.NONE;
 		manipulator.setState((manipulator.getBeambreakStatus()) ? ManipulatorStates.LOCKED : ManipulatorStates.EMPTY);
 
-		// Drivebase
-		drivebase.setControl(
-		
-		driverControl.withVelocityX(-driver.getLeftY())
-			.withVelocityY(-driver.getLeftX())
-			.withRotationalRate(-driver.getRightX()));
-
-	
-
 	}
 
 	private void configureDriverControls() {
-		
+
+		drivebase.setDefaultCommand(
+				// Drivetrain will execute this command periodically
+				drivebase.applyRequest(
+						() -> driverControl
+								.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+
+								.withVelocityY(-driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+								.withRotationalRate(
+										-driver.getRightX() * DrivebaseConstants.MaxAngularRate.in(RadiansPerSecond))));
 
 		// Align Reef Commands
 		alignLeftReef.onTrue(
@@ -205,7 +205,7 @@ public class RobotContainer {
 		intakePreset.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.STOW));
 		stowIntake.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.SCOREL2));
 		// intakePreset.onTrue(elevator.runElevatorCommand(ElevatorPositions.CORALL2));
-		
+
 		// stowIntake.onTrue(elevator.runElevatorCommand(ElevatorPositions.STOW));
 
 		smartStow.onTrue(
@@ -225,10 +225,13 @@ public class RobotContainer {
 						.withName("Elevator L4 Preset"));
 
 		// Intake Controls
-		// intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
-		// 		feeder.runFeederCommand(FeederModes.FEED),
-		// 		(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
-		intakeCoral.onTrue(manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
+		// intakeCoral.whileTrue(new
+		// ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+		// feeder.runFeederCommand(FeederModes.FEED),
+		// (manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run
+		// Intake System"));
+		intakeCoral.onTrue(
+				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
 		smartIntakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
 				feeder.runFeederCommand(FeederModes.FEED)).withName("Smart Intake System"));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
@@ -257,9 +260,9 @@ public class RobotContainer {
 
 		// LED Status
 		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
-		isAutonEnabled.whileTrue(candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED :
-		AnimationTypes.BLINK_BLUE))
-		.withName("LED Auton Alliance"));
+		isAutonEnabled.whileTrue(
+				candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
+						.withName("LED Auton Alliance"));
 		hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LEDCoral"));
 		hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
 		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
@@ -267,7 +270,8 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-	// drivebase.addVisionMeasurement(vision.getBestLimelight().getRawPose3d().toPose2d(), );
+		// drivebase.addVisionMeasurement(vision.getBestLimelight().getRawPose3d().toPose2d(),
+		// );
 		return autoChooser.getSelected();
 	}
 

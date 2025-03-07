@@ -23,6 +23,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -69,6 +70,13 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     StructArrayPublisher<SwerveModuleState> publisher = 
     NetworkTableInstance.getDefault().
     getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+
+
+    StructPublisher<Pose2d> posePublisher =
+    NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
+
+    StructPublisher<ChassisSpeeds> speedsPublisher =
+    NetworkTableInstance.getDefault().getStructTopic("Chassis Speed", ChassisSpeeds.struct).publish();
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -342,6 +350,8 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         //SmartDashboard.putData("Swerve Pose", (Sendable) this.getRobotPose());
 
         publisher.set(states);
+        posePublisher.set(getRobotPose());
+        speedsPublisher.set(getChassisSpeeds());
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
