@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Limelight.Vision;
-import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.VisionConstants;
-import frc.robot.Util.Field;
 
 public class AlignReefCommand extends SequentialCommandGroup {
     private Drivebase drivebase = Systems.getDrivebase();

@@ -99,13 +99,8 @@ public class RobotContainer {
 	private Trigger alignRightReef = driver.rightBumper();
 	private Trigger alignLeftReef = driver.leftBumper();
 	private Trigger alignCenterReef = driver.a();
+	private Trigger zeroDrivebase = driver.y();
 	private Trigger driverStow = driver.x();
-
-	// Climber Controls
-	// private Trigger climberOut =
-	// driver.leftTrigger(ControllerConstants.triggerThreshold);
-	// private Trigger climberClimb =
-	// driver.rightTrigger(ControllerConstants.triggerThreshold);
 
 	// more Game Status
 	private @Getter Trigger reefAlignment = new Trigger(
@@ -119,21 +114,17 @@ public class RobotContainer {
 	private Trigger stowIntake = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
 			: operator.leftBumper();
 	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
-	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
+	private Trigger scoreL1Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
+	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.rightDpad();
 	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
 	private Trigger scoreL4Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovUp() : operator.upDpad();
 
-	// Cleaner Controls
-	// private Trigger intakeAlgae = ControllerConstants.using8BitDo ?
-	// operator8BitDo.getB() : operator.b();
-	// private Trigger outtakeAlgae = ControllerConstants.using8BitDo ?
-	// operator8BitDo.getX() : operator.x();
 
 	// Intake Controls
 	private Trigger intakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getA() : operator.a();
-	private Trigger scoreCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY() : operator.y();
+	private Trigger scoreCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY() : operator.rightTrigger(.5);
 	private Trigger reverseFeed = ControllerConstants.using8BitDo ? operator8BitDo.getRightDPadDown()
-			: operator.rightStick();
+			: operator.b();
 
 	public RobotContainer() {
 		// Path Planner reccomends that construction of their namedcommands happens
