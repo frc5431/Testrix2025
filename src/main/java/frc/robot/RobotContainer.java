@@ -115,13 +115,15 @@ public class RobotContainer {
 			: operator.leftBumper();
 	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
 	private Trigger scoreL1Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
-	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.rightDpad();
+	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown()
+			: operator.rightDpad();
 	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
 	private Trigger scoreL4Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovUp() : operator.upDpad();
 
-
 	// Intake Controls
 	private Trigger intakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getA() : operator.a();
+	private Trigger smartIntakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY()
+			: operator.leftTrigger(.5);
 	private Trigger scoreCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY() : operator.rightTrigger(.5);
 	private Trigger reverseFeed = ControllerConstants.using8BitDo ? operator8BitDo.getRightDPadDown()
 			: operator.b();
@@ -165,17 +167,13 @@ public class RobotContainer {
 
 	private void configureDriverControls() {
 
-		// Climber Controls
-		// climberOut.onTrue(climber.runClimberCommand(ClimberModes.ALIGN));
-		// climberClimb.whileTrue(climber.runClimberCommand(ClimberConstants.climbVelocity));
-
-		// // Align Reef Commands
-		// alignLeftReef.onTrue(
-		// new AlignReefCommand(false).withName("Align Left Reef"));
-		// alignRightReef.onTrue(
-		// new AlignReefCommand(true).withName("Align Right Reef"));
-		// alignCenterReef.onTrue(
-		// new AlignReefCommand().withName("Align Center Reef"));
+		// Align Reef Commands
+		alignLeftReef.onTrue(
+				new AlignReefCommand(false).withName("Align Left Reef"));
+		alignRightReef.onTrue(
+				new AlignReefCommand(true).withName("Align Right Reef"));
+		alignCenterReef.onTrue(
+				new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
 						.withName("Driver Smart Stow"));
@@ -186,13 +184,13 @@ public class RobotContainer {
 
 		// Elevator Controls
 		// intakePreset.onTrue(
-		// 		new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint)
-		// 				.withName("Intake Coral Preset"));
+		// new IntakeCoralCommand(intake, intakePivot, manipulator, elevator,
+		// manipJoint)
+		// .withName("Intake Coral Preset"));
 		// intakePreset.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.STOW));
 		// stowIntake.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.SCOREL2));
 		intakePreset.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.CORALL2));
 		stowIntake.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.STOW));
-
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
@@ -211,8 +209,11 @@ public class RobotContainer {
 						.withName("Elevator L4 Preset"));
 
 		// Intake Controls
-		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE), feeder.runFeederCommand(FeederModes.FEED),
+		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+				feeder.runFeederCommand(FeederModes.FEED),
 				(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
+		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+				feeder.runFeederCommand(FeederModes.FEED)).withName("Smart Intake System"));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
 
@@ -234,7 +235,8 @@ public class RobotContainer {
 		// Command"));
 
 		// Subsystem Status
-		//isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
+		// isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder
+		// Auto Control"));
 
 		// // LED Status
 		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED
