@@ -8,7 +8,10 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Util.Constants.IntakeConstants;
+import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.ManipJointConstants;
 import frc.robot.Util.Constants.ManipulatorConstants;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
@@ -107,15 +110,25 @@ public class Manipulator extends REVMechanism {
 		resetPosition();
 	}
 
-	public void runEnum(ManipulatorModes manipulatorMode) {
-		this.mode = manipulatorMode;
-		setVelocity(manipulatorMode.speed);
-	}
-
-	   public Command runManipulatorCommand(ManipulatorModes modes) {
-        return new StartEndCommand(() -> this.runEnum(modes), () -> this.runEnum(ManipulatorModes.IDLE), this)
-                .withName("Cleaner.runEnum");
+ public void runEnum(ManipulatorModes manipulatorModes, boolean rpm) {
+        this.mode = manipulatorModes;
+        if (rpm) {
+            setVelocity(manipulatorModes.speed);
+        } else {
+            setPercentOutput(manipulatorModes.output);
+        }
     }
+
+    public Command runManipulatorCommand(ManipulatorModes manipulatorModes) {
+        return new RunCommand(() -> this.runEnum(manipulatorModes, IntakeConstants.useRpm), this)
+                .withName("Intake.runEnum");
+    }
+
+    public Command runManipulatorCommand(ManipulatorModes manipulatorModes, boolean rpm) {
+        return new RunCommand(() -> this.runEnum(manipulatorModes, rpm), this)
+                .withName("Intake.runEnum");
+    }
+
 
 	public boolean getBeambreakStatus() {
 		return motor.getForwardLimitSwitch().isPressed();

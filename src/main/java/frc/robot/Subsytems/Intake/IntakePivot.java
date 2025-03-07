@@ -31,11 +31,13 @@ public class IntakePivot extends REVMechanism {
 
 		public PivotConfig() {
 			super("IntakePivot", IntakePivotConstants.id);
-			configSoftLimit(IntakePivotConstants.softLimitEnabled, IntakePivotConstants.softLimitForwardMax,
-			IntakePivotConstants.softLimitReverseMax);
+			// configSoftLimit(IntakePivotConstants.softLimitEnabled, IntakePivotConstants.softLimitForwardMax,
+			// IntakePivotConstants.softLimitReverseMax);
+			configPeakOutput(IntakePivotConstants.maxForwardOutput, IntakePivotConstants.maxReverseOutput);
 			configInverted(IntakePivotConstants.isInverted);
-			configAbsoluteEncoderInverted(IntakeConstants.isInverted);
+			configAbsoluteEncoderInverted(!IntakeConstants.isInverted);
 			configIdleMode(IntakePivotConstants.idleMode);
+			configSmartCurrentLimit(IntakePivotConstants.stallCurrent, IntakePivotConstants.supplyCurrent);
 			configMaxIAccum(IntakePivotConstants.maxIAccum);
 			configFeedbackSensorSource(IntakePivotConstants.feedbackSensor, IntakePivotConstants.zeroOffset);
 			configPIDGains(IntakePivotConstants.p, IntakePivotConstants.i, IntakePivotConstants.d);
@@ -74,14 +76,14 @@ public class IntakePivot extends REVMechanism {
 		SmartDashboard.putNumber("Intake Pivot Velocity", getMotorVelocity());
 	}
 
-	protected void runEnum(IntakePivotModes IntakePivotModes) {
-		this.mode = IntakePivotModes;
-		setMotorPosition(IntakePivotModes.angle);
+	protected void runEnum(IntakePivotModes intakePivotModes) {
+		this.mode = intakePivotModes;
+		setMotorPosition(intakePivotModes.angle);
 	}
 
-	protected void runEnumMM(IntakePivotModes IntakePivotModes) {
-		this.mode = IntakePivotModes;
-		setMMPosition(IntakePivotModes.angle);
+	protected void runEnumMM(IntakePivotModes intakePivotModes) {
+		this.mode = intakePivotModes;
+		setMMPosition(intakePivotModes.angle);
 	}
 
 	protected void stop() {
@@ -94,13 +96,13 @@ public class IntakePivot extends REVMechanism {
 		resetPosition();
 	}
 
-	public Command runIntakePivotCommand(IntakePivotModes IntakePivotModes) {
-		return new RunCommand(() -> this.runEnum(IntakePivotModes), this)
+	public Command runIntakePivotCommand(IntakePivotModes intakePivotModes) {
+		return new RunCommand(() -> this.runEnum(intakePivotModes), this)
 				.withName("IntakePivot.runEnum");
 	}
 
-	public Command runIntakePivotCommandMM(IntakePivotModes IntakePivotModes) {
-		return new RunCommand(() -> this.runEnumMM(IntakePivotModes), this)
+	public Command runIntakePivotCommandMM(IntakePivotModes intakePivotModes) {
+		return new RunCommand(() -> this.runEnumMM(intakePivotModes), this)
 				.withName("IntakePivot.runEnumMM");
 	}
 

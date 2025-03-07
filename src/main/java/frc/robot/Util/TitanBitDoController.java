@@ -12,7 +12,7 @@ public class TitanBitDoController extends XboxController {
      */
     public TitanBitDoController(final int port) {
         super(port);
-    }
+    } 
 
     @Getter private Trigger LeftDPadLeft = new Trigger(() -> Math.round(getRawAxis(Axis.kLeftX.value)) == 0);
     @Getter private Trigger LeftDPadRight = new Trigger(() -> Math.round(getRawAxis(Axis.kLeftX.value)) == 1);
