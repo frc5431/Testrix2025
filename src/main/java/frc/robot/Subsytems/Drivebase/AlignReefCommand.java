@@ -29,7 +29,7 @@ public class AlignReefCommand extends SequentialCommandGroup {
             addCommands();
         }
 
-        // alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_RED));
+       // alongWith(candle.changeAnimation(AnimationTypes.BLINK_RED));
 
         // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 

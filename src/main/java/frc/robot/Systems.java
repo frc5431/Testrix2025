@@ -60,7 +60,7 @@ public class Systems {
     /* Kraken X60s */
     private TalonFX elevatorLeft;
     private TalonFX elevatorRight;
-    public CANdle candle;
+    public static CANdle candle;
 
     /* Neo 1.1s */
     private SparkMax intakeMotor;
@@ -125,8 +125,7 @@ public class Systems {
         }
 
         if (CANdleConstants.attached) {
-            candle = new CANdle(CANdleConstants.id, Constants.canbus);
-            titanCANdle = new TitanCANdle(candle);
+            titanCANdle = new TitanCANdle();
         }
 
         // Limelight limelight = new

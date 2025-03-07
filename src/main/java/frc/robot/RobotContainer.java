@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -30,19 +34,21 @@ import frc.robot.Subsytems.Drivebase.AlignReefCommand;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
+import frc.robot.Util.Field;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Intake.IntakePivot;
+import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.RobotMechanism;
 import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
+import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
-import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
@@ -60,6 +66,7 @@ public class RobotContainer {
 	private final Feeder feeder = systems.getFeeder();
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
+	private final Vision vision = Systems.getVision();
 	private final Manipulator manipulator = systems.getManipulator();
 	// private final Vision vision = Systems.getVision();
 	private final TitanCANdle candle = Systems.getTitanCANdle();
@@ -74,10 +81,12 @@ public class RobotContainer {
 
 	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
 			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
-			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1)) // Add a 10% deadband
+			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10% deadband
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage)
 			.withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
+
+			
 	// Triggers
 
 	// Automated Triggers
@@ -140,14 +149,13 @@ public class RobotContainer {
 	}
 
 	public void subsystemPeriodic() {
+		drivebase.periodic();
 		intake.periodic();
 		feeder.periodic();
 		elevator.periodic();
 		manipJoint.periodic();
 		manipulator.periodic();
 		intakePivot.periodic();
-		drivebase.periodic();
-
 	}
 
 	public void periodic() {
@@ -159,13 +167,17 @@ public class RobotContainer {
 
 		// Drivebase
 		drivebase.setControl(
-				driverControl.withVelocityX(-driver.getLeftY())
-						.withVelocityY(-driver.getLeftX())
-						.withRotationalRate(-driver.getRightX()));
+		
+		driverControl.withVelocityX(-driver.getLeftY())
+			.withVelocityY(-driver.getLeftX())
+			.withRotationalRate(-driver.getRightX()));
+
+	
 
 	}
 
 	private void configureDriverControls() {
+		
 
 		// Align Reef Commands
 		alignLeftReef.onTrue(
@@ -188,10 +200,11 @@ public class RobotContainer {
 		// new IntakeCoralCommand(intake, intakePivot, manipulator, elevator,
 		// manipJoint)
 		// .withName("Intake Coral Preset"));
-		// intakePreset.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.STOW));
-		// stowIntake.onTrue(manipJoint.runManipJoingCommandMM(ManipJointPositions.SCOREL2));
-		intakePreset.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.CORALL2));
-		stowIntake.onTrue(elevator.runElevatorCommandMM(ElevatorPositions.STOW));
+		intakePreset.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.STOW));
+		stowIntake.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.SCOREL2));
+		// intakePreset.onTrue(elevator.runElevatorCommand(ElevatorPositions.CORALL2));
+		
+		// stowIntake.onTrue(elevator.runElevatorCommand(ElevatorPositions.STOW));
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
@@ -210,10 +223,11 @@ public class RobotContainer {
 						.withName("Elevator L4 Preset"));
 
 		// Intake Controls
-		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
-				feeder.runFeederCommand(FeederModes.FEED),
-				(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
-		intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+		// intakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
+		// 		feeder.runFeederCommand(FeederModes.FEED),
+		// 		(manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run Intake System"));
+		intakeCoral.onTrue(manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
+		smartIntakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
 				feeder.runFeederCommand(FeederModes.FEED)).withName("Smart Intake System"));
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
@@ -227,33 +241,31 @@ public class RobotContainer {
 
 	public void onInitialize() {
 		// Default Commands
+		elevator.runOnce(() -> elevator.riseAboveFriction());
 		intake.setDefaultCommand(intake.runIntakeCommand(IntakeModes.IDLE).withName("Intake Default Command"));
 		feeder.setDefaultCommand(feeder.runFeederCommand(FeederModes.IDLE).withName("Feeder Default Command"));
 		manipulator.setDefaultCommand(
 				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
 
-		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default
-		// Command"));
+		candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
 
 		// Subsystem Status
 		// isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder
 		// Auto Control"));
 
-		// // LED Status
-		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED
-		// Endgame"));
-		// isAutonEnabled.whileTrue(
-		// candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED :
-		// AnimationTypes.BLINK_BLUE))
-		// .withName("LED Auton Alliance"));
-		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LED
-		// Coral"));
-		// hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
-		// hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
+		// LED Status
+		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
+		isAutonEnabled.whileTrue(candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED :
+		AnimationTypes.BLINK_BLUE))
+		.withName("LED Auton Alliance"));
+		hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LEDCoral"));
+		hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
+		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
 
 	}
 
 	public Command getAutonomousCommand() {
+	// drivebase.addVisionMeasurement(vision.getBestLimelight().getRawPose3d().toPose2d(), );
 		return autoChooser.getSelected();
 	}
 

@@ -119,7 +119,7 @@ public class ManipJoint extends REVMechanism {
 				.withName("ManipJoint.runEnum");
 	}
 
-	public Command runManipJoingCommandMM(ManipJointPositions ManipJointmode) {
+	public Command runManipJointCommandMM(ManipJointPositions ManipJointmode) {
 		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
 				.withName("ManipJoint.runEnumMM");
 	}

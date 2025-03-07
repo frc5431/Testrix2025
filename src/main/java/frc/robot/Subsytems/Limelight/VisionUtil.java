@@ -68,10 +68,10 @@ public class VisionUtil {
                 .withTranslation(VisionConstants.centLLForwardOffset.in(Units.Meters), VisionConstants.centLLRightOffset.in(Units.Meters), VisionConstants.centLLUpOffset.in(Units.Meters))
                 .withRotation(VisionConstants.centLLRollOffset.in(Units.Degrees), VisionConstants.centLLPitchOffset.in(Units.Degrees), VisionConstants.centLLYawOffset.in(Units.Degrees));
 
-        public static final String RIGHT_LL = "limelight-right";
-        public static final PhysicalConfig RIGHT_CONFIG = new PhysicalConfig()
-                .withTranslation(VisionConstants.rightLLForwardOffset.in(Units.Meters), VisionConstants.rightLLRightOffset.in(Units.Meters), VisionConstants.rightLLUpOffset.in(Units.Meters))
-                .withRotation(VisionConstants.rightLLRollOffset.in(Units.Degrees), VisionConstants.rightLLPitchOffset.in(Units.Degrees), VisionConstants.rightLLYawOffset.in(Units.Degrees));
+        // public static final String RIGHT_LL = "limelight-right";
+        // public static final PhysicalConfig RIGHT_CONFIG = new PhysicalConfig()
+        //         .withTranslation(VisionConstants.rightLLForwardOffset.in(Units.Meters), VisionConstants.rightLLRightOffset.in(Units.Meters), VisionConstants.rightLLUpOffset.in(Units.Meters))
+        //         .withRotation(VisionConstants.rightLLRollOffset.in(Units.Degrees), VisionConstants.rightLLPitchOffset.in(Units.Degrees), VisionConstants.rightLLYawOffset.in(Units.Degrees));
 
 
         // Increase these numbers to trust global measurements from vision less.

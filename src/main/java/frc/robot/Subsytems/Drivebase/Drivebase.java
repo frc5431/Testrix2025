@@ -23,6 +23,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,9 +64,11 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+    
     SwerveModuleState[] states = this.getState().ModuleStates;
-    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-            .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+    StructArrayPublisher<SwerveModuleState> publisher = 
+    NetworkTableInstance.getDefault().
+    getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -333,9 +336,10 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
          * This ensures driving behavior doesn't change until an explicit disable event
          * occurs during testing.
          */
+
         SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
         SmartDashboard.putNumber("Drivebase Rotation", this.getRotation3d().getAngle());
-        //SmartDashboard.putData("Swerve State", this.getState().ModuleStates);
+        //SmartDashboard.putData("Swerve Pose", (Sendable) this.getRobotPose());
 
         publisher.set(states);
 

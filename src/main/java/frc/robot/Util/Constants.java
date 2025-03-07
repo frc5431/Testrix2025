@@ -1,5 +1,7 @@
 package frc.robot.Util;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -234,7 +236,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ManipulatorModes {
-            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, 0.4), FEED(feedSpeed, 0.4), REVERSE(reverseSpeed, -0.4);
+            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, 0.4), FEED(feedSpeed, 0.3), REVERSE(reverseSpeed, -0.4);
 
             public AngularVelocity speed;
             public double output;
@@ -269,13 +271,13 @@ public final class Constants {
         public static final int canRangeId = 17;
         public static final double gearRatio = 1 / 1;
 
-        public static final Current forwardTorqueLimit = Units.Amps.of(45);
-        public static final Current reverseTorqueLimit = Units.Amps.of(45);
+        public static final Current forwardTorqueLimit = Units.Amps.of(80);
+        public static final Current reverseTorqueLimit = Units.Amps.of(80);
 
         public static final boolean useStallLimit = true;
         public static final boolean useSupplyLimit = true;
         public static final Current stallLimit = Units.Amps.of(80);
-        public static final Current supplyLimit = Units.Amps.of(40);
+        public static final Current supplyLimit = Units.Amps.of(60);
 
         public static final double maxForwardOutput = 0.5;
         public static final double maxReverseOutput = -0.5;
@@ -283,26 +285,27 @@ public final class Constants {
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
         public static final Angle maxReverseRotation = Units.Rotation.of(-1);
-        public static final Angle maxFowardRotation = Units.Rotation.of(10);
+        public static final Angle maxFowardRotation = Units.Rotation.of(100);
         public static final Angle rotationOffset = Units.Rotation.of(0);
 
         public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
 
         // static voltage needed to hold position
-        public static final double s = 15;
+        public static final double s = 0.65;
 
-        public static final double p = 6;
-        public static final double i = 0.0;
-        public static final double d = 0.0;
+        public static final double p = 0.1;
+        public static final double i = 0;
+        //do not add d please
+        public static final double d = 0;
         public static final double maxIAccum = 0.2;
 
         public static final Angle safeSwing = Units.Rotation.of(3);
         public static final Angle error = Units.Rotation.of(3);
-        public static final Angle stow = Units.Rotation.of(3);
+        public static final Angle stow = Units.Rotation.of(8);
         public static final Angle feed = Units.Rotation.of(3);
         public static final Angle algaeProcessor = Units.Rotation.of(3);
         public static final Angle coralL1 = Units.Rotation.of(3);
-        public static final Angle coralL2 = Units.Rotation.of(8);
+        public static final Angle coralL2 = Units.Rotation.of(15);
         public static final Angle algaeL2 = Units.Rotation.of(3);
         public static final Angle coralL3 = Units.Rotation.of(3);
         public static final Angle algaeL3 = Units.Rotation.of(3);
@@ -343,8 +346,10 @@ public final class Constants {
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder;
         public static final Current supplyCurrent = Units.Amp.of(40);
         public static final Current stallCurrent = Units.Amp.of(80);
-        public static final double maxForwardOutput = 0.1;
-        public static final double maxReverseOutput = -0.3;
+        //public static final double maxForwardOutput = 0.1;
+        //public static final double maxReverseOutput = -0.3;
+        public static final double maxForwardOutput = 0;
+        public static final double maxReverseOutput = -0;
 
         public static final Angle zeroOffset = Units.Rotation.of(0.32);
         public static final Angle softLimitReverseMax = Units.Rotation.of(0.39);
@@ -379,8 +384,9 @@ public final class Constants {
     }
 
     public static class DrivebaseConstants {
-        public static final AngularVelocity MaxAngularRate = Units.RPM.of(0.75);
+        public static final AngularVelocity MaxAngularRate = RotationsPerSecond.of(0.75); // 3/4 of a rotation per second max angular velocity
         public static final Distance robotLength = Units.Inches.of(28);
+         
     }
 
     public static class VisionConstants {
@@ -462,15 +468,16 @@ public final class Constants {
         public static final boolean isInverted = false;
         public static final Angle offset = Units.Rotation.of(0);
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
-        //public static final double maxForwardOutput = 1;
-        //public static final double maxReverseOutput = -0.3;
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = -0;
+        public static final double maxForwardOutput = 1;
+        public static final double maxReverseOutput = -0.1;
+        // public static final double maxForwardOutput = 0;
+        // public static final double maxReverseOutput = -0;
 
         public static final double s = 0.04; //0.04 - 0.06 holds arm at stow position
-        public static final double p = 25;
-        public static final double i = 0.05;
-        public static final double d = 1.0;
+
+        public static final double p = 2;
+        public static final double i = 0.0;
+        public static final double d = 0.4;
 
         public static final double maxIAccum = 0.2;
 
@@ -480,7 +487,7 @@ public final class Constants {
         public static final Angle stow = Units.Rotations.of(-0.29);
         public static final Angle feed = Units.Rotations.of(-0.29);
         public static final Angle scoreL1 = Units.Rotations.of(-0.29);
-        public static final Angle scoreL2 = Units.Rotations.of(-1.5);
+        public static final Angle scoreL2 = Units.Rotations.of(-2);
         public static final Angle scoreL3 = Units.Rotations.of(-1.5);
         public static final Angle scoreL4 = Units.Rotations.of(-0.29);
         public static final Angle error = Units.Rotations.of(0);
@@ -602,7 +609,7 @@ public final class Constants {
     }
 
     public static class CANdleConstants {
-        public static final boolean attached = false;
+        public static final boolean attached = true;
         public static final int id = 18;
 
         public static final double fast = 0.8;

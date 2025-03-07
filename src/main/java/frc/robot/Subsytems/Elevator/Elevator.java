@@ -4,15 +4,20 @@ import static edu.wpi.first.units.Units.Rotation;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -29,11 +34,11 @@ public class Elevator extends CTREMechanism {
         public ElevatorConfig() {
             super("Elevator", ElevatorConstants.leftId, Constants.canbus);
 
-            configVelocityPIDGains(0, ElevatorConstants.s, ElevatorConstants.p, ElevatorConstants.i,
+            configPIDGains(ElevatorConstants.p, ElevatorConstants.i,
                     ElevatorConstants.d);
             configNeutralBrakeMode(ElevatorConstants.breakType);
             configGearRatio(ElevatorConstants.gearRatio);
-
+            
             configMotionMagicPosition(ElevatorConstants.s);
             configGravityType(ElevatorConstants.gravityType);
             
@@ -54,7 +59,7 @@ public class Elevator extends CTREMechanism {
     private TalonFX leader;
     private TalonFX follower;
 
-    private ElevatorConfig config = new ElevatorConfig();
+    // private ElevatorConfig config = new ElevatorConfig();
     private CANcoder elevatorCANcoder;
     private CANrange canRange;
     private boolean attached;
@@ -80,16 +85,16 @@ public class Elevator extends CTREMechanism {
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;
-        config.talonConfig.MotorOutput.withPeakForwardDutyCycle(ElevatorConstants.maxForwardOutput);
-        config.talonConfig.MotorOutput.withPeakReverseDutyCycle(ElevatorConstants.maxReverseOutput  );
-
-        leader.getConfigurator().apply(config.talonConfig);
-        follower.getConfigurator().apply(config.talonConfig);
+        config.talonConfig.Slot0.kS = ElevatorConstants.s;
+        //config.talonConfig.MotorOutput.withPeakForwardDutyCycle(ElevatorConstants.maxForwardOutput);
+        //config.talonConfig.MotorOutput.withPeakReverseDutyCycle(ElevatorConstants.maxReverseOutput);
+        config.applyTalonConfig(leader);
+        //leader.getConfigurator().apply(config.talonConfig);
+       // follower.getConfigurator().apply(config.talonConfig);
         follower.setControl(new Follower(ElevatorConstants.leftId , ElevatorConstants.follwerInvert));
 
         this.position = ElevatorPositions.STOW;
         this.states = ElevatorStates.STOWED;
-        setZero();
         if (attached) {
             Logger.recordOutput("Elevator/Mode", getPosition());
             Logger.recordOutput("Elevator/States", getStates());
@@ -112,7 +117,11 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Leader Position", leader.getRotorPosition().getValueAsDouble());
             SmartDashboard.putNumber("Follower Position", follower.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Voltage", leader.getMotorVoltage().getValueAsDouble());
+            SmartDashboard.putNumber("Elevator Refrence", leader.getClosedLoopReference().getValueAsDouble());
+
             SmartDashboard.putNumber("Elevator Output", leader.getClosedLoopOutput().getValueAsDouble());
+            SmartDashboard.putNumber("Elevator Leader Output", leader.getBridgeOutput().getValueAsDouble());
+
             SmartDashboard.putNumber("Elevator Acceleration", leader.getAcceleration().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Velocity", leader.getVelocity().getValueAsDouble());
 
@@ -164,7 +173,8 @@ public class Elevator extends CTREMechanism {
 
     public void runEnum(ElevatorPositions position) {
         this.position = position;
-        setMMPosition(position.rotation);
+        leader.setControl(new PositionDutyCycle(position.rotation));
+        //setMMPosition(position.rotation);
     }
 
     public void runEnumMM(ElevatorPositions position) {
@@ -176,6 +186,13 @@ public class Elevator extends CTREMechanism {
         this.position = position;
         setMMPositionFOC(position.rotation);
     }
+
+    public void riseAboveFriction() {
+        this.position = ElevatorPositions.STOW;
+        setMMPositionFOC(position.rotation);
+    }
+
+   
 
     protected void stop() {
         if (attached) {
@@ -214,7 +231,8 @@ public class Elevator extends CTREMechanism {
 
     @Override
     protected Config setConfig() {
-        return new ElevatorConfig();
+        this.config = new ElevatorConfig();
+        return config;
     }
 
 

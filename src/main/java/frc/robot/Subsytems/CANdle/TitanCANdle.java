@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.CANdleConstants;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 
@@ -26,7 +27,8 @@ public class TitanCANdle extends SubsystemBase {
     // Code heavily inspired from
     // https://github.com/FRC2539/javabot-2023/blob/main/src/main/java/frc/robot/subsystems/LightsSubsystem.java
 
-    private static CANdle candle;
+    private static CANdle candle = new CANdle(CANdleConstants.id, Constants.canbus);
+
     
         enum TitanPrideColor {
             CYAN, BLUE, PURPLE
@@ -36,7 +38,7 @@ public class TitanCANdle extends SubsystemBase {
     
         private boolean hasRunThisSecond = false;
     
-        public TitanCANdle(CANdle candle) {
+        public TitanCANdle() {
             CANdleConfiguration config = new CANdleConfiguration();
             config.statusLedOffWhenActive = true;
             config.disableWhenLOS = false;
