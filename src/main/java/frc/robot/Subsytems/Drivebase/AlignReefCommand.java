@@ -16,24 +16,31 @@ public class AlignReefCommand extends SequentialCommandGroup {
     private AprilTagFieldLayout aprilTagFieldLayout = Systems.getApriltagLayout();
 //TODO ADD NULL CHECKING
     public AlignReefCommand(boolean rightTrue) {
-        addCommands(
-                drivebase.faceTargetCommand(aprilTagFieldLayout
+        
+        if (vision.OnlyIfNullChecker()) {
+        addCommands( 
+                 drivebase.faceTargetCommand(aprilTagFieldLayout
                         .getTagPose((int) vision.getBestLimelight().getClosestTagID()).get().getRotation()
                         .toRotation2d()),
                 drivebase.driveRobotCenteric(rightTrue ? VisionConstants.alignXSpeed : VisionConstants.alignXSpeed.times(-1
                 ))
                         .until(() -> vision.getPipeAlignDist(rightTrue)),
-                drivebase.driveRobotCenteric(VisionConstants.alignYSpeed).until(() -> vision.getPipeScoreDist()));
+                drivebase.driveRobotCenteric(VisionConstants.alignYSpeed).until(() -> vision.getPipeScoreDist())); 
+        }
+        else {
+        addCommands();
+        }
+                
 
-        alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_RED));
+        // alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_RED));
 
-        andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
+        // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        onlyIf(() -> (Field.isRedTag(vision.getBestLimelight().getClosestTagID()) == Field.isRed())
-                && Field.isReef(vision.getBestLimelight().getClosestTagID()));
 
         addRequirements(drivebase, vision, candle);
     }
+
+    
 
     public AlignReefCommand() {
         if (vision.OnlyIfNullChecker()) {
@@ -46,12 +53,14 @@ public class AlignReefCommand extends SequentialCommandGroup {
                 
                 // drivebase.driveRobotCenteric(VisionConstants.alignYSpeed).until(() -> vision.getCenterScoreDistance()));
         }
+        else {
+        addCommands();
+        }
         
-        alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_BLUE));
+        // alongWith(candle.changeAnimationCommand(AnimationTypes.BLINK_BLUE));
 
-        andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
+        // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        onlyIf(() -> vision.OnlyIfNullChecker());
 
         addRequirements(drivebase, vision, candle);
     }
