@@ -1,5 +1,6 @@
 package frc.robot.Subsytems.Elevator;
 
+import static edu.wpi.first.units.Units.Revolutions;
 import static edu.wpi.first.units.Units.Rotation;
 
 import org.littletonrobotics.junction.Logger;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -35,15 +37,14 @@ public class Elevator extends CTREMechanism {
                     ElevatorConstants.d);
             configNeutralBrakeMode(ElevatorConstants.breakType);
             configGearRatio(ElevatorConstants.gearRatio);
-            
+
             configMotionMagicPosition(ElevatorConstants.s);
             configGravityType(ElevatorConstants.gravityType);
-            
-            
+
             configSupplyCurrentLimit(ElevatorConstants.supplyLimit, ElevatorConstants.useSupplyLimit);
             configStatorCurrentLimit(ElevatorConstants.stallLimit, ElevatorConstants.useStallLimit);
-            //configReverseTorqueCurrentLimit(ElevatorConstants.reverseTorqueLimit);
-            //configForwardTorqueCurrentLimit(ElevatorConstants.forwardTorqueLimit);
+            // configReverseTorqueCurrentLimit(ElevatorConstants.reverseTorqueLimit);
+            // configForwardTorqueCurrentLimit(ElevatorConstants.forwardTorqueLimit);
 
             configFeedbackSensorSource(ElevatorConstants.feedbackSensor, ElevatorConstants.rotationOffset.in(Rotation));
             configReverseSoftLimit(ElevatorConstants.maxReverseRotation.in(Rotation),
@@ -53,7 +54,7 @@ public class Elevator extends CTREMechanism {
 
     }
 
-    private TalonFX leader;
+    public TalonFX leader;
     private TalonFX follower;
 
     // private ElevatorConfig config = new ElevatorConfig();
@@ -77,18 +78,17 @@ public class Elevator extends CTREMechanism {
      */
     public Elevator(TalonFX leader, TalonFX follower, boolean attached) {
         super(leader, attached);
-           
 
         this.leader = leader;
         this.follower = follower;
         this.attached = attached;
         config.talonConfig.Slot0.kS = ElevatorConstants.s;
-        //config.talonConfig.MotorOutput.withPeakForwardDutyCycle(ElevatorConstants.maxForwardOutput);
-        //config.talonConfig.MotorOutput.withPeakReverseDutyCycle(ElevatorConstants.maxReverseOutput);
+        // config.talonConfig.MotorOutput.withPeakForwardDutyCycle(ElevatorConstants.maxForwardOutput);
+        // config.talonConfig.MotorOutput.withPeakReverseDutyCycle(ElevatorConstants.maxReverseOutput);
         config.applyTalonConfig(leader);
-        //leader.getConfigurator().apply(config.talonConfig);
-       // follower.getConfigurator().apply(config.talonConfig);
-        follower.setControl(new Follower(ElevatorConstants.leftId , ElevatorConstants.follwerInvert));
+        // leader.getConfigurator().apply(config.talonConfig);
+        // follower.getConfigurator().apply(config.talonConfig);
+        follower.setControl(new Follower(ElevatorConstants.leftId, ElevatorConstants.follwerInvert));
 
         this.position = ElevatorPositions.STOW;
         this.states = ElevatorStates.STOWED;
@@ -103,7 +103,6 @@ public class Elevator extends CTREMechanism {
             Logger.recordOutput("Elevator/Velocity", leader.getVelocity().getValueAsDouble());
         }
 
-
     }
 
     public void periodic() {
@@ -115,7 +114,8 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Follower Position", follower.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Voltage", leader.getMotorVoltage().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Refrence", leader.getClosedLoopReference().getValueAsDouble());
-            SmartDashboard.putBoolean("Elevator Goal", getPositionSetpointGoal(getPosition().rotation, ElevatorConstants.error));
+            SmartDashboard.putBoolean("Elevator Goal",
+                    getPositionSetpointGoal(getPosition().rotation, ElevatorConstants.error));
             SmartDashboard.putNumber("Elevator Output", leader.getClosedLoopOutput().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Leader Output", leader.getBridgeOutput().getValueAsDouble());
 
@@ -164,14 +164,14 @@ public class Elevator extends CTREMechanism {
         return false;
     }
 
-    public void stupid(){
-        
+    public void stupid() {
+
     }
 
     public void runEnum(ElevatorPositions position) {
         this.position = position;
         leader.setControl(new PositionDutyCycle(position.rotation));
-        //setMMPosition(position.rotation);
+        // setMMPosition(position.rotation);
     }
 
     public void runEnumMM(ElevatorPositions position) {
@@ -189,7 +189,9 @@ public class Elevator extends CTREMechanism {
         setMMPositionFOC(position.rotation);
     }
 
-   
+    public Command zeroElevatorCommand() {
+        return new InstantCommand(() -> setMotorPosition(Revolutions.of(0)), this);
+    }
 
     protected void stop() {
         if (attached) {
@@ -199,11 +201,7 @@ public class Elevator extends CTREMechanism {
     }
 
     protected void setZero() {
-        resetPosition();
-    }
-
-    protected void setZeroIntellegent() {
-
+        setMotorPosition(Revolutions.of(0));
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {
@@ -236,6 +234,5 @@ public class Elevator extends CTREMechanism {
         this.config = new ElevatorConfig();
         return config;
     }
-
 
 }

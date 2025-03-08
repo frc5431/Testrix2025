@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
 import frc.robot.Commands.Chained.EjectCoralCommand;
@@ -30,6 +32,7 @@ import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
 import frc.robot.Commands.Chained.SmartStowCommand;
+import frc.robot.Commands.Chained.ZeroCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -48,6 +51,7 @@ import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
+import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -100,26 +104,27 @@ public class RobotContainer {
 			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
 
 	// LED Triggers
-/*// Driver Controls
-	// private Trigger alignRightReef = driver.rightBumper();
-	// private Trigger alignLeftReef = driver.leftBumper();
-	// private Trigger alignCenterReef = driver.a();
+	/*
+	 * // Driver Controls
+	 * // private Trigger alignRightReef = driver.rightBumper();
+	 * // private Trigger alignLeftReef = driver.leftBumper();
+	 * // private Trigger alignCenterReef = driver.a();
+	 * 
+	 * // more Game Status
+	 * // private @Getter Trigger reefAlignment = new Trigger(
+	 * // () -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());
+	 */
 
-	// more Game Status
-	// private @Getter Trigger reefAlignment = new Trigger(
-	// () -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());  */
-	
 	private Trigger zeroDrivebase = driver.y();
 	private Trigger driverStow = driver.x();
-
-	
+	private Trigger killElevator = driver.b();
 
 	// Operator Controls
 
 	// Preset Controls
 	private Trigger intakePreset = operator.rightBumper();
 	private Trigger stowIntake = operator.leftBumper();
-	private Trigger smartStow = operator.downDpad();
+	private Trigger feedPreset = operator.downDpad();
 	private Trigger scoreL2Preset = operator.rightDpad();
 	private Trigger scoreL3Preset = operator.leftDpad();
 	private Trigger scoreL4Preset = operator.upDpad();
@@ -127,10 +132,13 @@ public class RobotContainer {
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
 	private Trigger reverseFeed = operator.b();
+	private Trigger stowManip = operator.leftStick();
+	private Trigger zeroElevator = operator.rightStick();
+
 	private Trigger smartIntakeCoral = operator.leftTrigger(.5);
 	private Trigger scoreCoral = operator.rightTrigger(.5);
 	private Trigger manipFeed = operator.back();
-	private Trigger killIntake = operator.start();
+	private Trigger stowPreset = operator.start();
 
 	public RobotContainer() {
 		// Path Planner reccomends that construction of their namedcommands happens
@@ -163,9 +171,19 @@ public class RobotContainer {
 
 	}
 
+	/**
+	 * Sets a Deazone
+	 * Make a linear function with deadson at 0 and 1 at 1. 
+	 * Then need to have this work on both positive and negative.
+	 * @param num
+	 * @return
+	 */
 	public double deadzone(double num) {
 		if (Math.abs(num) > ControllerConstants.deadzone) {
-			return num;
+			
+			double w = 1.0 / ( 1.0 - ControllerConstants.deadzone);
+			double b = w * ControllerConstants.deadzone;
+			return (w * Math.abs(num) - b) * (num / Math.abs(num));
 		} else {
 			return 0;
 		}
@@ -198,6 +216,8 @@ public class RobotContainer {
 						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
 						.withName("Driver Smart Stow"));
 
+		killElevator.onTrue(manipJoint.killManipJoingCommand().alongWith(elevator.killElevatorCommand()));
+
 		zeroDrivebase.onTrue(new InstantCommand(() -> drivebase.resetGyro())
 				.withName("Zero Drivebase"));
 
@@ -206,6 +226,8 @@ public class RobotContainer {
 	private void configureOperatorControls() {
 
 		// Intake Controls
+		stowManip.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.STOW));
+		zeroElevator.onTrue(new ZeroCommand(elevator).withName("ZERO ELEVATOR MAY WANT KILL"));
 
 		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)
 				.withName("Stow Intake"));
@@ -214,32 +236,31 @@ public class RobotContainer {
 				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
 
 		smartIntakeCoral.whileTrue(
-				new ParallelCommandGroup(
-						intake.runIntakeCommand(IntakeModes.INTAKE),
+				intake.runIntakeCommand(IntakeModes.INTAKE).alongWith(
 						feeder.runFeederCommand(FeederModes.FEED))
-								.withName("Smart Intake System"));
+						.withName("Smart Intake System"));
 
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE)
 				.withName("Score Coral"));
 
 		manipFeed.whileTrue(
-				manipulator.runManipulatorCommand(ManipulatorModes.SCORE)
+				manipulator.runManipulatorCommand(ManipulatorModes.SLOWFEED)
 						.alongWith(feeder.runFeederCommand(FeederModes.SLOW))
 						.withName("Manipulator Feed Command"));
 
-		killIntake.onTrue(intakePivot.killIntakeCommand());
+		stowPreset.onTrue(new ElevatorStowCommand(elevator, manipJoint)
+				.withName("Smart Stow"));
 
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator)
 				.withName("Coral Outake"));
 
 		// Elevator Controls
 		intakePreset.onTrue(
-				new ElevatorFeedCommand(elevator, manipJoint)
-						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
+				intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY)
 						.withName("Pickup Preset"));
 
-		smartStow.onTrue(
-				new SmartStowCommand(elevator, manipJoint, manipulator)
+		feedPreset.onTrue(
+				new ElevatorFeedCommand(elevator, manipJoint)
 						.withName("Smart Stow"));
 
 		scoreL2Preset.onTrue(
@@ -300,6 +321,11 @@ public class RobotContainer {
 				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint));
 		NamedCommands.registerCommand("StowPreset",
 				new ElevatorStowCommand(elevator, manipJoint));
+
+		NamedCommands.registerCommand("ScoreL4",
+				new ParallelCommandGroup(manipulator.runManipulatorCommand(ManipulatorModes.SCORE),
+						new WaitCommand(2).andThen(manipJoint.runManipJointCommand(ManipJointPositions.STOW))));
+
 		NamedCommands.registerCommand("IntakeCoral",
 				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("AutoIntakeCoral",

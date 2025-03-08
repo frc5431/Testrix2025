@@ -6,6 +6,7 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -15,7 +16,8 @@ public class Robot extends LoggedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    CameraServer.startAutomaticCapture(1);
+    CameraServer.startAutomaticCapture();
+
     // Logger.recordMetadata("Titan2025", "5431Robot");
     // AutoLogOutputManager.addPackage("frc.robot.Subsystems");
 
@@ -62,6 +64,7 @@ public class Robot extends LoggedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
+      DriverStation.reportError("Auton Null", true);
       m_autonomousCommand.schedule();
     }
   }

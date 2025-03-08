@@ -17,13 +17,17 @@ public class ElevatorFeedCommand extends SequentialCommandGroup {
 	 */
 	public ElevatorFeedCommand(Elevator elevator, ManipJoint manipJoint) {
 		addCommands(
-				elevator.runElevatorCommand(ElevatorPositions.CORALL4),
-				new WaitUntilCommand(() -> elevator.getPositionSetpointGoal(ElevatorConstants.coralL4,
+				elevator.runElevatorCommand(ElevatorPositions.SAFESWING),
+				new WaitUntilCommand(() -> elevator.getPositionSetpointGoal(ElevatorConstants.safeSwing,
 						ElevatorConstants.error)),
 				// manip runs to stow position only if the elevator is at the setpoint goal
-				manipJoint.runManipJointCommand(ManipJointPositions.FEED),
-				new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.feed,
+				manipJoint.runManipJointCommand(ManipJointPositions.PREEFEED),
+				new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.prefeed,
 						ManipJointConstants.error)),
+
+						manipJoint.runManipJointCommand(ManipJointPositions.FEED),
+						new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.feed,
+								ManipJointConstants.error)),
 				// since its sequential, this lowers once the manip is
 				// when prev commands finish (instantaly since its RunCommands)
 				// sets elevator to stow angle only if the manipulator is near the stow angle

@@ -13,19 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AlignLeftReef"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4Preset"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreCoral"
+            "name": "ScoreL4"
           }
         }
       ]

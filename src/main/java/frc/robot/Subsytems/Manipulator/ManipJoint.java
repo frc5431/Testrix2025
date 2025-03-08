@@ -68,7 +68,7 @@ public class ManipJoint extends REVMechanism {
 	public void periodic() {
 		SmartDashboard.putString("ManipJoint Mode", this.getMode().toString());
 		SmartDashboard.putNumber("ManipJoint Setpoint", getMode().position.in(Rotations));
-		SmartDashboard.putBoolean("ManipJoint Goal", getAngleSetpointGoal(getMode().position, ManipJointConstants.error));
+		SmartDashboard.putBoolean("ManipJoint Goal", getPositionSetpointGoal(getMode().position, ManipJointConstants.error));
 		SmartDashboard.putString("ManipJoint State", getState().toString());
 		SmartDashboard.putNumber("ManipJoint Output", this.getMotorOutput());
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
@@ -84,6 +84,7 @@ public class ManipJoint extends REVMechanism {
 	 * @return true if the motor's angle position is within the error of the target
 	 *         angle position
 	 */
+	@Override
 	public boolean getPositionSetpointGoal(Angle target, Angle error) {
 		if (attached) {
 			if (Calc.approxEquals(motor.getEncoder().getPosition(), target.in(Rotations),

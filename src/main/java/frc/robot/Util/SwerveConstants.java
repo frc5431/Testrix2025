@@ -176,10 +176,13 @@ public class SwerveConstants {
 
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
-    public static final ModuleConfig moduleConfig = new ModuleConfig(1.0, kSpeedAt12Volts.baseUnitMagnitude(),
-            kDriveFrictionVoltage.baseUnitMagnitude(), DCMotor.getFalcon500(4), 80, 0);
+    public static final ModuleConfig moduleConfig = new ModuleConfig(2.0, kSpeedAt12Volts.baseUnitMagnitude(),
+            kDriveFrictionVoltage.baseUnitMagnitude(), DCMotor.getKrakenX60Foc(4  ), 80, 2);
     public static final RobotConfig robotConfig = new RobotConfig(125.0, 0.001, moduleConfig,
             DRIVETRAIN_TRACKWIDTH_METERS);
+
+
+
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft = ConstantCreator
             .createModuleConstants(
