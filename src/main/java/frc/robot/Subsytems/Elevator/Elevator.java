@@ -115,7 +115,7 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Follower Position", follower.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Voltage", leader.getMotorVoltage().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Refrence", leader.getClosedLoopReference().getValueAsDouble());
-            SmartDashboard.putBoolean("Elevator Close", getPositionSetpointGoal(getPosition().rotation, ElevatorConstants.error));
+            SmartDashboard.putBoolean("Elevator Goal", getPositionSetpointGoal(getPosition().rotation, ElevatorConstants.error));
             SmartDashboard.putNumber("Elevator Output", leader.getClosedLoopOutput().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Leader Output", leader.getBridgeOutput().getValueAsDouble());
 
@@ -219,6 +219,11 @@ public class Elevator extends CTREMechanism {
     public Command runElevatorCommandFOC(ElevatorPositions position) {
         return new InstantCommand(() -> runEnumFOC(position), this)
                 .withName("Elevator.runEnumFOC");
+    }
+
+    public Command killElevatorCommand() {
+        return new RunCommand(() -> stop(), this)
+                .withName("KILL ELEVATOR");
     }
 
     public Command stopElevatorCommand(ElevatorPositions position) {

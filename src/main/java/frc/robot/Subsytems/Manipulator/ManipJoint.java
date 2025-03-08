@@ -10,7 +10,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
 import frc.robot.Util.Constants.ManipJointConstants;
@@ -69,6 +68,7 @@ public class ManipJoint extends REVMechanism {
 	public void periodic() {
 		SmartDashboard.putString("ManipJoint Mode", this.getMode().toString());
 		SmartDashboard.putNumber("ManipJoint Setpoint", getMode().position.in(Rotations));
+		SmartDashboard.putBoolean("ManipJoint Goal", getAngleSetpointGoal(getMode().position, ManipJointConstants.error));
 		SmartDashboard.putString("ManipJoint State", getState().toString());
 		SmartDashboard.putNumber("ManipJoint Output", this.getMotorOutput());
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
@@ -124,9 +124,9 @@ public class ManipJoint extends REVMechanism {
 				.withName("ManipJoint.runEnumMM");
 	}
 
-	public Command stopManipJointCommand() {
+	public Command killManipJoingCommand() {
 		return new InstantCommand(() -> this.stop(), this)
-				.withName("ManipJoint.STOP");
+				.withName("KILL MANIPJOINT COMMAND");
 	}
 
 	public Command manipJointResetPositionCommand() {

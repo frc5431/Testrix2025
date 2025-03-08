@@ -15,7 +15,7 @@ public class SmartStowCommand extends SequentialCommandGroup {
      */
     public SmartStowCommand(Elevator elevator, ManipJoint manipJoint, Manipulator manipulator) {
 
-        addCommands(manipulator.getBeambreakStatus() ? new ElevatorStowCommand(elevator, manipJoint)
+        addCommands((manipulator.getBeambreakStatus()) ? new ElevatorStowCommand(elevator, manipJoint)
                 : new ElevatorFeedCommand(elevator, manipJoint));
 
         addRequirements(elevator, manipJoint, manipulator);

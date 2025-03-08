@@ -73,20 +73,6 @@ public class Systems {
 
     public Systems() {
 
-        // I have ill wishes for the person that made apriltagfieldlayout code, count
-        // your days and your blessings for i pray them to be few
-        // try {
-        //     apriltagLayout = new AprilTagFieldLayout();
-        //     if (Field.isRed()) {
-        //         apriltagLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-        //     } else {
-        //         apriltagLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        //     }
-
-        // } catch (Exception e) {
-        //     System.out.println("Failed to load April Tag Map");
-        // }
-
         if (IntakeConstants.attached) {
             intakeMotor = new SparkMax(IntakeConstants.id, brushless);
             intake = new Intake(intakeMotor, IntakeConstants.attached);
@@ -126,9 +112,6 @@ public class Systems {
         if (CANdleConstants.attached) {
             titanCANdle = new TitanCANdle();
         }
-
-        // Limelight limelight = new
-        //vision = new Vision();
 
         
     }

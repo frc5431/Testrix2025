@@ -285,7 +285,7 @@ public final class Constants {
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
         public static final Angle maxReverseRotation = Units.Rotation.of(-1);
-        public static final Angle maxFowardRotation = Units.Rotation.of(30);
+        public static final Angle maxFowardRotation = Units.Rotation.of(40);
         public static final Angle rotationOffset = Units.Rotation.of(0);
 
         public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
@@ -309,7 +309,7 @@ public final class Constants {
         public static final Angle algaeL2 = Units.Rotation.of(3);
         public static final Angle coralL3 = Units.Rotation.of(3);
         public static final Angle algaeL3 = Units.Rotation.of(3);
-        public static final Angle coralL4 = Units.Rotation.of(20);
+        public static final Angle coralL4 = Units.Rotation.of(25);
         public static final Angle coralStation = Units.Rotation.of(3);
         public static final Angle net = Units.Rotation.of(3);
 
@@ -488,7 +488,7 @@ public final class Constants {
         public static final Angle scoreL2 = Units.Rotations.of(-2);
         public static final Angle scoreL3 = Units.Rotations.of(-1.5);
         public static final Angle scoreL4 = Units.Rotations.of(-0.8);
-        public static final Angle error = Units.Rotations.of(2);
+        public static final Angle error = Units.Rotations.of(0.5);
 
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final AngularVelocity mm_maxAccel = Units.RPM.of(20);
@@ -544,7 +544,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum FeederModes {
-            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.7);
+            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.7), SLOW(feedSpeed, 0.3);
 
             public AngularVelocity speed;
             public double output;

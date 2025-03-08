@@ -6,8 +6,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -16,6 +14,7 @@ import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakePivotConstants;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotStates;
+import frc.robot.Util.Constants.ManipJointConstants;
 import frc.team5431.titan.core.subsystem.REVMechanism;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,6 +69,7 @@ public class IntakePivot extends REVMechanism {
 	public void periodic() {
 		SmartDashboard.putString("Intake Pivot Mode", getMode().toString());
 		SmartDashboard.putString("Intake Pivot State", getState().toString());
+		SmartDashboard.putBoolean("ManipJoint Goal", getAngleSetpointGoal(getMode().angle, ManipJointConstants.error));
 		SmartDashboard.putNumber("Intake Pivot Setpoint", getMode().angle.in(Rotation));
 		SmartDashboard.putNumber("Intake Pivot Output", getMotorOutput());
 		SmartDashboard.putNumber("Intake Pivot Position", absoluteEncoder.getPosition());
@@ -109,9 +109,9 @@ public class IntakePivot extends REVMechanism {
 				.withName("IntakePivot.runEnumMM");
 	}
 
-	public Command stopIntakePivotCommand() {
-		return new InstantCommand(() -> this.stop(), this)
-				.withName("IntakePivot.STOP");
+	public Command killIntakeCommand() {
+		return new RunCommand(() -> this.stop(), this)
+				.withName("KILL INTAKE PIVOT");
 	}
 
 	public Command IntakePivotResetPositionCommand() {

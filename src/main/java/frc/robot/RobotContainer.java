@@ -72,7 +72,6 @@ public class RobotContainer {
 
 	private TitanController driver = Systems.getDriver();
 	private TitanController operator = Systems.getOperator();
-	private TitanBitDoController operator8BitDo = Systems.getOperator8BitDo();
 
 	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
 
@@ -101,50 +100,48 @@ public class RobotContainer {
 			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
 
 	// LED Triggers
+/*// Driver Controls
+	// private Trigger alignRightReef = driver.rightBumper();
+	// private Trigger alignLeftReef = driver.leftBumper();
+	// private Trigger alignCenterReef = driver.a();
 
-	// Driver Controls
-	private Trigger alignRightReef = driver.rightBumper();
-	private Trigger alignLeftReef = driver.leftBumper();
-	private Trigger alignCenterReef = driver.a();
+	// more Game Status
+	// private @Getter Trigger reefAlignment = new Trigger(
+	// () -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());  */
+	
 	private Trigger zeroDrivebase = driver.y();
 	private Trigger driverStow = driver.x();
 
-	// more Game Status
-	private @Getter Trigger reefAlignment = new Trigger(
-			() -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());
+	
 
 	// Operator Controls
 
 	// Preset Controls
-	private Trigger intakePreset = ControllerConstants.using8BitDo ? operator8BitDo.getRBumper()
-			: operator.rightBumper();
-	private Trigger stowIntake = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
-			: operator.leftBumper();
-	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.downDpad();
-	// private Trigger scoreL1Preset = ControllerConstants.using8BitDo ?
-	// operator8BitDo.getPovDown() : operator.downDpad();
-	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown()
-			: operator.rightDpad();
-	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
-	private Trigger scoreL4Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovUp() : operator.upDpad();
+	private Trigger intakePreset = operator.rightBumper();
+	private Trigger stowIntake = operator.leftBumper();
+	private Trigger smartStow = operator.downDpad();
+	private Trigger scoreL2Preset = operator.rightDpad();
+	private Trigger scoreL3Preset = operator.leftDpad();
+	private Trigger scoreL4Preset = operator.upDpad();
 
 	// Intake Controls
-	private Trigger intakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getA() : operator.a();
-	private Trigger smartIntakeCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY()
-			: operator.leftTrigger(.5);
-	private Trigger scoreCoral = ControllerConstants.using8BitDo ? operator8BitDo.getY() : operator.rightTrigger(.5);
-	private Trigger reverseFeed = ControllerConstants.using8BitDo ? operator8BitDo.getRightDPadDown()
-			: operator.b();
+	private Trigger intakeCoral = operator.a();
+	private Trigger reverseFeed = operator.b();
+	private Trigger smartIntakeCoral = operator.leftTrigger(.5);
+	private Trigger scoreCoral = operator.rightTrigger(.5);
+	private Trigger manipFeed = operator.back();
+	private Trigger killIntake = operator.start();
 
 	public RobotContainer() {
 		// Path Planner reccomends that construction of their namedcommands happens
 		// before anything else in robot container
 		setCommandMappings();
-
-		configureBindings();
+		configureOperatorControls();
+		configureDriverControls();
 
 		autoChooser = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto Chooser", autoChooser);
+
 	}
 
 	public void subsystemPeriodic() {
@@ -180,11 +177,14 @@ public class RobotContainer {
 				// Drivetrain will execute this command periodically
 				drivebase.applyRequest(
 						() -> driverControl
-								.withVelocityX(deadzone(-driver.getLeftY()) * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-								.withVelocityY(deadzone(-driver.getLeftX()) * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+								.withVelocityX(deadzone(-driver.getLeftY())
+										* SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+								.withVelocityY(deadzone(-driver.getLeftX())
+										* SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
 								.withRotationalRate(
-										deadzone(-driver.getRightX()))));// *
-																// DrivebaseConstants.MaxAngularRate.in(RadiansPerSecond))));
+										deadzone(-driver.getRightX()
+												* DrivebaseConstants.MaxAngularRate.in(RadiansPerSecond))))
+						.withName("Swerve Default Command"));
 
 		// Align Reef Commands
 		// alignLeftReef.onTrue(
@@ -195,21 +195,48 @@ public class RobotContainer {
 		// new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
-						.withName("Driver Smart Stow").alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY)));
-		zeroDrivebase.onTrue(new InstantCommand(() -> drivebase.resetGyro()).withName("Zero Drivebase"));
+						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
+						.withName("Driver Smart Stow"));
+
+		zeroDrivebase.onTrue(new InstantCommand(() -> drivebase.resetGyro())
+				.withName("Zero Drivebase"));
 
 	}
 
 	private void configureOperatorControls() {
 
+		// Intake Controls
+
+		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)
+				.withName("Stow Intake"));
+
+		intakeCoral.onTrue(
+				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
+
+		smartIntakeCoral.whileTrue(
+				new ParallelCommandGroup(
+						intake.runIntakeCommand(IntakeModes.INTAKE),
+						feeder.runFeederCommand(FeederModes.FEED))
+								.withName("Smart Intake System"));
+
+		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE)
+				.withName("Score Coral"));
+
+		manipFeed.whileTrue(
+				manipulator.runManipulatorCommand(ManipulatorModes.SCORE)
+						.alongWith(feeder.runFeederCommand(FeederModes.SLOW))
+						.withName("Manipulator Feed Command"));
+
+		killIntake.onTrue(intakePivot.killIntakeCommand());
+
+		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator)
+				.withName("Coral Outake"));
+
 		// Elevator Controls
-
-		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW).withName("Stow Intake"));
-
 		intakePreset.onTrue(
-				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator,
-						manipJoint)
-								.withName("Intake Coral Preset"));
+				new ElevatorFeedCommand(elevator, manipJoint)
+						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
+						.withName("Pickup Preset"));
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
@@ -227,24 +254,6 @@ public class RobotContainer {
 				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint)
 						.withName("Elevator L4 Preset"));
 
-		// Intake Controls
-		// intakeCoral.whileTrue(new
-		// ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
-		// feeder.runFeederCommand(FeederModes.FEED),
-		// (manipulator.runManipulatorCommand(ManipulatorModes.FEED))).withName("Run
-		// Intake System"));
-		intakeCoral.onTrue(
-				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
-		smartIntakeCoral.whileTrue(new ParallelCommandGroup(intake.runIntakeCommand(IntakeModes.INTAKE),
-				feeder.runFeederCommand(FeederModes.FEED)).withName("Smart Intake System"));
-		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE).withName("Score Coral"));
-		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator).withName("Coral Outake"));
-
-	}
-
-	public void configureBindings() {
-		configureOperatorControls();
-		configureDriverControls();
 	}
 
 	public void onInitialize() {
@@ -273,8 +282,6 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		// drivebase.addVisionMeasurement(vision.getBestLimelight().getRawPose3d().toPose2d(),
-		// );
 		return autoChooser.getSelected();
 	}
 
