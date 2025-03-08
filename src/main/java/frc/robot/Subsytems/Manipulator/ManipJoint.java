@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointStates;
@@ -85,7 +86,7 @@ public class ManipJoint extends REVMechanism {
 	 */
 	public boolean getPositionSetpointGoal(Angle target, Angle error) {
 		if (attached) {
-			if (Calc.approxEquals(motor.getAlternateEncoder().getPosition(), target.in(Rotations),
+			if (Calc.approxEquals(motor.getEncoder().getPosition(), target.in(Rotations),
 					error.in(Rotations))) {
 				return true;
 			}
@@ -114,22 +115,22 @@ public class ManipJoint extends REVMechanism {
 	}
 
 	public Command runManipJointCommand(ManipJointPositions ManipJointmode) {
-		return new RunCommand(() -> this.runEnum(ManipJointmode), this)
+		return new InstantCommand(() -> this.runEnum(ManipJointmode), this)
 				.withName("ManipJoint.runEnum");
 	}
 
 	public Command runManipJointCommandMM(ManipJointPositions ManipJointmode) {
-		return new RunCommand(() -> this.runEnumMM(ManipJointmode), this)
+		return new InstantCommand(() -> this.runEnumMM(ManipJointmode), this)
 				.withName("ManipJoint.runEnumMM");
 	}
 
 	public Command stopManipJointCommand() {
-		return new RunCommand(() -> this.stop(), this)
+		return new InstantCommand(() -> this.stop(), this)
 				.withName("ManipJoint.STOP");
 	}
 
 	public Command manipJointResetPositionCommand() {
-		return new RunCommand(() -> this.setZero(), this)
+		return new InstantCommand(() -> this.setZero(), this)
 				.withName("ManipJoint.setZero");
 	}
 

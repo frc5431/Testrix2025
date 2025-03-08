@@ -9,6 +9,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -98,7 +99,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Yaw should be 0 when intake faces red alliance and manip faces blue
+        SmartDashboard.putBoolean("Reef Tag SCan", this.OnlyIfNullChecker());        // Yaw should be 0 when intake faces red alliance and manip faces blue
         // Yaw should be 180 when intake faces blue alliance and manip faces red
         double yaw = drivebase.getOperatorForwardDirection().getMeasure().plus(Degrees.of(180)).in(Degrees);
         for (VisionHelper visionHelper : poseLimelights) {

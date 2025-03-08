@@ -17,9 +17,7 @@ public class AlignReefCommand extends SequentialCommandGroup {
 
         if (vision.OnlyIfNullChecker()) {
             addCommands(
-                    drivebase.faceTargetCommand(aprilTagFieldLayout
-                            .getTagPose((int) vision.getBestLimelight().getClosestTagID()).get().getRotation()
-                            .toRotation2d()),
+                    drivebase.faceTargetCommand(vision.getBestLimelight().getMegaPose2d().getRotation()),
                     drivebase
                             .driveRobotCenteric(
                                     rightTrue ? VisionConstants.alignXSpeed : VisionConstants.alignXSpeed.times(-1))
@@ -29,20 +27,17 @@ public class AlignReefCommand extends SequentialCommandGroup {
             addCommands();
         }
 
-       // alongWith(candle.changeAnimation(AnimationTypes.BLINK_RED));
+        // alongWith(candle.changeAnimation(AnimationTypes.BLINK_RED));
 
         // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        addRequirements(drivebase, vision);//, candle);
+        addRequirements(drivebase, vision);// , candle);
     }
 
     public AlignReefCommand() {
         if (vision.OnlyIfNullChecker()) {
             addCommands(
-
-                    drivebase.faceTargetCommand(aprilTagFieldLayout
-                            .getTagPose((int) vision.getBestLimelight().getClosestTagID()).get().getRotation()
-                            .toRotation2d()),
+                    drivebase.faceTargetCommand(vision.getBestLimelight().getMegaPose2d().getRotation()),
                     drivebase.driveRobotCenteric(
                             vision.leftOfTag() ? VisionConstants.alignXSpeed : VisionConstants.alignXSpeed.times(-1))
                             .until(() -> vision.isCentered()));
@@ -57,6 +52,6 @@ public class AlignReefCommand extends SequentialCommandGroup {
 
         // andThen(candle.changeAnimationCommand(AnimationTypes.FLASHING_GREEN).withTimeout(10));
 
-        addRequirements(drivebase, vision);//, candle);
+        addRequirements(drivebase, vision);// , candle);
     }
 }

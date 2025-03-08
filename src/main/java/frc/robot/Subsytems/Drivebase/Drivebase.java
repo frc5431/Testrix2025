@@ -185,7 +185,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public Command zeroGyro() {
-        return new RunCommand(() -> resetGyro(), this);
+        return new StartEndCommand(() -> resetGyro(), () -> resetGyro(),  this);
     }
 
     /**

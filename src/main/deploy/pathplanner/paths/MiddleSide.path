@@ -3,48 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.22858606557377,
-        "y": 7.237704918032787
+        "x": 7.2165983606557385,
+        "y": 6.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.505895802475989,
-        "y": 7.21067375268221
+        "x": 7.439873812134299,
+        "y": 6.31246365087016
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.969877049180327,
-        "y": 6.4345286885245905
+        "x": 5.933913934426228,
+        "y": 3.9051229508196723
       },
       "prevControl": {
-        "x": 6.391115304421802,
-        "y": 6.913199970838597
-      },
-      "nextControl": {
-        "x": 5.8047184123091755,
-        "y": 6.246851772877345
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.394467213114754,
-        "y": 5.091905737704917
-      },
-      "prevControl": {
-        "x": 5.642130741043421,
-        "y": 5.625043339481343
+        "x": 5.802309099213452,
+        "y": 3.6925666821550718
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MiddleRightPipeEnd"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.333284793053586
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

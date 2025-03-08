@@ -210,8 +210,8 @@ public final class Constants {
         public static final boolean attached = true;
         public static final int id = 24;
         public static final double gearRatio = 1 / 1;
-        public static final Current supplyLimit = Units.Amps.of(30);
-        public static final Current stallLimit = Units.Amps.of(40);
+        public static final Current supplyLimit = Units.Amps.of(20);
+        public static final Current stallLimit = Units.Amps.of(30);
         public static final IdleMode idleMode = IdleMode.kBrake;
         public static final boolean isInverted = false;
         public static final Angle offset = Units.Rotation.of(0);
@@ -285,7 +285,7 @@ public final class Constants {
         public static final boolean useFMaxRotation = true;
         public static final boolean useRMaxRotation = true;
         public static final Angle maxReverseRotation = Units.Rotation.of(-1);
-        public static final Angle maxFowardRotation = Units.Rotation.of(100);
+        public static final Angle maxFowardRotation = Units.Rotation.of(30);
         public static final Angle rotationOffset = Units.Rotation.of(0);
 
         public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
@@ -299,17 +299,17 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0.2;
 
-        public static final Angle safeSwing = Units.Rotation.of(3);
-        public static final Angle error = Units.Rotation.of(3);
+        public static final Angle safeSwing = Units.Rotation.of(25);
+        public static final Angle error = Units.Rotation.of(1);
         public static final Angle stow = Units.Rotation.of(8);
-        public static final Angle feed = Units.Rotation.of(3);
+        public static final Angle feed = Units.Rotation.of(19.5);
         public static final Angle algaeProcessor = Units.Rotation.of(3);
         public static final Angle coralL1 = Units.Rotation.of(3);
         public static final Angle coralL2 = Units.Rotation.of(15);
         public static final Angle algaeL2 = Units.Rotation.of(3);
         public static final Angle coralL3 = Units.Rotation.of(3);
         public static final Angle algaeL3 = Units.Rotation.of(3);
-        public static final Angle coralL4 = Units.Rotation.of(3);
+        public static final Angle coralL4 = Units.Rotation.of(20);
         public static final Angle coralStation = Units.Rotation.of(3);
         public static final Angle net = Units.Rotation.of(3);
 
@@ -319,7 +319,7 @@ public final class Constants {
 
         public enum ElevatorPositions {
             STOW(stow), FEED(feed), PROCESSOR(algaeProcessor), CORALL1(coralL1), CORALL2(coralL2), ALGAEL2(
-                    algaeL2), CORALL3(coralL3), ALGAEL3(algaeL3), CORALL4(coralL4), NET(net);
+                    algaeL2), CORALL3(coralL3), ALGAEL3(algaeL3), CORALL4(coralL4), NET(net), SAFESWING(safeSwing);
 
             public Angle rotation;
 
@@ -346,10 +346,8 @@ public final class Constants {
         public static final FeedbackSensor feedbackSensor = FeedbackSensor.kAbsoluteEncoder;
         public static final Current supplyCurrent = Units.Amp.of(40);
         public static final Current stallCurrent = Units.Amp.of(80);
-        //public static final double maxForwardOutput = 0.1;
-        //public static final double maxReverseOutput = -0.3;
-        public static final double maxForwardOutput = 0;
-        public static final double maxReverseOutput = -0;
+        public static final double maxForwardOutput = 0.1;
+        public static final double maxReverseOutput = -0.3;
 
         public static final Angle zeroOffset = Units.Rotation.of(0.32);
         public static final Angle softLimitReverseMax = Units.Rotation.of(0.39);
@@ -473,10 +471,10 @@ public final class Constants {
         // public static final double maxForwardOutput = 0;
         // public static final double maxReverseOutput = -0;
 
-        public static final double s = 0.04; //0.04 - 0.06 holds arm at stow position
+        public static final double s = 0.15; //0.04 - 0.06 holds arm at stow position
 
         public static final double p = 2;
-        public static final double i = 0.0;
+        public static final double i = 0.01;
         public static final double d = 0.4;
 
         public static final double maxIAccum = 0.2;
@@ -484,13 +482,13 @@ public final class Constants {
         // public static final ArmFeedforward jointFF = new
         // ArmFeedforward(kS.in(Units.Volt));
 
-        public static final Angle stow = Units.Rotations.of(-0.29);
-        public static final Angle feed = Units.Rotations.of(-0.29);
-        public static final Angle scoreL1 = Units.Rotations.of(-0.29);
+        public static final Angle stow = Units.Rotations.of(-0.8);
+        public static final Angle feed = Units.Rotations.of(-12.5);
+        public static final Angle scoreL1 = Units.Rotations.of(-0.8);
         public static final Angle scoreL2 = Units.Rotations.of(-2);
         public static final Angle scoreL3 = Units.Rotations.of(-1.5);
-        public static final Angle scoreL4 = Units.Rotations.of(-0.29);
-        public static final Angle error = Units.Rotations.of(0);
+        public static final Angle scoreL4 = Units.Rotations.of(-0.8);
+        public static final Angle error = Units.Rotations.of(2);
 
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
         public static final AngularVelocity mm_maxAccel = Units.RPM.of(20);

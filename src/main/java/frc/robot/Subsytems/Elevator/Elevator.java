@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.ElevatorConstants;
@@ -114,7 +115,7 @@ public class Elevator extends CTREMechanism {
             SmartDashboard.putNumber("Follower Position", follower.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Voltage", leader.getMotorVoltage().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Refrence", leader.getClosedLoopReference().getValueAsDouble());
-
+            SmartDashboard.putBoolean("Elevator Close", getPositionSetpointGoal(getPosition().rotation, ElevatorConstants.error));
             SmartDashboard.putNumber("Elevator Output", leader.getClosedLoopOutput().getValueAsDouble());
             SmartDashboard.putNumber("Elevator Leader Output", leader.getBridgeOutput().getValueAsDouble());
 
@@ -206,22 +207,22 @@ public class Elevator extends CTREMechanism {
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {
-        return new RunCommand(() -> runEnum(position), this)
+        return new InstantCommand(() -> runEnum(position), this)
                 .withName("Elevator.runEnum");
     }
 
     public Command runElevatorCommandMM(ElevatorPositions position) {
-        return new RunCommand(() -> runEnumMM(position), this)
+        return new InstantCommand(() -> runEnumMM(position), this)
                 .withName("Elevator.runEnumMM");
     }
 
     public Command runElevatorCommandFOC(ElevatorPositions position) {
-        return new RunCommand(() -> runEnumFOC(position), this)
+        return new InstantCommand(() -> runEnumFOC(position), this)
                 .withName("Elevator.runEnumFOC");
     }
 
     public Command stopElevatorCommand(ElevatorPositions position) {
-        return new RunCommand(() -> stop(), this)
+        return new InstantCommand(() -> stop(), this)
                 .withName("Elevator.STOP");
     }
 

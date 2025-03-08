@@ -16,7 +16,7 @@ public class ElevatorStowCommand extends SequentialCommandGroup {
 		addCommands(
 				(manipJoint.getMode() == ManipJointPositions.FEED) ? new SequentialCommandGroup(
 						// rises to l4 so manip can safely move
-						elevator.runElevatorCommand(ElevatorPositions.CORALL4),
+						elevator.runElevatorCommand(ElevatorPositions.SAFESWING),
 						new WaitUntilCommand(() -> elevator.getPositionSetpointGoal(ElevatorConstants.coralL4,
 						ElevatorConstants.error)),
 						// manip runs to stow position only if the elevator is at the setpoint goal

@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Util.Constants.IntakeConstants;
 import frc.robot.Util.Constants.IntakePivotConstants;
@@ -99,22 +100,22 @@ public class IntakePivot extends REVMechanism {
 	}
 
 	public Command runIntakePivotCommand(IntakePivotModes intakePivotModes) {
-		return new RunCommand(() -> this.runEnum(intakePivotModes), this)
+		return new InstantCommand(() -> this.runEnum(intakePivotModes), this)
 				.withName("IntakePivot.runEnum");
 	}
 
 	public Command runIntakePivotCommandMM(IntakePivotModes intakePivotModes) {
-		return new RunCommand(() -> this.runEnumMM(intakePivotModes), this)
+		return new InstantCommand(() -> this.runEnumMM(intakePivotModes), this)
 				.withName("IntakePivot.runEnumMM");
 	}
 
 	public Command stopIntakePivotCommand() {
-		return new RunCommand(() -> this.stop(), this)
+		return new InstantCommand(() -> this.stop(), this)
 				.withName("IntakePivot.STOP");
 	}
 
 	public Command IntakePivotResetPositionCommand() {
-		return new RunCommand(() -> this.setZero(), this)
+		return new InstantCommand(() -> this.setZero(), this)
 				.withName("IntakePivot.setZero");
 	}
 

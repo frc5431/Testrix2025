@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
@@ -28,14 +31,12 @@ import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
 import frc.robot.Commands.Chained.SmartStowCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
-import frc.robot.Subsytems.Drivebase.AlignReefCommand;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Util.Field;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Intake.IntakePivot;
-import frc.robot.Subsytems.Limelight.Vision;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.RobotMechanism;
@@ -46,7 +47,7 @@ import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
 import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
-import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
+import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
@@ -63,9 +64,8 @@ public class RobotContainer {
 	private final Feeder feeder = systems.getFeeder();
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
-	private final Vision vision = Systems.getVision();
+
 	private final Manipulator manipulator = systems.getManipulator();
-	// private final Vision vision = Systems.getVision();
 	private final TitanCANdle candle = Systems.getTitanCANdle();
 	private final Drivebase drivebase = Systems.getDrivebase();
 	private final SendableChooser<Command> autoChooser;
@@ -81,7 +81,8 @@ public class RobotContainer {
 	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
 			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
 			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10%
-																										// deadband
+			.withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
+			.withSteerRequestType(SteerRequestType.Position)
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
 	// Triggers
@@ -119,8 +120,9 @@ public class RobotContainer {
 			: operator.rightBumper();
 	private Trigger stowIntake = ControllerConstants.using8BitDo ? operator8BitDo.getLBumper()
 			: operator.leftBumper();
-	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.rightDpad();
-	private Trigger scoreL1Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown() : operator.downDpad();
+	private Trigger smartStow = ControllerConstants.using8BitDo ? operator8BitDo.getPovRight() : operator.downDpad();
+	// private Trigger scoreL1Preset = ControllerConstants.using8BitDo ?
+	// operator8BitDo.getPovDown() : operator.downDpad();
 	private Trigger scoreL2Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovDown()
 			: operator.rightDpad();
 	private Trigger scoreL3Preset = ControllerConstants.using8BitDo ? operator8BitDo.getPovLeft() : operator.leftDpad();
@@ -164,44 +166,50 @@ public class RobotContainer {
 
 	}
 
+	public double deadzone(double num) {
+		if (Math.abs(num) > ControllerConstants.deadzone) {
+			return num;
+		} else {
+			return 0;
+		}
+	}
+
 	private void configureDriverControls() {
 
 		drivebase.setDefaultCommand(
 				// Drivetrain will execute this command periodically
 				drivebase.applyRequest(
 						() -> driverControl
-								.withVelocityX(-driver.getLeftY() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-
-								.withVelocityY(-driver.getLeftX() * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+								.withVelocityX(deadzone(-driver.getLeftY()) * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+								.withVelocityY(deadzone(-driver.getLeftX()) * SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
 								.withRotationalRate(
-										-driver.getRightX() * DrivebaseConstants.MaxAngularRate.in(RadiansPerSecond))));
+										deadzone(-driver.getRightX()))));// *
+																// DrivebaseConstants.MaxAngularRate.in(RadiansPerSecond))));
 
 		// Align Reef Commands
-		alignLeftReef.onTrue(
-				new AlignReefCommand(false).withName("Align Left Reef"));
-		alignRightReef.onTrue(
-				new AlignReefCommand(true).withName("Align Right Reef"));
-		alignCenterReef.onTrue(
-				new AlignReefCommand().withName("Align Center Reef"));
+		// alignLeftReef.onTrue(
+		// new AlignReefCommand(false).withName("Align Left Reef"));
+		// alignRightReef.onTrue(
+		// new AlignReefCommand(true).withName("Align Right Reef"));
+		// alignCenterReef.onTrue(
+		// new AlignReefCommand().withName("Align Center Reef"));
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
-						.withName("Driver Smart Stow"));
-		zeroDrivebase.onTrue(drivebase.zeroGyro().withName("Zero Drivebase"));
+						.withName("Driver Smart Stow").alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.DEPLOY)));
+		zeroDrivebase.onTrue(new InstantCommand(() -> drivebase.resetGyro()).withName("Zero Drivebase"));
 
 	}
 
 	private void configureOperatorControls() {
 
 		// Elevator Controls
-		// intakePreset.onTrue(
-		// new IntakeCoralCommand(intake, intakePivot, manipulator, elevator,
-		// manipJoint)
-		// .withName("Intake Coral Preset"));
-		intakePreset.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.STOW));
-		stowIntake.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.SCOREL2));
-		// intakePreset.onTrue(elevator.runElevatorCommand(ElevatorPositions.CORALL2));
 
-		// stowIntake.onTrue(elevator.runElevatorCommand(ElevatorPositions.STOW));
+		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW).withName("Stow Intake"));
+
+		intakePreset.onTrue(
+				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator,
+						manipJoint)
+								.withName("Intake Coral Preset"));
 
 		smartStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
