@@ -22,18 +22,18 @@ public class Robot extends LoggedRobot {
     // AutoLogOutputManager.addPackage("frc.robot.Subsystems");
 
     // if (isReal()) {
-    //   Logger.addDataReceiver(new WPILOGWriter());
-    //   Logger.addDataReceiver(new NT4Publisher());
-    //   Logger.start();
+    // Logger.addDataReceiver(new WPILOGWriter());
+    // Logger.addDataReceiver(new NT4Publisher());
+    // Logger.start();
 
     // } else {
-    //   /*
-    //    * setUseTiming(false);
-    //    * String logPath = LogFileUtil.findReplayLog();
-    //    * Logger.setReplaySource(new WPILOGReader(logPath));
-    //    * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-    //    * "_sim")));
-    //    */
+    // /*
+    // * setUseTiming(false);
+    // * String logPath = LogFileUtil.findReplayLog();
+    // * Logger.setReplaySource(new WPILOGReader(logPath));
+    // * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+    // * "_sim")));
+    // */
     // }
 
     m_robotContainer = new RobotContainer();
@@ -61,13 +61,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.onInitialize();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      DriverStation.reportError("Auton Null", true);
-      m_autonomousCommand.schedule();
+      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+      if(m_autonomousCommand != null){
+      m_autonomousCommand.schedule();}
     }
-  }
+  
 
   @Override
   public void autonomousPeriodic() {
@@ -81,7 +79,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     m_robotContainer.onInitialize();
-    
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

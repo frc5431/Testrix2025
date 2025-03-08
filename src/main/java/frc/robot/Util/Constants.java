@@ -236,7 +236,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ManipulatorModes {
-            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), SLOWFEED(feedSpeed, 0.3), REVERSE(reverseSpeed, -0.4);
+            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), SLOWFEED(feedSpeed, 0.4), REVERSE(reverseSpeed, 0.2);
 
             public AngularVelocity speed;
             public double output;
@@ -304,14 +304,14 @@ public final class Constants {
         public static final Angle safeSwing = Units.Rotation.of(25);
         public static final Angle error = Units.Rotation.of(1);
         public static final Angle stow = Units.Rotation.of(8);
-        public static final Angle feed = Units.Rotation.of(16.5);
+        public static final Angle feed = Units.Rotation.of(16);
         public static final Angle algaeProcessor = Units.Rotation.of(3);
         public static final Angle coralL1 = Units.Rotation.of(3);
         public static final Angle coralL2 = Units.Rotation.of(15);
         public static final Angle algaeL2 = Units.Rotation.of(3);
-        public static final Angle coralL3 = Units.Rotation.of(22);
+        public static final Angle coralL3 = Units.Rotation.of(20);
         public static final Angle algaeL3 = Units.Rotation.of(3);
-        public static final Angle coralL4 = Units.Rotation.of(45);
+        public static final Angle coralL4 = Units.Rotation.of(47);
         public static final Angle coralStation = Units.Rotation.of(3);
         public static final Angle net = Units.Rotation.of(3);
 
@@ -484,11 +484,11 @@ public final class Constants {
         // public static final ArmFeedforward jointFF = new
         // ArmFeedforward(kS.in(Units.Volt));
 
-        public static final Angle stow = Units.Rotations.of(-0.8);
-        public static final Angle feed = Units.Rotations.of(-11);
-        public static final Angle prefeed = Units.Rotations.of(-10);
+        public static final Angle stow = Units.Rotations.of(-.5);
+        public static final Angle feed = Units.Rotations.of(-11.3);
+        public static final Angle prefeed = Units.Rotations.of(-9);
 
-        public static final Angle scoreL1 = Units.Rotations.of(-0.8);
+        public static final Angle scoreL1 = Units.Rotations.of(-2);
         public static final Angle scoreL2 = Units.Rotations.of(-4);
 
         public static final Angle scoreL3 = Units.Rotations.of(-2);
@@ -549,7 +549,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum FeederModes {
-            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.7), SLOW(feedSpeed, 0.3);
+            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.6), SLOW(feedSpeed, 0.3);
 
             public AngularVelocity speed;
             public double output;

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.MathUtil;
@@ -34,6 +35,7 @@ import frc.robot.Util.Constants.AutonConstants;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -63,18 +65,15 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    
     SwerveModuleState[] states = this.getState().ModuleStates;
-    StructArrayPublisher<SwerveModuleState> publisher = 
-    NetworkTableInstance.getDefault().
-    getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+    StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+            .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
 
+    StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
-    StructPublisher<Pose2d> posePublisher =
-    NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
-
-    StructPublisher<ChassisSpeeds> speedsPublisher =
-    NetworkTableInstance.getDefault().getStructTopic("Chassis Speed", ChassisSpeeds.struct).publish();
+    StructPublisher<ChassisSpeeds> speedsPublisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Chassis Speed", ChassisSpeeds.struct).publish();
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -97,20 +96,23 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        try {
+            AutoBuilder.configure(
+                    this::getRobotPose,
+                    this::resetPose,
+                    this::getChassisSpeeds,
+                    (speeds) -> driveRobotCenteric(speeds),
+                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
+                                                    // for holonomic drive trains
+                            AutonConstants.translationPID,
+                            AutonConstants.rotationPID),
+                    RobotConfig.fromGUISettings(),
+                    () -> Field.isRed(),
+                    this);
 
-        AutoBuilder.configure(
-            this::getRobotPose,
-            this::resetPose, 
-            this::getChassisSpeeds,
-            (speeds, feedforwards) -> driveRobotCenteric(speeds),
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    AutonConstants.translationPID,
-                    AutonConstants.rotationPID
-            ),
-            SwerveConstants.robotConfig,
-            () -> Field.isRed(),
-            this
-        );
+        } catch (Exception e) {
+            DriverStation.reportError("Auton Config Issue", e.getStackTrace());
+        }
     }
 
     public void resetGyro() {
@@ -118,7 +120,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public Command zeroGyro() {
-        return new StartEndCommand(() -> resetGyro(), () -> resetGyro(),  this);
+        return new StartEndCommand(() -> resetGyro(), () -> resetGyro(), this);
     }
 
     /**
@@ -199,7 +201,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     public ChassisSpeeds getChassisSpeeds() {
         return getKinematics().toChassisSpeeds(getState().ModuleStates);
     }
-    
+
     /**
      * Returns a command that applies the specified control request to this swerve
      * drivetrain.
@@ -222,11 +224,10 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
      *         If we have issues this is a good place to start. Not confident on the
      *         end command
      */
-    public Command driveRobotCenteric(ChassisSpeeds chassisSpeeds) {
-        return new StartEndCommand(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds),
-                () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0)), this);
-    }
+    public void driveRobotCenteric(ChassisSpeeds chassisSpeeds) {
+        applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds));
 
+    }
 
     public Command faceTargetCommand(Rotation2d faceDirection) {
         return run(() -> new SwerveRequest.FieldCentricFacingAngle().withTargetDirection(faceDirection));
@@ -248,7 +249,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
 
         SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
         SmartDashboard.putNumber("Drivebase Rotation", this.getRotation3d().getAngle());
-        //SmartDashboard.putData("Swerve Pose", (Sendable) this.getRobotPose());
+        // SmartDashboard.putData("Swerve Pose", (Sendable) this.getRobotPose());
 
         publisher.set(states);
         posePublisher.set(getRobotPose());

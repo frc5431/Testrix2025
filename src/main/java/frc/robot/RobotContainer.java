@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +22,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
@@ -132,12 +135,12 @@ public class RobotContainer {
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
 	private Trigger reverseFeed = operator.b();
-	private Trigger stowManip = operator.leftStick();
-	private Trigger zeroElevator = operator.rightStick();
+	private Trigger stowManip = operator.y();
+	private Trigger zeroElevator = operator.back();
 
 	private Trigger smartIntakeCoral = operator.leftTrigger(.5);
 	private Trigger scoreCoral = operator.rightTrigger(.5);
-	private Trigger manipFeed = operator.back();
+	private Trigger manipFeed = operator.x();
 	private Trigger stowPreset = operator.start();
 
 	public RobotContainer() {
@@ -147,7 +150,11 @@ public class RobotContainer {
 		configureOperatorControls();
 		configureDriverControls();
 
+		System.out.println(AutoBuilder.getAllAutoNames());
 		autoChooser = AutoBuilder.buildAutoChooser();
+		SmartDashboard.putBoolean("Auto Config", AutoBuilder.isConfigured());
+		SmartDashboard.putStringArray("Auto List", AutoBuilder.getAllAutoNames().toArray(new String[0]));
+
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 	}
@@ -285,20 +292,20 @@ public class RobotContainer {
 		manipulator.setDefaultCommand(
 				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
 
-		candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
+		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
 
-		// Subsystem Status
-		// isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder
-		// Auto Control"));
+		// // Subsystem Status
+		// // isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder
+		// // Auto Control"));
 
-		// LED Status
-		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
-		isAutonEnabled.whileTrue(
-				candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
-						.withName("LED Auton Alliance"));
-		hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LEDCoral"));
-		hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
-		hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
+		// // LED Status
+		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
+		// isAutonEnabled.whileTrue(
+		// 		candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
+		// 				.withName("LED Auton Alliance"));
+		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LEDCoral"));
+		// hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
+		// hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
 
 	}
 
