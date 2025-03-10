@@ -32,21 +32,13 @@ public class Elevator extends CTREMechanism {
 
         public ElevatorConfig() {
             super("Elevator", ElevatorConstants.leftId, Constants.canbus);
-
             configPIDGains(ElevatorConstants.p, ElevatorConstants.i,
                     ElevatorConstants.d);
             configNeutralBrakeMode(ElevatorConstants.breakType);
             configGearRatio(ElevatorConstants.gearRatio);
-
-            configMotionMagicPosition(ElevatorConstants.s);
             configGravityType(ElevatorConstants.gravityType);
-
             configSupplyCurrentLimit(ElevatorConstants.supplyLimit, ElevatorConstants.useSupplyLimit);
             configStatorCurrentLimit(ElevatorConstants.stallLimit, ElevatorConstants.useStallLimit);
-            // configReverseTorqueCurrentLimit(ElevatorConstants.reverseTorqueLimit);
-            // configForwardTorqueCurrentLimit(ElevatorConstants.forwardTorqueLimit);
-
-            configFeedbackSensorSource(ElevatorConstants.feedbackSensor, ElevatorConstants.rotationOffset.in(Rotation));
             configReverseSoftLimit(ElevatorConstants.maxReverseRotation.in(Rotation),
                     ElevatorConstants.useRMaxRotation);
             configForwardSoftLimit(ElevatorConstants.maxFowardRotation.in(Rotation), ElevatorConstants.useFMaxRotation);

@@ -4,9 +4,6 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.CANdle.TitanCANdle;
@@ -15,7 +12,6 @@ import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
-import frc.robot.Util.Field;
 import frc.robot.Util.TitanBitDoController;
 import frc.robot.Subsytems.Intake.Feeder;
 import frc.robot.Subsytems.Intake.Intake;
@@ -35,8 +31,6 @@ public class Systems {
     private static @Getter TitanController operator = new TitanController(ControllerConstants.operatorPort,
             ControllerConstants.deadzone);
     private static @Getter TitanBitDoController operator8BitDo = new TitanBitDoController(ControllerConstants.operatorPort);
-
-    public static @Getter AprilTagFieldLayout apriltagLayout;
 
     private MotorType brushless = MotorType.kBrushless;
 

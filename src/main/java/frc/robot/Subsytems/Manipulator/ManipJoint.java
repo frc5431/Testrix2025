@@ -69,7 +69,6 @@ public class ManipJoint extends REVMechanism {
 		SmartDashboard.putString("ManipJoint Mode", this.getMode().toString());
 		SmartDashboard.putNumber("ManipJoint Setpoint", getMode().position.in(Rotations));
 		SmartDashboard.putBoolean("ManipJoint Goal", getPositionSetpointGoal(getMode().position, ManipJointConstants.error));
-		SmartDashboard.putString("ManipJoint State", getState().toString());
 		SmartDashboard.putNumber("ManipJoint Output", this.getMotorOutput());
 		SmartDashboard.putNumber("ManipJoint Current", this.getMotorCurrent());
 		SmartDashboard.putNumber("ManipJoint Voltage", this.getMotorVoltage());
@@ -108,6 +107,12 @@ public class ManipJoint extends REVMechanism {
 	public void runEnum(ManipJointPositions ManipJointmode) {
 		this.mode = ManipJointmode;
 		setMotorPosition(ManipJointmode.position);
+	}
+
+	public void runVoltage(double rate) {
+		setPercentOutput(rate);
+		ManipJointConstants.setAdjustAngle(Rotations.of(getMotorPosition()));
+		this.mode = ManipJointPositions.ADJUSTANGLE;
 	}
 
 	protected void runEnumMM(ManipJointPositions ManipJointmode) {

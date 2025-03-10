@@ -32,8 +32,6 @@ public class IntakePivot extends REVMechanism {
 
 		public PivotConfig() {
 			super("IntakePivot", IntakePivotConstants.id);
-			configMaxMotionPositionMode(IntakePivotConstants.mm_positionMode);
-			configMaxMotion(IntakePivotConstants.mm_velocity, IntakePivotConstants.mm_maxAccel, IntakePivotConstants.mm_error);
 			configPeakOutput(IntakePivotConstants.maxForwardOutput, IntakePivotConstants.maxReverseOutput);
 			configInverted(IntakePivotConstants.isInverted);
 			configAbsoluteEncoderInverted(!IntakeConstants.isInverted);

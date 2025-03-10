@@ -34,11 +34,9 @@ public class Feeder extends REVMechanism {
             configInverted(FeederConstants.isInverted);
             configEncoderPosRatio(FeederConstants.gearRatio);
             configMaxIAccum(FeederConstants.maxIAccum);
-            configMaxMotionPositionMode(FeederConstants.mm_positionMode);
             configPIDGains(FeederConstants.p, FeederConstants.i, FeederConstants.d);
             configSmartCurrentLimit(FeederConstants.stallLimit, FeederConstants.supplyLimit);
             configPeakOutput(FeederConstants.maxForwardOutput, FeederConstants.maxReverseOutput);
-            configMaxMotion(FeederConstants.mm_velocity, FeederConstants.mm_maxAccel, FeederConstants.mm_error);
         }
     }
     
@@ -65,25 +63,13 @@ public class Feeder extends REVMechanism {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Feeder State", getState().toString());
+        //SmartDashboard.putString("Feeder State", getState().toString());
         SmartDashboard.putString("Feeder Mode", getMode().toString());
-        SmartDashboard.putNumber("Feeder Setpoint", getMode().speed.in(RPM));
+        //SmartDashboard.putNumber("Feeder Setpoint", getMode().speed.in(RPM));
         SmartDashboard.putNumber("Feeder Output", getMotorOutput());
-        SmartDashboard.putNumber("Feeder Current", getMotorCurrent());
-        SmartDashboard.putNumber("Feeder Voltage", getMotorVoltage());
-        SmartDashboard.putNumber("Feeder Velocity", getMotorVelocity());
-
-        switch (this.mode) {
-            case IDLE:
-                setState(FeederStates.IDLE);
-                break;
-            case REVERSE:
-                setState(FeederStates.REVERSE);
-                break;
-            case FEED:
-                setState(FeederStates.FEEDING);
-                break;
-        }
+        // SmartDashboard.putNumber("Feeder Current", getMotorCurrent());
+        // SmartDashboard.putNumber("Feeder Voltage", getMotorVoltage());
+        // SmartDashboard.putNumber("Feeder Velocity", getMotorVelocity());
 
     }
 

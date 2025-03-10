@@ -24,7 +24,6 @@ public class ElevatorFeedCommand extends SequentialCommandGroup {
 				manipJoint.runManipJointCommand(ManipJointPositions.PREEFEED),
 				new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.prefeed,
 						ManipJointConstants.error)),
-
 				manipJoint.runManipJointCommand(ManipJointPositions.FEED),
 					new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.feed,
 								ManipJointConstants.error)),

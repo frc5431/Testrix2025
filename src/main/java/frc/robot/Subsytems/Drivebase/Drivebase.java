@@ -7,8 +7,15 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentric;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentricFacingAngle;
+import com.ctre.phoenix6.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -35,35 +42,53 @@ import frc.robot.Util.Constants.AutonConstants;
 import frc.robot.Util.Constants.DrivebaseConstants;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Util.SwerveConstants.TunerSwerveDrivetrain;
+import lombok.Getter;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
 public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
-    private Notifier m_simNotifier = null;
-    private double m_lastSimTime;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
-    private boolean m_hasAppliedOperatorPerspective = false;
+    private boolean hasAppliedOperatorPerspective = false;
 
-    /** Swerve request to apply during robot-centric path following */
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    //TODO: ADD IN NULL VALUES
+    //TODO: GIVE DRIVER DPAD ALIGNMENT
 
-    /* Swerve requests to apply during SysId characterization */
-    private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
-    private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-    private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+    private SwerveRequest.SwerveDriveBrake xLock = new SwerveDriveBrake();
+    private SwerveRequest.FieldCentricFacingAngle driverFieldCentricFacingAngle = new FieldCentricFacingAngle()
+            .withMaxAbsRotationalRate(null)
+            .withRotationalDeadband(null)
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+
+    private SwerveRequest.RobotCentricFacingAngle autonRobotCentricFacingAngle = new RobotCentricFacingAngle()
+            .withMaxAbsRotationalRate(null)
+            .withRotationalDeadband(null)
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+
+    private @Getter SwerveRequest.ForwardPerspectiveValue perspectiveValue = ForwardPerspectiveValue.OperatorPerspective;
+
+    private @Getter SwerveRequest.RobotCentric visionRobotCentric = new RobotCentric().withRotationalDeadband(null);
+
+	private @Getter SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
+			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
+			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10%
+			.withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
+			.withSteerRequestType(SteerRequestType.MotionMagicExpo)
+			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+
 
     SwerveModuleState[] states = this.getState().ModuleStates;
     StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
@@ -93,34 +118,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-        try {
-            AutoBuilder.configure(
-                    this::getRobotPose,
-                    this::resetPose,
-                    this::getChassisSpeeds,
-                    (speeds) -> driveRobotCentric(speeds),
-                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
-                                                    // for holonomic drive trains
-                            AutonConstants.translationPID,
-                            AutonConstants.rotationPID),
-                    RobotConfig.fromGUISettings(),
-                    () -> Field.isRed(),
-                    this);
-
-        } catch (Exception e) {
-            DriverStation.reportError("Auton Config Issue", e.getStackTrace());
-        }
-    }
-
-    public void resetGyro() {
-        this.getPigeon2().setYaw(0);
-    }
-
-    public Command zeroGyro() {
-        return new StartEndCommand(() -> resetGyro(), () -> resetGyro(), this);
+        configureAutoBuilder();
     }
 
     /**
@@ -157,14 +155,35 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation,
                 modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
         configureAutoBuilder();
     }
 
-    private void configureAutoBuilder() {
+    public void resetGyro() {
+        this.getPigeon2().setYaw(0);
+    }
 
+    public Command zeroGyro() {
+        return new InstantCommand(() -> resetGyro(), this);
+    }
+
+    private void configureAutoBuilder() {
+        try {
+            AutoBuilder.configure(
+                    this::getRobotPose,
+                    this::resetPose,
+                    this::getChassisSpeeds,
+                    (speeds) -> driveRobotCentric(speeds),
+                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
+                                                    // for holonomic drive trains
+                            AutonConstants.translationPID,
+                            AutonConstants.rotationPID),
+                    RobotConfig.fromGUISettings(),
+                    () -> Field.isRed(),
+                    this);
+
+        } catch (Exception e) {
+            DriverStation.reportError("Auton Config Issue", e.getStackTrace());
+        }
     }
 
     /**
@@ -225,12 +244,11 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
      *         end command
      */
     public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
-        // System.out.println(chassisSpeeds);
         setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds));
     }
 
     public Command faceTargetCommand(Rotation2d faceDirection) {
-        return run(() -> new SwerveRequest.FieldCentricFacingAngle().withTargetDirection(faceDirection));
+        return applyRequest(() -> driverFieldCentricFacingAngle.withTargetDirection(faceDirection));
     }
 
     @Override
@@ -248,36 +266,22 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
          */
 
         SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
-        SmartDashboard.putNumber("Drivebase Rotation", this.getRotation3d().getAngle());
+        SmartDashboard.putNumber("Drivebase Rotation", this.getRotation3d().getMeasureZ().baseUnitMagnitude());
         // SmartDashboard.putData("Swerve Pose", (Sendable) this.getRobotPose());
 
         publisher.set(states);
         posePublisher.set(getRobotPose());
         speedsPublisher.set(getChassisSpeeds());
 
-        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+        if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
                         allianceColor == Alliance.Red
                                 ? kRedAlliancePerspectiveRotation
                                 : kBlueAlliancePerspectiveRotation);
-                m_hasAppliedOperatorPerspective = true;
+                hasAppliedOperatorPerspective = true;
             });
         }
     }
 
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
 }

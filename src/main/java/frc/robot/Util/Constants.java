@@ -20,21 +20,15 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
+import lombok.Setter;
 
 public final class Constants {
 
     public static final String canbus = "Omnivore";
 
-    public static class GameConstants {
-
-        public enum GamePieceStates {
-            CORAL, ALGAE, NONE, BOTH
-        }
-    }
-
     public static class ControllerConstants {
         public enum ControlStates {
-            ALGAE, CORAL,
+            CLEAN, CORAL,
         }
 
         public static final int driverPort = 0;
@@ -55,16 +49,22 @@ public final class Constants {
                 ManipJointPositions.SCOREL1);
 
         public static final PresetPosition ScoreL2Position = new PresetPosition(ElevatorPositions.CORALL2,
-                ManipJointPositions.SCOREL2, CleanPivotModes.L2);
+                ManipJointPositions.SCOREL2);
 
         public static final PresetPosition ScoreL3Position = new PresetPosition(ElevatorPositions.CORALL3,
-                ManipJointPositions.SCOREL3, CleanPivotModes.L3);
+                ManipJointPositions.SCOREL3);
+
+        public static final PresetPosition CleanL2Position = new PresetPosition(ElevatorPositions.CLEANL2,
+        ManipJointPositions.SCOREL2);
+
+        public static final PresetPosition CleanL3Position = new PresetPosition(ElevatorPositions.CORALL3,
+        ManipJointPositions.SCOREL3);
 
         public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
-                ManipJointPositions.SCOREL4, CleanPivotModes.STOW);
+                ManipJointPositions.SCOREL4);
 
                 public static final PresetPosition ejectL4 = new PresetPosition(ElevatorPositions.EJECET,
-                ManipJointPositions.EJECT, CleanPivotModes.STOW);
+                ManipJointPositions.EJECT);
 
     }
 
@@ -239,7 +239,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ManipulatorModes {
-            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), SLOWFEED(feedSpeed, 0.4), REVERSE(reverseSpeed, 0.2);
+            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), MANUAL(feedSpeed, 0.4), REVERSE(reverseSpeed, 0.2);
 
             public AngularVelocity speed;
             public double output;
@@ -291,7 +291,6 @@ public final class Constants {
         public static final boolean useRMaxRotation = true;
         public static final Angle maxReverseRotation = Units.Rotation.of(-1);
         public static final Angle maxFowardRotation = Units.Rotation.of(50);
-        public static final Angle rotationOffset = Units.Rotation.of(0);
 
         public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
 
@@ -304,29 +303,21 @@ public final class Constants {
         public static final double d = 0;
         public static final double maxIAccum = 0.2;
 
-        public static final Angle safeSwing = Units.Rotation.of(25);
         public static final Angle error = Units.Rotation.of(1);
+        public static final Angle coralL1 = Units.Rotation.of(3);
         public static final Angle stow = Units.Rotation.of(8);
         public static final Angle feed = Units.Rotation.of(15.5);
-        public static final Angle algaeProcessor = Units.Rotation.of(3);
-        public static final Angle coralL1 = Units.Rotation.of(3);
+        public static final Angle cleanl2 = Units.Rotation.of(10);
         public static final Angle coralL2 = Units.Rotation.of(15);
-        public static final Angle algaeL2 = Units.Rotation.of(3);
         public static final Angle coralL3 = Units.Rotation.of(24.5);
-        public static final Angle algaeL3 = Units.Rotation.of(3);
+        public static final Angle safeSwing = Units.Rotation.of(25);
         public static final Angle coralL4 = Units.Rotation.of(47);
         public static final Angle eject = Units.Rotation.of(48.5);
 
         public static final Angle coralStation = Units.Rotation.of(3);
-        public static final Angle net = Units.Rotation.of(3);
-
-        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
-        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
-        public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ElevatorPositions {
-            STOW(stow), FEED(feed), PROCESSOR(algaeProcessor), CORALL1(coralL1), CORALL2(coralL2), ALGAEL2(
-                    algaeL2), CORALL3(coralL3), ALGAEL3(algaeL3), CORALL4(coralL4), NET(net), SAFESWING(safeSwing), EJECET(eject);
+            STOW(stow), FEED(feed), CORALL1(coralL1), CLEANL2(cleanl2), CORALL2(coralL2), CORALL3(coralL3), CORALL4(coralL4), SAFESWING(safeSwing), EJECET(eject);
 
             public Angle rotation;
 
@@ -367,16 +358,13 @@ public final class Constants {
         public static final double d = 0.3;
         public static final double maxIAccum = 0.1;
 
-        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
-        public static final AngularVelocity mm_maxAccel = Units.RPM.of(2);
-        public static final AngularVelocity mm_velocity = Units.RPM.of(0.5);
-        public static final AngularVelocity mm_error = Units.RPM.of(0.1);
-
         public static final Angle stowAngle = Units.Rotation.of(0.4);
         public static final Angle deployAngle = Units.Rotation.of(0.75);
+        public static final Angle scoreL1 = Units.Rotation.of(0.6);
+
 
         public enum IntakePivotModes {
-            STOW(stowAngle), DEPLOY(deployAngle);
+            STOW(stowAngle), DEPLOY(deployAngle), L1(scoreL1);
 
             public Angle angle;
 
@@ -389,7 +377,7 @@ public final class Constants {
     }
 
     public static class DrivebaseConstants {
-        public static final AngularVelocity MaxAngularRate = RotationsPerSecond.of(0.5); // 3/4 of a rotation per second max angular velocity
+        public static final AngularVelocity MaxAngularRate = RotationsPerSecond.of(0.5);
         public static final Distance robotLength = Units.Inches.of(28);
          
     }
@@ -475,31 +463,24 @@ public final class Constants {
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
         public static final double maxForwardOutput = 1;
         public static final double maxReverseOutput = -0.1;
-        // public static final double maxForwardOutput = 0;
-        // public static final double maxReverseOutput = -0;
 
-        public static final double s = 0.15; //0.04 - 0.06 holds arm at stow position
+        public static final double s = 0.15; //0.15 holds arm at 90 degree position, when gravity's pull is strongest
 
         public static final double p = 1.75;
         public static final double i = 0.005;
         public static final double d = 0.6;
-
         public static final double maxIAccum = 0.2;
-
-        // public static final ArmFeedforward jointFF = new
-        // ArmFeedforward(kS.in(Units.Volt));
 
         public static final Angle eject = Units.Rotation.of(-0.8);
         public static final Angle stow = Units.Rotations.of(-2);
-        public static final Angle feed = Units.Rotations.of(-11.5);
-        public static final Angle prefeed = Units.Rotations.of(-9);
-
         public static final Angle scoreL1 = Units.Rotations.of(-2);
-
-        public static final Angle scoreL3 = Units.Rotations.of(-2);
-        public static final Angle scoreL2 = scoreL3;
-
-        public static final Angle scoreL4 = Units.Rotations.of(-2);
+        public static final Angle scoreL2 = Units.Rotations.of(-2);
+        public static final Angle scoreL3 = scoreL2;
+        public static @Setter Angle adjustAngle = Units.Rotations.of(-5);
+        public static final Angle cleanAlgea = Units.Rotations.of(-5);
+        public static final Angle prefeed = Units.Rotations.of(-9);
+        public static final Angle feed = Units.Rotations.of(-11.5);
+        public static final Angle scoreL4 = Units.Rotations.of(-2.5);
         public static final Angle error = Units.Rotations.of(0.9);
 
         public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
@@ -508,7 +489,15 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0.1);
 
         public enum ManipJointPositions {
-            STOW(stow), EJECT(eject), PREEFEED(prefeed), FEED(feed), SCOREL1(scoreL1), SCOREL2(scoreL2), SCOREL3(scoreL3), SCOREL4(scoreL4);
+            STOW(stow), 
+            EJECT(eject), 
+            PREEFEED(prefeed),
+            FEED(feed),
+            SCOREL1(scoreL1),
+            SCOREL2(scoreL2),
+            SCOREL3(scoreL3), 
+            ADJUSTANGLE(adjustAngle), 
+            SCOREL4(scoreL4);
 
             public Angle position;
 
@@ -534,12 +523,11 @@ public final class Constants {
         public static final Current supplyLimit = Units.Amps.of(40);
         public static final Current stallLimit = Units.Amps.of(80);
         public static final Angle offset = Units.Rotation.of(0);
-        public static final double maxForwardOutput = 0.5;
-        public static final double maxReverseOutput = -0.5;
+        public static final double maxForwardOutput = 1;
+        public static final double maxReverseOutput = -1;
 
         public static final IdleMode idleMode = IdleMode.kCoast;
         public static final FeedbackSensor sensorType = FeedbackSensor.kPrimaryEncoder;
-        public static final MAXMotionPositionMode mm_positionMode = MAXMotionPositionMode.kMAXMotionTrapezoidal;
 
         public static final double p = 1;
         public static final double i = 0.00;
@@ -551,12 +539,13 @@ public final class Constants {
         public static final AngularVelocity idleSpeed = Units.RPM.of(0);
         public static final AngularVelocity error = Units.RPM.of(0);
 
-        public static final AngularVelocity mm_maxAccel = Units.RPM.of(0);
-        public static final AngularVelocity mm_velocity = Units.RPM.of(0);
-        public static final AngularVelocity mm_error = Units.RPM.of(0);
+        public static final double idleOutput = 0.0;
+        public static final double reverseOutput = -0.3;
+        public static final double feedOutput = 0.3;
+        public static final double slowFeedOutput = 0.3;
 
         public enum FeederModes {
-            IDLE(idleSpeed, 0.0), REVERSE(reverseSpeed, -0.2), FEED(feedSpeed, 0.6), SLOW(feedSpeed, 0.3);
+            IDLE(idleSpeed, idleOutput), REVERSE(reverseSpeed, reverseOutput), FEED(feedSpeed, feedOutput), SLOW(feedSpeed, slowFeedOutput);
 
             public AngularVelocity speed;
             public double output;

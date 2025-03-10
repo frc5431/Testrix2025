@@ -65,12 +65,12 @@ public class Intake extends REVMechanism {
     @Override
     public void periodic() {
         SmartDashboard.putString("Intake Mode", getMode().toString());
-        SmartDashboard.putString("Intake State", getState().toString());
-        SmartDashboard.putNumber("Intake Setpoint", getMode().speed.in(RPM));
+        // SmartDashboard.putString("Intake State", getState().toString());
+        // SmartDashboard.putNumber("Intake Setpoint", getMode().speed.in(RPM));
         SmartDashboard.putNumber("Intake Output", getMotorOutput());
-        SmartDashboard.putNumber("Intake Current", getMotorCurrent());
-        SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
-        SmartDashboard.putNumber("Intake Velocity", getMotorVelocity());
+        // SmartDashboard.putNumber("Intake Current", getMotorCurrent());
+        // SmartDashboard.putNumber("Intake Voltage", getMotorVoltage());
+        // SmartDashboard.putNumber("Intake Velocity", getMotorVelocity());
 
         switch (this.mode) {
             case IDLE:

@@ -14,17 +14,14 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Util.Field;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto.AutoIntakeCoralCommand;
@@ -40,38 +37,32 @@ import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Intake.Feeder;
-import frc.robot.Util.Field;
 import frc.robot.Subsytems.Intake.Intake;
 import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.RobotMechanism;
-import frc.robot.Util.TitanBitDoController;
 import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
 import frc.robot.Util.Constants.CANdleConstants.AnimationTypes;
 import frc.robot.Util.Constants.FeederConstants.FeederModes;
-import frc.robot.Util.Constants.GameConstants.GamePieceStates;
 import frc.robot.Util.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorModes;
-import frc.robot.Util.Constants.ManipulatorConstants.ManipulatorStates;
 import frc.team5431.titan.core.joysticks.TitanController;
 
 import lombok.Getter;
 
 public class RobotContainer {
 
-	private final @Getter Systems systems = new Systems();
+	private final Systems systems = new Systems();
 	private final RobotMechanism robotMechanism = new RobotMechanism();
-
 	private final Intake intake = systems.getIntake();
 	private final IntakePivot intakePivot = systems.getIntakePivot();
 	private final Feeder feeder = systems.getFeeder();
 	private final Elevator elevator = systems.getElevator();
 	private final ManipJoint manipJoint = systems.getManipJoint();
-
 	private final Manipulator manipulator = systems.getManipulator();
 	private final TitanCANdle candle = Systems.getTitanCANdle();
 	private final Drivebase drivebase = Systems.getDrivebase();
@@ -80,31 +71,22 @@ public class RobotContainer {
 	private TitanController driver = Systems.getDriver();
 	private TitanController operator = Systems.getOperator();
 
-	private GamePieceStates gamePieceStatus = GamePieceStates.NONE;
-
-	// desired top speed
-
-	private final SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
-			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
-			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10%
-			.withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
-			.withSteerRequestType(SteerRequestType.Position)
-			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
 	// Triggers
 
 	// Automated Triggers
 
 	// Game Status
-	private @Getter Trigger hasAlgae = new Trigger(() -> gamePieceStatus == GamePieceStates.ALGAE);
-	private @Getter Trigger hasCoral = new Trigger(() -> gamePieceStatus == GamePieceStates.CORAL);
 	private @Getter Trigger isEndgame = new Trigger(
-			() -> DriverStation.getMatchTime() <= 20 && DriverStation.isTeleop());
+			() -> DriverStation.getMatchTime() <= 5 && DriverStation.isTeleop());
 	private @Getter Trigger isAutonEnabled = new Trigger(() -> DriverStation.isAutonomousEnabled());
 
 	// Subsystem Triggers
 	private @Getter Trigger isIntaking = new Trigger(
 			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
+	
+	private @Getter Trigger isManipIntaking = new Trigger(
+		() -> manipulator.getMode() == ManipulatorModes.MANUAL);
+	
 
 	// LED Triggers
 	/*
@@ -200,7 +182,7 @@ public class RobotContainer {
 		drivebase.setDefaultCommand(
 				// Drivetrain will execute this command periodically
 				drivebase.applyRequest(
-						() -> driverControl
+						() -> drivebase.getDriverControl()
 								.withVelocityX(deadzone(-driver.getLeftY())
 										* SwerveConstants.kSpeedAt12Volts.in(MetersPerSecond))
 								.withVelocityY(deadzone(-driver.getLeftX())
@@ -254,7 +236,7 @@ public class RobotContainer {
 				.withName("Score Coral"));
 
 		manipFeed.whileTrue(
-				manipulator.runManipulatorCommand(ManipulatorModes.SLOWFEED)
+				manipulator.runManipulatorCommand(ManipulatorModes.MANUAL)
 						.alongWith(feeder.runFeederCommand(FeederModes.SLOW))
 						.withName("Manipulator Feed Command"));
 
@@ -296,20 +278,19 @@ public class RobotContainer {
 		manipulator.setDefaultCommand(
 				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
 
-		// candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
+		candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
 
 		// // Subsystem Status
-		// // isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder
-		// // Auto Control"));
+		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
+		isManipIntaking.whileTrue(feeder.runFeederCommand(FeederModes.SLOW));
 
-		// // LED Status
-		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
-		// isAutonEnabled.whileTrue(
-		// 		candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
-		// 				.withName("LED Auton Alliance"));
-		// hasCoral.whileTrue(candle.changeAnimationCommand(AnimationTypes.CORAL).withTimeout(1).withName("LEDCoral"));
-		// hasAlgae.whileTrue(candle.changeAnimationCommand(AnimationTypes.ALGAE));
-		// hasAlgae.and(hasCoral).onTrue(candle.changeAnimationCommand(AnimationTypes.BOTH));
+		// LED Status
+		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
+		isAutonEnabled.whileTrue(
+				candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
+						.withName("LED Auton Alliance"));
+		
+	
 
 	}
 
@@ -334,18 +315,15 @@ public class RobotContainer {
 				new ElevatorStowCommand(elevator, manipJoint));
 		NamedCommands.registerCommand("SimpleScore",
 				manipulator.runManipulatorCommand(ManipulatorModes.SCORE));
-
 		NamedCommands.registerCommand("ScoreL4",
 				new ParallelCommandGroup(manipulator.runManipulatorCommand(ManipulatorModes.SCORE),
 						new WaitCommand(2).andThen(manipJoint.runManipJointCommand(ManipJointPositions.STOW))));
-
 		NamedCommands.registerCommand("IntakeCoral",
 				new IntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("AutoIntakeCoral",
 				new AutoIntakeCoralCommand(intake, intakePivot, manipulator, elevator, manipJoint));
 		NamedCommands.registerCommand("ScoreCoral",
 				new ScoreCoralCommand(elevator, manipJoint, manipulator));
-
 		// NamedCommands.registerCommand("AlignLeftReef", new AlignReefCommand(false));
 		// NamedCommands.registerCommand("AlignRightReef", new AlignReefCommand(true));
 
