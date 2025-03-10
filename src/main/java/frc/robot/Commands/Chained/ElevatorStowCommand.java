@@ -19,6 +19,7 @@ public class ElevatorStowCommand extends SequentialCommandGroup {
 						new WaitUntilCommand(() -> elevator.getPositionSetpointGoal(ElevatorConstants.safeSwing,
 						ElevatorConstants.error)),
 						// manip runs to stow position only if the elevator is at the setpoint goal
+						
 						manipJoint.runManipJointCommand(ManipJointPositions.STOW),
 						new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.stow,
 						ManipJointConstants.error)),

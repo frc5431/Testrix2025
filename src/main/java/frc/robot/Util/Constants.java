@@ -63,6 +63,9 @@ public final class Constants {
         public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
                 ManipJointPositions.SCOREL4, CleanPivotModes.STOW);
 
+                public static final PresetPosition ejectL4 = new PresetPosition(ElevatorPositions.EJECET,
+                ManipJointPositions.EJECT, CleanPivotModes.STOW);
+
     }
 
     public static class AutonConstants {
@@ -304,14 +307,16 @@ public final class Constants {
         public static final Angle safeSwing = Units.Rotation.of(25);
         public static final Angle error = Units.Rotation.of(1);
         public static final Angle stow = Units.Rotation.of(8);
-        public static final Angle feed = Units.Rotation.of(16);
+        public static final Angle feed = Units.Rotation.of(15.5);
         public static final Angle algaeProcessor = Units.Rotation.of(3);
         public static final Angle coralL1 = Units.Rotation.of(3);
         public static final Angle coralL2 = Units.Rotation.of(15);
         public static final Angle algaeL2 = Units.Rotation.of(3);
-        public static final Angle coralL3 = Units.Rotation.of(20);
+        public static final Angle coralL3 = Units.Rotation.of(24.5);
         public static final Angle algaeL3 = Units.Rotation.of(3);
         public static final Angle coralL4 = Units.Rotation.of(47);
+        public static final Angle eject = Units.Rotation.of(48.5);
+
         public static final Angle coralStation = Units.Rotation.of(3);
         public static final Angle net = Units.Rotation.of(3);
 
@@ -321,7 +326,7 @@ public final class Constants {
 
         public enum ElevatorPositions {
             STOW(stow), FEED(feed), PROCESSOR(algaeProcessor), CORALL1(coralL1), CORALL2(coralL2), ALGAEL2(
-                    algaeL2), CORALL3(coralL3), ALGAEL3(algaeL3), CORALL4(coralL4), NET(net), SAFESWING(safeSwing);
+                    algaeL2), CORALL3(coralL3), ALGAEL3(algaeL3), CORALL4(coralL4), NET(net), SAFESWING(safeSwing), EJECET(eject);
 
             public Angle rotation;
 
@@ -484,14 +489,16 @@ public final class Constants {
         // public static final ArmFeedforward jointFF = new
         // ArmFeedforward(kS.in(Units.Volt));
 
-        public static final Angle stow = Units.Rotations.of(-.5);
-        public static final Angle feed = Units.Rotations.of(-11.3);
+        public static final Angle eject = Units.Rotation.of(-0.8);
+        public static final Angle stow = Units.Rotations.of(-2);
+        public static final Angle feed = Units.Rotations.of(-11.5);
         public static final Angle prefeed = Units.Rotations.of(-9);
 
         public static final Angle scoreL1 = Units.Rotations.of(-2);
-        public static final Angle scoreL2 = Units.Rotations.of(-4);
 
         public static final Angle scoreL3 = Units.Rotations.of(-2);
+        public static final Angle scoreL2 = scoreL3;
+
         public static final Angle scoreL4 = Units.Rotations.of(-2);
         public static final Angle error = Units.Rotations.of(0.9);
 
@@ -501,7 +508,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0.1);
 
         public enum ManipJointPositions {
-            STOW(stow), PREEFEED(prefeed), FEED(feed), SCOREL1(scoreL1), SCOREL2(scoreL2), SCOREL3(scoreL3), SCOREL4(scoreL4);
+            STOW(stow), EJECT(eject), PREEFEED(prefeed), FEED(feed), SCOREL1(scoreL1), SCOREL2(scoreL2), SCOREL3(scoreL3), SCOREL4(scoreL4);
 
             public Angle position;
 

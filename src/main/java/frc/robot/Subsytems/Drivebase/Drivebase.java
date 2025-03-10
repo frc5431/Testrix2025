@@ -101,7 +101,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
                     this::getRobotPose,
                     this::resetPose,
                     this::getChassisSpeeds,
-                    (speeds) -> driveRobotCenteric(speeds),
+                    (speeds) -> driveRobotCentric(speeds),
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
                                                     // for holonomic drive trains
                             AutonConstants.translationPID,
@@ -224,9 +224,9 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
      *         If we have issues this is a good place to start. Not confident on the
      *         end command
      */
-    public void driveRobotCenteric(ChassisSpeeds chassisSpeeds) {
-        applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds));
-
+    public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
+        // System.out.println(chassisSpeeds);
+        setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(chassisSpeeds));
     }
 
     public Command faceTargetCommand(Rotation2d faceDirection) {

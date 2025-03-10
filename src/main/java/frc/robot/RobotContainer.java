@@ -121,6 +121,8 @@ public class RobotContainer {
 	private Trigger zeroDrivebase = driver.y();
 	private Trigger driverStow = driver.x();
 	private Trigger killElevator = driver.b();
+	private Trigger driverIntake = driver.leftTrigger(0.5);
+	private Trigger di = driver.rightTrigger(0.5);
 
 	// Operator Controls
 
@@ -173,9 +175,6 @@ public class RobotContainer {
 		subsystemPeriodic();
 		SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 		SmartDashboard.putData("mechanism", robotMechanism.elevator);
-		gamePieceStatus = (manipulator.getBeambreakStatus()) ? GamePieceStates.CORAL : GamePieceStates.NONE;
-		manipulator.setState((manipulator.getBeambreakStatus()) ? ManipulatorStates.LOCKED : ManipulatorStates.EMPTY);
-
 	}
 
 	/**
@@ -228,12 +227,16 @@ public class RobotContainer {
 		zeroDrivebase.onTrue(new InstantCommand(() -> drivebase.resetGyro())
 				.withName("Zero Drivebase"));
 
+		driverIntake.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
+		di.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
+
+
 	}
 
 	private void configureOperatorControls() {
 
 		// Intake Controls
-		stowManip.onTrue(manipJoint.runManipJointCommand(ManipJointPositions.STOW));
+		stowManip.onTrue(new ElevatorPresetCommand(ControllerConstants.ejectL4, elevator, manipJoint));
 		zeroElevator.onTrue(new ZeroCommand(elevator).withName("ZERO ELEVATOR MAY WANT KILL"));
 
 		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)
@@ -286,6 +289,7 @@ public class RobotContainer {
 
 	public void onInitialize() {
 		// Default Commands
+		manipJoint.runManipJointCommand(ManipJointPositions.STOW);
 		elevator.runOnce(() -> elevator.riseAboveFriction());
 		intake.setDefaultCommand(intake.runIntakeCommand(IntakeModes.IDLE).withName("Intake Default Command"));
 		feeder.setDefaultCommand(feeder.runFeederCommand(FeederModes.IDLE).withName("Feeder Default Command"));
@@ -328,6 +332,8 @@ public class RobotContainer {
 				new ElevatorPresetCommand(ControllerConstants.ScoreL4Position, elevator, manipJoint));
 		NamedCommands.registerCommand("StowPreset",
 				new ElevatorStowCommand(elevator, manipJoint));
+		NamedCommands.registerCommand("SimpleScore",
+				manipulator.runManipulatorCommand(ManipulatorModes.SCORE));
 
 		NamedCommands.registerCommand("ScoreL4",
 				new ParallelCommandGroup(manipulator.runManipulatorCommand(ManipulatorModes.SCORE),

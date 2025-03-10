@@ -25,8 +25,8 @@ public class ElevatorFeedCommand extends SequentialCommandGroup {
 				new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.prefeed,
 						ManipJointConstants.error)),
 
-						manipJoint.runManipJointCommand(ManipJointPositions.FEED),
-						new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.feed,
+				manipJoint.runManipJointCommand(ManipJointPositions.FEED),
+					new WaitUntilCommand(() -> manipJoint.getPositionSetpointGoal(ManipJointConstants.feed,
 								ManipJointConstants.error)),
 				// since its sequential, this lowers once the manip is
 				// when prev commands finish (instantaly since its RunCommands)
