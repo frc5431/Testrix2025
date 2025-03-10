@@ -7,8 +7,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Subsytems.CANdle.TitanCANdle;
-import frc.robot.Subsytems.Cleaner.CleanPivot;
-import frc.robot.Subsytems.Cleaner.Cleaner;
 import frc.robot.Subsytems.Climber.Climber;
 import frc.robot.Subsytems.Drivebase.Drivebase;
 import frc.robot.Subsytems.Elevator.Elevator;
@@ -40,8 +38,6 @@ public class Systems {
     private @Getter ManipJoint manipJoint;
     private @Getter Manipulator manipulator;
     private @Getter Elevator elevator;
-    private @Getter Cleaner cleaner;
-    private @Getter CleanPivot cleanPivot;
     private static @Getter TitanCANdle titanCANdle;
     private static @Getter Vision vision;
     private @Getter Climber climber;

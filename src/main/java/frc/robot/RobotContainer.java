@@ -7,10 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -31,7 +27,6 @@ import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
-import frc.robot.Commands.Chained.SmartStowCommand;
 import frc.robot.Commands.Chained.ZeroCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.Drivebase;
@@ -109,24 +104,24 @@ public class RobotContainer {
 	// Operator Controls
 
 	// Preset Controls
-	private Trigger intakePreset = operator.rightBumper();
-	private Trigger stowIntake = operator.leftBumper();
 	private Trigger feedPreset = operator.downDpad();
 	private Trigger scoreL2Preset = operator.rightDpad();
 	private Trigger scoreL3Preset = operator.leftDpad();
 	private Trigger scoreL4Preset = operator.upDpad();
+	private Trigger ejectL4Preset = operator.y();
+	private Trigger stowPreset = operator.start();
+	private Trigger intakePreset = operator.rightBumper();
 
 	// Intake Controls
 	private Trigger intakeCoral = operator.a();
 	private Trigger reverseFeed = operator.b();
-	private Trigger stowManip = operator.y();
 	private Trigger zeroElevator = operator.back();
+	private Trigger stowIntake = operator.leftBumper();
+	private Trigger manipFeed = operator.x();
 
 	private Trigger smartIntakeCoral = operator.leftTrigger(.5);
 	private Trigger scoreCoral = operator.rightTrigger(.5);
-	private Trigger manipFeed = operator.x();
-	private Trigger stowPreset = operator.start();
-
+	
 	public RobotContainer() {
 		// Path Planner reccomends that construction of their namedcommands happens
 		// before anything else in robot container
@@ -199,10 +194,12 @@ public class RobotContainer {
 		// new AlignReefCommand(true).withName("Align Right Reef"));
 		// alignCenterReef.onTrue(
 		// new AlignReefCommand().withName("Align Center Reef"));
-		driverStow.onTrue(
-				new SmartStowCommand(elevator, manipJoint, manipulator)
-						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
-						.withName("Driver Smart Stow"));
+
+		//TODO:
+		// driverStow.onTrue(
+		// 		new SmartStowCommand(elevator, manipJoint, manipulator)
+		// 				.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
+		// 				.withName("Driver Smart Stow"));
 
 		killElevator.onTrue(manipJoint.killManipJoingCommand().alongWith(elevator.killElevatorCommand()));
 
@@ -218,7 +215,7 @@ public class RobotContainer {
 	private void configureOperatorControls() {
 
 		// Intake Controls
-		stowManip.onTrue(new ElevatorPresetCommand(ControllerConstants.ejectL4, elevator, manipJoint));
+		ejectL4Preset.onTrue(new ElevatorPresetCommand(ControllerConstants.ejectL4, elevator, manipJoint));
 		zeroElevator.onTrue(new ZeroCommand(elevator).withName("ZERO ELEVATOR MAY WANT KILL"));
 
 		stowIntake.onTrue(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW)
@@ -240,8 +237,9 @@ public class RobotContainer {
 						.alongWith(feeder.runFeederCommand(FeederModes.SLOW))
 						.withName("Manipulator Feed Command"));
 
-		stowPreset.onTrue(new ElevatorStowCommand(elevator, manipJoint)
-				.withName("Smart Stow"));
+						//TODO: 
+		// stowPreset.onTrue(new ElevatorStowCommand(elevator, manipJoint)
+		// 		.withName("Smart Stow"));
 
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator)
 				.withName("Coral Outake"));

@@ -16,27 +16,7 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 import lombok.Getter;
 import lombok.Setter;
 
-/*
-    // Local variables needed 
-    private double MaxSpeed = SwerveConstants.kSpeedAt12Volts.in(Units.MetersPerSecond); // kSpeedAt12Volts
-																									// desired top speed
-	private double MaxAngularRate = Units.RotationsPerSecond.of(0.75).in(Units.RadiansPerSecond);
-
-    // In robot Container
- * drivebase.setDefaultCommand(
- * // Drivetrain will execute this command periodically
- * drivebase.applyRequest(
- * () -> driverControl.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive
- * forward with
- * // negative Y
- * // (forward)
- * .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X
- * (left)
- * .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive
- * counterclockwise with
- * // negative X (left)
- * ));
- */
+@Deprecated
 public class Cleaner extends REVMechanism {
 
     @Getter private CleanerModes mode;

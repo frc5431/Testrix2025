@@ -19,6 +19,7 @@ import frc.team5431.titan.core.subsystem.REVMechanism;
 import lombok.Getter;
 import lombok.Setter;
 
+@Deprecated
 public class CleanPivot extends REVMechanism {
 
 	public SparkMax motor;

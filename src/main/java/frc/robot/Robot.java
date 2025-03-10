@@ -6,7 +6,6 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 

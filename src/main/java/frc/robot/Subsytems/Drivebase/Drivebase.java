@@ -68,22 +68,22 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
 
     private SwerveRequest.SwerveDriveBrake xLock = new SwerveDriveBrake();
     private SwerveRequest.FieldCentricFacingAngle driverFieldCentricFacingAngle = new FieldCentricFacingAngle()
-            .withMaxAbsRotationalRate(null)
-            .withRotationalDeadband(null)
+            .withMaxAbsRotationalRate(DrivebaseConstants.AutonMaxAngularRate)
+            .withRotationalDeadband(DrivebaseConstants.AngularDeadzone)
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
 
     private SwerveRequest.RobotCentricFacingAngle autonRobotCentricFacingAngle = new RobotCentricFacingAngle()
-            .withMaxAbsRotationalRate(null)
-            .withRotationalDeadband(null)
+            .withMaxAbsRotationalRate(DrivebaseConstants.AutonMaxAngularRate)
+            .withRotationalDeadband(DrivebaseConstants.AutoAngularDeadzone)
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
 
     private @Getter SwerveRequest.ForwardPerspectiveValue perspectiveValue = ForwardPerspectiveValue.OperatorPerspective;
 
-    private @Getter SwerveRequest.RobotCentric visionRobotCentric = new RobotCentric().withRotationalDeadband(null);
+    private @Getter SwerveRequest.RobotCentric visionRobotCentric = new RobotCentric().withRotationalDeadband(DrivebaseConstants.VisionAngularDeadzone);
 
 	private @Getter SwerveRequest.FieldCentric driverControl = new SwerveRequest.FieldCentric()
 			.withDeadband(SwerveConstants.kSpeedAt12Volts.times(0.1))
-			.withRotationalDeadband(DrivebaseConstants.MaxAngularRate.times(0.1).in(RadiansPerSecond)) // Add a 10%
+			.withRotationalDeadband(DrivebaseConstants.AngularDeadzone) // Add a 10%
 			.withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
 			.withSteerRequestType(SteerRequestType.MotionMagicExpo)
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);

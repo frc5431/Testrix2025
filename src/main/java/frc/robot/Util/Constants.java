@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
 import lombok.Setter;
@@ -40,10 +39,10 @@ public final class Constants {
         public static final double triggerThreshold = 0.5;
 
         public static final PresetPosition StowPosition = new PresetPosition(
-                ElevatorPositions.STOW, ManipJointPositions.STOW, CleanPivotModes.STOW);
+                ElevatorPositions.STOW, ManipJointPositions.STOW);
 
         public static final PresetPosition FeedCoralPosition = new PresetPosition(
-                ElevatorPositions.FEED, ManipJointPositions.STOW, CleanPivotModes.STOW);
+                ElevatorPositions.FEED, ManipJointPositions.FEED);
 
         public static final PresetPosition ScoreL1Position = new PresetPosition(ElevatorPositions.CORALL1,
                 ManipJointPositions.SCOREL1);
@@ -55,15 +54,15 @@ public final class Constants {
                 ManipJointPositions.SCOREL3);
 
         public static final PresetPosition CleanL2Position = new PresetPosition(ElevatorPositions.CLEANL2,
-        ManipJointPositions.SCOREL2);
+                ManipJointPositions.SCOREL2);
 
         public static final PresetPosition CleanL3Position = new PresetPosition(ElevatorPositions.CORALL3,
-        ManipJointPositions.SCOREL3);
+                ManipJointPositions.SCOREL3);
 
         public static final PresetPosition ScoreL4Position = new PresetPosition(ElevatorPositions.CORALL4,
                 ManipJointPositions.SCOREL4);
 
-                public static final PresetPosition ejectL4 = new PresetPosition(ElevatorPositions.EJECET,
+        public static final PresetPosition ejectL4 = new PresetPosition(ElevatorPositions.EJECET,
                 ManipJointPositions.EJECT);
 
     }
@@ -111,7 +110,7 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum IntakeModes {
-            IDLE(idleSpeed , 0.0), INTAKE(intakeSpeed, 0.6), FEED(feedSpeed, 0.2), OUTTAKE(outtakeSpeed, -0.3);
+            IDLE(idleSpeed, 0.0), INTAKE(intakeSpeed, 0.6), FEED(feedSpeed, 0.2), OUTTAKE(outtakeSpeed, -0.3);
 
             public AngularVelocity speed;
             public double output;
@@ -239,7 +238,8 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0);
 
         public enum ManipulatorModes {
-            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), MANUAL(feedSpeed, 0.4), REVERSE(reverseSpeed, 0.2);
+            IDLE(idleSpeed, 0.0), SCORE(scoreSpeed, -0.6), FEED(feedSpeed, 0.3), MANUAL(feedSpeed,
+                    0.4), REVERSE(reverseSpeed, 0.2);
 
             public AngularVelocity speed;
             public double output;
@@ -299,14 +299,14 @@ public final class Constants {
 
         public static final double p = 0.1;
         public static final double i = 0;
-        //do not add d please
+        // do not add d please
         public static final double d = 0;
         public static final double maxIAccum = 0.2;
 
         public static final Angle error = Units.Rotation.of(1);
         public static final Angle coralL1 = Units.Rotation.of(3);
         public static final Angle stow = Units.Rotation.of(8);
-        public static final Angle feed = Units.Rotation.of(15.5);
+        public static final Angle feed = Units.Rotation.of(16);
         public static final Angle cleanl2 = Units.Rotation.of(10);
         public static final Angle coralL2 = Units.Rotation.of(15);
         public static final Angle coralL3 = Units.Rotation.of(24.5);
@@ -317,7 +317,8 @@ public final class Constants {
         public static final Angle coralStation = Units.Rotation.of(3);
 
         public enum ElevatorPositions {
-            STOW(stow), FEED(feed), CORALL1(coralL1), CLEANL2(cleanl2), CORALL2(coralL2), CORALL3(coralL3), CORALL4(coralL4), SAFESWING(safeSwing), EJECET(eject);
+            STOW(stow), FEED(feed), CORALL1(coralL1), CLEANL2(cleanl2), CORALL2(coralL2), CORALL3(coralL3), CORALL4(
+                    coralL4), SAFESWING(safeSwing), EJECET(eject);
 
             public Angle rotation;
 
@@ -362,9 +363,8 @@ public final class Constants {
         public static final Angle deployAngle = Units.Rotation.of(0.75);
         public static final Angle scoreL1 = Units.Rotation.of(0.6);
 
-
         public enum IntakePivotModes {
-            STOW(stowAngle), DEPLOY(deployAngle), L1(scoreL1);
+            STOW(stowAngle), DEPLOY(deployAngle), L1(scoreL1), NONE(stowAngle);
 
             public Angle angle;
 
@@ -379,7 +379,12 @@ public final class Constants {
     public static class DrivebaseConstants {
         public static final AngularVelocity MaxAngularRate = RotationsPerSecond.of(0.5);
         public static final Distance robotLength = Units.Inches.of(28);
-         
+        public static final AngularVelocity AngularDeadzone = DrivebaseConstants.MaxAngularRate.times(0.1);
+        public static final AngularVelocity VisionAngularDeadzone = DrivebaseConstants.MaxAngularRate.times(0.1);
+
+        public static final AngularVelocity AutoAngularDeadzone = DrivebaseConstants.MaxAngularRate.times(0.1);
+        public static final AngularVelocity AutonMaxAngularRate = RotationsPerSecond.of(0.5);
+
     }
 
     public static class VisionConstants {
@@ -464,7 +469,7 @@ public final class Constants {
         public static final double maxForwardOutput = 1;
         public static final double maxReverseOutput = -0.1;
 
-        public static final double s = 0.15; //0.15 holds arm at 90 degree position, when gravity's pull is strongest
+        public static final double s = 0.15; // 0.15 holds arm at 90 degree position, when gravity's pull is strongest
 
         public static final double p = 1.75;
         public static final double i = 0.005;
@@ -489,15 +494,8 @@ public final class Constants {
         public static final AngularVelocity mm_error = Units.RPM.of(0.1);
 
         public enum ManipJointPositions {
-            STOW(stow), 
-            EJECT(eject), 
-            PREEFEED(prefeed),
-            FEED(feed),
-            SCOREL1(scoreL1),
-            SCOREL2(scoreL2),
-            SCOREL3(scoreL3), 
-            ADJUSTANGLE(adjustAngle), 
-            SCOREL4(scoreL4);
+            STOW(stow), EJECT(eject), PREEFEED(prefeed), FEED(feed), SCOREL1(scoreL1), SCOREL2(scoreL2), SCOREL3(
+                    scoreL3), ADJUSTANGLE(adjustAngle), SCOREL4(scoreL4);
 
             public Angle position;
 
@@ -545,7 +543,8 @@ public final class Constants {
         public static final double slowFeedOutput = 0.3;
 
         public enum FeederModes {
-            IDLE(idleSpeed, idleOutput), REVERSE(reverseSpeed, reverseOutput), FEED(feedSpeed, feedOutput), SLOW(feedSpeed, slowFeedOutput);
+            IDLE(idleSpeed, idleOutput), REVERSE(reverseSpeed, reverseOutput), FEED(feedSpeed,
+                    feedOutput), SLOW(feedSpeed, slowFeedOutput);
 
             public AngularVelocity speed;
             public double output;

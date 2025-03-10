@@ -1,23 +1,16 @@
 package frc.robot.Util;
 
-import frc.robot.Util.Constants.CleanPivotConstants.CleanPivotModes;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
+import frc.robot.Util.Constants.IntakePivotConstants.IntakePivotModes;
 import frc.robot.Util.Constants.ManipJointConstants.ManipJointPositions;
-import lombok.Setter;
-import lombok.Getter;
+import lombok.*;
 public class PresetPosition {
 
-    @Getter @Setter private CleanPivotModes pivotMode;
-    @Getter @Setter private ManipJointPositions jointMode;
-    @Getter @Setter private ElevatorPositions elevatorMode;
+    private @Getter @Setter ManipJointPositions jointMode;
+    private @Getter @Setter ElevatorPositions elevatorMode;
+    private @Getter @Setter IntakePivotModes pivotMode;
 
-    public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode, CleanPivotModes pivotMode) {
-        this.elevatorMode = elevatorMode;
-        this.jointMode = jointMode;
-        this.pivotMode = pivotMode;
-    }
-
-    public PresetPosition(ElevatorPositions elevatorMode, CleanPivotModes pivotMode, ManipJointPositions jointMode) {
+    public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode, IntakePivotModes pivotMode) {
         this.elevatorMode = elevatorMode;
         this.jointMode = jointMode;
         this.pivotMode = pivotMode;
@@ -26,12 +19,6 @@ public class PresetPosition {
     public PresetPosition(ElevatorPositions elevatorMode, ManipJointPositions jointMode) {
         this.elevatorMode = elevatorMode;
         this.jointMode = jointMode;
-        this.pivotMode = CleanPivotModes.STOW;
-    }
-
-    public PresetPosition(ElevatorPositions elevatorMode, CleanPivotModes pivotMode) {
-        this.elevatorMode = elevatorMode;
-        this.jointMode = ManipJointPositions.STOW;
-        this.pivotMode = pivotMode;
+        this.pivotMode = IntakePivotModes.NONE;
     }
 }
