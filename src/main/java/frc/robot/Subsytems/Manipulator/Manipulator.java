@@ -80,7 +80,7 @@ public class Manipulator extends REVMechanism {
 		SmartDashboard.putNumber("Mainpulator Current", getMotorCurrent());
 		SmartDashboard.putNumber("Mainpulator Voltage", getMotorVoltage());
 		SmartDashboard.putNumber("Mainpulator Velocity", getMotorVelocity());
-		SmartDashboard.putBoolean("ManipJoint Beambreak Status", getBeambreakStatus());
+		SmartDashboard.putBoolean("ManipJoint Beambreak Status", hasCoral());
 
 		switch (this.mode) {
 			case IDLE:
@@ -128,7 +128,7 @@ public class Manipulator extends REVMechanism {
     }
 
 
-	public boolean getBeambreakStatus() {
+	public boolean hasCoral() {
 		return motor.getForwardLimitSwitch().isPressed();
 	}
 

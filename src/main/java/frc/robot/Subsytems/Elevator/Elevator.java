@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Util.Constants;
 import frc.robot.Util.Constants.ElevatorConstants;
 import frc.robot.Util.Constants.ElevatorConstants.ElevatorPositions;
@@ -48,8 +47,6 @@ public class Elevator extends CTREMechanism {
 
     public TalonFX leader;
     private TalonFX follower;
-
-    // private ElevatorConfig config = new ElevatorConfig();
     private CANcoder elevatorCANcoder;
     private CANrange canRange;
     private boolean attached;
@@ -182,7 +179,7 @@ public class Elevator extends CTREMechanism {
     }
 
     public Command zeroElevatorCommand() {
-        return new InstantCommand(() -> setMotorPosition(Revolutions.of(0)), this);
+        return new InstantCommand(() -> resetMotorPosition(Revolutions.of(0)), this);
     }
 
     protected void stop() {
@@ -193,7 +190,7 @@ public class Elevator extends CTREMechanism {
     }
 
     protected void setZero() {
-        setMotorPosition(Revolutions.of(0));
+        resetMotorPosition(Revolutions.of(0));
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {

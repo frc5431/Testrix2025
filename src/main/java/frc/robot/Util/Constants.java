@@ -271,12 +271,9 @@ public final class Constants {
         public static final int leftId = 15;
         public static final int rightId = 14;
         public static final int canCoderId = 16;
-        public static final int canRangeId = 17;
         public static final double gearRatio = 1 / 1;
 
         public static final Current forwardTorqueLimit = Units.Amps.of(80);
-        public static final Current trowug = Units.Amps.of(60);
-
         public static final Current reverseTorqueLimit = Units.Amps.of(80);
 
         public static final boolean useStallLimit = true;
@@ -292,7 +289,7 @@ public final class Constants {
         public static final Angle maxReverseRotation = Units.Rotation.of(-1);
         public static final Angle maxFowardRotation = Units.Rotation.of(50);
 
-        public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.RotorSensor;
+        public static final FeedbackSensorSourceValue feedbackSensor = FeedbackSensorSourceValue.FusedCANcoder;
 
         // static voltage needed to hold position
         public static final double s = 0.65;
@@ -308,7 +305,7 @@ public final class Constants {
         public static final Angle stow = Units.Rotation.of(8);
         public static final Angle feed = Units.Rotation.of(16);
         public static final Angle cleanl2 = Units.Rotation.of(10);
-        public static final Angle coralL2 = Units.Rotation.of(15);
+        public static final Angle coralL2 = stow;
         public static final Angle coralL3 = Units.Rotation.of(24.5);
         public static final Angle safeSwing = Units.Rotation.of(25);
         public static final Angle coralL4 = Units.Rotation.of(47);
@@ -473,6 +470,7 @@ public final class Constants {
 
         public static final double p = 1.75;
         public static final double i = 0.005;
+        //TODO: LOWER D
         public static final double d = 0.6;
         public static final double maxIAccum = 0.2;
 
@@ -481,7 +479,7 @@ public final class Constants {
         public static final Angle scoreL1 = Units.Rotations.of(-2);
         public static final Angle scoreL2 = Units.Rotations.of(-2);
         public static final Angle scoreL3 = scoreL2;
-        public static @Setter Angle adjustAngle = Units.Rotations.of(-5);
+        public static @Setter Angle adjustAngle = Units.Rotations.of(-2);
         public static final Angle cleanAlgea = Units.Rotations.of(-5);
         public static final Angle prefeed = Units.Rotations.of(-9);
         public static final Angle feed = Units.Rotations.of(-11.5);
