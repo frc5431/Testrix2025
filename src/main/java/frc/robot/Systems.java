@@ -18,9 +18,9 @@ import frc.robot.Subsytems.Intake.IntakePivot;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
 import frc.robot.Util.Constants;
+import frc.team5431.titan.core.joysticks.TitanController;
 import frc.robot.Util.SwerveConstants;
 import frc.robot.Util.Constants.*;
-import frc.team5431.titan.core.joysticks.TitanController;
 import lombok.Getter;
 
 public class Systems {
