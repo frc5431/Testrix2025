@@ -27,6 +27,7 @@ import frc.robot.Commands.Chained.ElevatorPresetCommand;
 import frc.robot.Commands.Chained.ElevatorStowCommand;
 import frc.robot.Commands.Chained.IntakeCoralCommand;
 import frc.robot.Commands.Chained.ScoreCoralCommand;
+import frc.robot.Commands.Chained.SmartStowCommand;
 import frc.robot.Commands.Chained.ZeroCommand;
 import frc.robot.Subsytems.CANdle.TitanCANdle;
 import frc.robot.Subsytems.Drivebase.Drivebase;
@@ -128,12 +129,10 @@ public class RobotContainer {
 		setCommandMappings();
 		configureOperatorControls();
 		configureDriverControls();
+		new SmartStowCommand(elevator, manipJoint, manipulator).schedule();
 
 		System.out.println(AutoBuilder.getAllAutoNames());
 		autoChooser = AutoBuilder.buildAutoChooser();
-		SmartDashboard.putBoolean("Auto Config", AutoBuilder.isConfigured());
-		SmartDashboard.putStringArray("Auto List", AutoBuilder.getAllAutoNames().toArray(new String[0]));
-
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 	}
@@ -195,11 +194,10 @@ public class RobotContainer {
 		// alignCenterReef.onTrue(
 		// new AlignReefCommand().withName("Align Center Reef"));
 
-		//TODO:
-		// driverStow.onTrue(
-		// 		new SmartStowCommand(elevator, manipJoint, manipulator)
-		// 				.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
-		// 				.withName("Driver Smart Stow"));
+		driverStow.onTrue(
+				new SmartStowCommand(elevator, manipJoint, manipulator)
+						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
+						.withName("Driver Smart Stow"));
 
 		killElevator.onTrue(manipJoint.killManipJoingCommand().alongWith(elevator.killElevatorCommand()));
 
@@ -222,7 +220,7 @@ public class RobotContainer {
 				.withName("Stow Intake"));
 
 		intakeCoral.onTrue(
-				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.getBeambreakStatus()));
+				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.hasCoral()));
 
 		smartIntakeCoral.whileTrue(
 				intake.runIntakeCommand(IntakeModes.INTAKE).alongWith(
@@ -237,9 +235,8 @@ public class RobotContainer {
 						.alongWith(feeder.runFeederCommand(FeederModes.SLOW))
 						.withName("Manipulator Feed Command"));
 
-						//TODO: 
-		// stowPreset.onTrue(new ElevatorStowCommand(elevator, manipJoint)
-		// 		.withName("Smart Stow"));
+		stowPreset.onTrue(new ElevatorStowCommand(elevator, manipJoint)
+				.withName("Smart Stow"));
 
 		reverseFeed.whileTrue(new EjectCoralCommand(intake, feeder, manipulator)
 				.withName("Coral Outake"));

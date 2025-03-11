@@ -1,10 +1,8 @@
 package frc.robot.Commands.Chained;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Commands.TitanConditionalCommand;
 import frc.robot.Subsytems.Elevator.Elevator;
 import frc.robot.Subsytems.Manipulator.ManipJoint;
 import frc.robot.Subsytems.Manipulator.Manipulator;
@@ -19,12 +17,19 @@ public class SmartStowCommand extends SequentialCommandGroup {
      * @param manipulator
      */
     public SmartStowCommand(Elevator elevator, ManipJoint manipJoint, Manipulator manipulator) {
+        if (manipulator.hasCoral() == true) {
+            addCommands(
+                new ElevatorFeedCommand(elevator, manipJoint)
+            );
+        } else if(manipulator.hasCoral() == false) {
+            addCommands(
+                new ElevatorStowCommand(elevator, manipJoint)
+            );
+        } else {
+            DriverStation.reportError("SMART STOW NOT RECIVING BEAMBREAK STATUS", true);
+        }
 
-        addCommands(
-                new TitanConditionalCommand(new ElevatorStowCommand(elevator, manipJoint),
-                        new ElevatorFeedCommand(elevator, manipJoint), manipulator.getBeambreakStatus()));
-
-        addRequirements(elevator, manipJoint, manipulator);
+        addRequirements(elevator, manipJoint);
 
     }
 
