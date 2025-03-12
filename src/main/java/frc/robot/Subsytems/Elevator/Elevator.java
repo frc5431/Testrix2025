@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -179,7 +180,7 @@ public class Elevator extends CTREMechanism {
     }
 
     public Command zeroElevatorCommand() {
-        return new InstantCommand(() -> resetMotorPosition(Revolutions.of(0)), this);
+        return new InstantCommand(() -> setZero(), this);
     }
 
     protected void stop() {
@@ -190,7 +191,9 @@ public class Elevator extends CTREMechanism {
     }
 
     protected void setZero() {
-        resetMotorPosition(Revolutions.of(0));
+      if (attached) {
+            motor.setPosition(Revolutions.of(0));
+        }
     }
 
     public Command runElevatorCommand(ElevatorPositions position) {
