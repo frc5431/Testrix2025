@@ -88,6 +88,24 @@ public class TitanController {
         return xboxController.povRight();
     }
 
+    
+    public Trigger upRightDpad() {
+        return xboxController.povUpRight();
+    }
+
+    public Trigger downRightDpad() {
+        return xboxController.povDownRight();
+    }
+
+    public Trigger upLeftDpad() {
+        return xboxController.povUpLeft();
+    }
+
+    public Trigger downLeftDpad() {
+        return xboxController.povDownLeft();
+    }
+
+
     /* Axis */
 
     /**

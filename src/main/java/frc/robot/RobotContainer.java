@@ -101,6 +101,10 @@ public class RobotContainer {
 	private Trigger killElevator = driver.b();
 	private Trigger driverIntake = driver.leftTrigger(0.5);
 	private Trigger di = driver.rightTrigger(0.5);
+	// private Trigger povUp
+	// private Trigger povUpRight = driver.
+	// private Trigger 
+
 
 	// Operator Controls
 
@@ -134,6 +138,7 @@ public class RobotContainer {
 		System.out.println(AutoBuilder.getAllAutoNames());
 		autoChooser = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto Chooser", autoChooser);
+		candle.changeAnimationCommand(CANdleConstants.AnimationTypes.CORAL).runsWhenDisabled();
 
 	}
 
@@ -145,6 +150,7 @@ public class RobotContainer {
 		manipJoint.periodic();
 		manipulator.periodic();
 		intakePivot.periodic();
+		candle.periodic();
 	}
 
 	public void periodic() {
@@ -194,6 +200,7 @@ public class RobotContainer {
 		// alignCenterReef.onTrue(
 		// new AlignReefCommand().withName("Align Center Reef"));
 
+
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
 						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
@@ -223,9 +230,7 @@ public class RobotContainer {
 				manipulator.runManipulatorCommand(ManipulatorModes.FEED).until(() -> manipulator.hasCoral()));
 
 		smartIntakeCoral.whileTrue(
-				intake.runIntakeCommand(IntakeModes.INTAKE).alongWith(
-						feeder.runFeederCommand(FeederModes.FEED))
-						.withName("Smart Intake System"));
+				intake.runIntakeCommand(IntakeModes.INTAKE).withName("Smart Intake System"));
 
 		scoreCoral.whileTrue(manipulator.runManipulatorCommand(ManipulatorModes.SCORE)
 				.withName("Score Coral"));
@@ -273,7 +278,7 @@ public class RobotContainer {
 		manipulator.setDefaultCommand(
 				manipulator.runManipulatorCommand(ManipulatorModes.IDLE).withName("Manipulator Default Command"));
 
-		candle.setDefaultCommand(candle.titanCommand().withName("LED Default Command"));
+		candle.setDefaultCommand(candle.testCommand().withName("LED Default Command"));
 
 		// // Subsystem Status
 		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
