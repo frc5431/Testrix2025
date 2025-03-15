@@ -63,6 +63,7 @@ public class RobotContainer {
 	private final TitanCANdle candle = Systems.getTitanCANdle();
 	private final Drivebase drivebase = Systems.getDrivebase();
 	private final SendableChooser<Command> autoChooser;
+	private final SendableChooser<Boolean> enable = new SendableChooser<>();
 
 	private TitanController driver = Systems.getDriver();
 	private TitanController operator = Systems.getOperator();
@@ -79,10 +80,9 @@ public class RobotContainer {
 	// Subsystem Triggers
 	private @Getter Trigger isIntaking = new Trigger(
 			() -> intake.getMode() == IntakeModes.INTAKE || intake.getMode() == IntakeModes.FEED);
-	
+
 	private @Getter Trigger isManipIntaking = new Trigger(
-		() -> manipulator.getMode() == ManipulatorModes.MANUAL);
-	
+			() -> manipulator.getMode() == ManipulatorModes.MANUAL);
 
 	// LED Triggers
 	/*
@@ -95,6 +95,7 @@ public class RobotContainer {
 	 * // private @Getter Trigger reefAlignment = new Trigger(
 	 * // () -> alignRightReef.getAsBoolean() || alignLeftReef.getAsBoolean());
 	 */
+	private Trigger enabledGUI = new Trigger(() -> enable.getSelected());
 
 	private Trigger zeroDrivebase = driver.y();
 	private Trigger driverStow = driver.x();
@@ -103,8 +104,7 @@ public class RobotContainer {
 	private Trigger di = driver.rightTrigger(0.5);
 	// private Trigger povUp
 	// private Trigger povUpRight = driver.
-	// private Trigger 
-
+	// private Trigger
 
 	// Operator Controls
 
@@ -126,7 +126,7 @@ public class RobotContainer {
 
 	private Trigger smartIntakeCoral = operator.leftTrigger(.5);
 	private Trigger scoreCoral = operator.rightTrigger(.5);
-	
+
 	public RobotContainer() {
 		// Path Planner reccomends that construction of their namedcommands happens
 		// before anything else in robot container
@@ -138,8 +138,11 @@ public class RobotContainer {
 		System.out.println(AutoBuilder.getAllAutoNames());
 		autoChooser = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto Chooser", autoChooser);
-		candle.changeAnimationCommand(CANdleConstants.AnimationTypes.CORAL).runsWhenDisabled();
 
+		enable.addOption("true", true);
+		enable.addOption("false", false);
+		SmartDashboard.putData("Enable GUI", enable);
+		candle.testCommand().runsWhenDisabled();
 	}
 
 	public void subsystemPeriodic() {
@@ -161,15 +164,16 @@ public class RobotContainer {
 
 	/**
 	 * Sets a Deazone
-	 * Make a linear function with deadson at 0 and 1 at 1. 
+	 * Make a linear function with deadson at 0 and 1 at 1.
 	 * Then need to have this work on both positive and negative.
+	 * 
 	 * @param num
 	 * @return
 	 */
 	public double deadzone(double num) {
 		if (Math.abs(num) > ControllerConstants.deadzone) {
-			
-			double w = 1.0 / ( 1.0 - ControllerConstants.deadzone);
+
+			double w = 1.0 / (1.0 - ControllerConstants.deadzone);
 			double b = w * ControllerConstants.deadzone;
 			return (w * Math.abs(num) - b) * (num / Math.abs(num));
 		} else {
@@ -178,7 +182,6 @@ public class RobotContainer {
 	}
 
 	private void configureDriverControls() {
-
 		drivebase.setDefaultCommand(
 				// Drivetrain will execute this command periodically
 				drivebase.applyRequest(
@@ -200,7 +203,6 @@ public class RobotContainer {
 		// alignCenterReef.onTrue(
 		// new AlignReefCommand().withName("Align Center Reef"));
 
-
 		driverStow.onTrue(
 				new SmartStowCommand(elevator, manipJoint, manipulator)
 						.alongWith(intakePivot.runIntakePivotCommand(IntakePivotModes.STOW))
@@ -213,7 +215,6 @@ public class RobotContainer {
 
 		driverIntake.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
 		di.whileTrue(intake.runIntakeCommand(IntakeModes.INTAKE));
-
 
 	}
 
@@ -284,13 +285,13 @@ public class RobotContainer {
 		isIntaking.whileTrue(feeder.runFeederCommand(FeederModes.FEED).withName("Feeder Auto Control"));
 		isManipIntaking.whileTrue(feeder.runFeederCommand(FeederModes.SLOW));
 
-		// LED Status
-		isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED Endgame"));
-		isAutonEnabled.whileTrue(
-				candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED : AnimationTypes.BLINK_BLUE))
-						.withName("LED Auton Alliance"));
-		
-	
+		// // LED Status
+		// isEndgame.whileTrue(candle.changeAnimationCommand(AnimationTypes.STRESS_TIME).withName("LED
+		// Endgame"));
+		// isAutonEnabled.whileTrue(
+		// candle.changeAnimationCommand((Field.isRed() ? AnimationTypes.BLINK_RED :
+		// AnimationTypes.BLINK_BLUE))
+		// .withName("LED Auton Alliance"));
 
 	}
 

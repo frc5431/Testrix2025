@@ -8,7 +8,7 @@
         "layouts": [
           {
             "title": "Cleaner",
-            "x": 0.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 320.0,
@@ -66,12 +66,25 @@
                   "inverted": false,
                   "orientation": "horizontal"
                 }
+              },
+              {
+                "title": "Enable GUI",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "ComboBox Chooser",
+                "properties": {
+                  "topic": "/SmartDashboard/Enable GUI",
+                  "period": 0.06,
+                  "sort_options": false
+                }
               }
             ]
           },
           {
             "title": "Cleaner Pivot",
-            "x": 256.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 448.0,
@@ -152,7 +165,7 @@
           },
           {
             "title": "Elevator",
-            "x": 512.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 576.0,
@@ -173,24 +186,6 @@
                   "period": 0.06,
                   "data_type": "string",
                   "show_submit_button": false
-                }
-              },
-              {
-                "title": "Elevator Position",
-                "x": 576.0,
-                "y": 128.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Number Bar",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "min_value": -1.0,
-                  "max_value": 1.0,
-                  "divisions": 5,
-                  "inverted": false,
-                  "orientation": "horizontal"
                 }
               },
               {
@@ -230,6 +225,24 @@
                 }
               },
               {
+                "title": "Elevator Position",
+                "x": 576.0,
+                "y": 128.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Number Bar",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "min_value": -1.0,
+                  "max_value": 1.0,
+                  "divisions": 5,
+                  "inverted": false,
+                  "orientation": "horizontal"
+                }
+              },
+              {
                 "title": "Elevator Output",
                 "x": 640.0,
                 "y": 448.0,
@@ -251,7 +264,7 @@
           },
           {
             "title": "Intake",
-            "x": 768.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 256.0,
             "height": 448.0,
@@ -332,7 +345,7 @@
           },
           {
             "title": "Manipulator",
-            "x": 1024.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
             "height": 448.0,
@@ -413,7 +426,7 @@
           },
           {
             "title": "Manipulator Joint",
-            "x": 1280.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 448.0,
@@ -584,6 +597,32 @@
               "false_color": 4281743604,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Enable GUI",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Enable GUI",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
